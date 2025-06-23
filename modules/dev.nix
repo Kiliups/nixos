@@ -9,6 +9,7 @@
         alias nrt='sudo nixos-rebuild test'
         alias hms='home-manager switch'
         alias hmn='home-manager news'
+        alias cdnx='cd /etc/nixos'
       '';
     };
 
@@ -16,6 +17,9 @@
       enable = true;
       userName = "Public User";
       userEmail = "user@example.invalid";
+      extraConfig = {
+        init.defaultBranch = "main";
+      };
     };
 
     vscode = {
@@ -54,7 +58,7 @@
     python3Packages.pip
     docker
     docker-compose
-    htop
+    gh
   ];
 
   home.sessionVariables = {
