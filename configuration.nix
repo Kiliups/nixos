@@ -91,7 +91,7 @@
   users.users.kiliups = {
     isNormalUser = true;
     description = "Kilian Mayer";
-    extraGroups = [ "networkmanager" "wheel" "docker"];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
       kdePackages.kate
       #  thunderbird
@@ -131,6 +131,11 @@
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
   ];
+
+  system.activationScripts.nixos-config = ''
+    chown -R kiliups:users /etc/nixos
+    chmod -R 755 /etc/nixos
+  '';
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
