@@ -59,6 +59,7 @@
     docker
     docker-compose
     gh
+    dbeaver-bin
   ];
 
   home.sessionVariables = {
