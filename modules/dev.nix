@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   programs = {
 
@@ -33,15 +33,6 @@
           vscjava.vscode-java-pack
           svelte.svelte-vscode
         ];
-        userSettings = {
-          "editor.defaultFormatter" = "esbenp.prettier-vscode";
-          "editor.formatOnSave" = true;
-          # Optimize imports on save
-          "editor.codeActionsOnSave" = {
-            "source.organizeImports" = "explicit";
-          };
-          "editor.formatOnPaste" = true;
-        };
       };
     };
 
@@ -60,6 +51,7 @@
     docker-compose
     gh
     dbeaver-bin
+    miktex
   ];
 
   home.sessionVariables = {
@@ -67,9 +59,27 @@
     JAVA_HOME = "${pkgs.jdk21}/lib/openjdk";
   };
 
+  # Ghostty configuration
   xdg.configFile."ghostty/config".text = ''
     font-family = "JetBrains Mono"
     theme = "Dracula+"
     window-decoration = client
+  '';
+
+  # Default settings for VSCode but can be overridden by the user
+  home.activation.vscode-settings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p ~/.config/Code/User
+        if [ ! -f ~/.config/Code/User/settings.json ]; then
+          cat > ~/.config/Code/User/settings.json << 'EOF'
+    {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+      },
+      "editor.formatOnPaste": true
+    }
+    EOF
+        fi
   '';
 }
