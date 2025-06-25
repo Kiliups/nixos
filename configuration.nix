@@ -30,7 +30,7 @@
   # Enable bluetooth
   hardware.bluetooth = {
     enable = true;
-    powerOnBoot = true; 
+    powerOnBoot = true;
   };
 
   # Set your time zone.
@@ -102,9 +102,17 @@
       #  thunderbird
     ];
   };
+
+  # Framework-spezifische Hardware-Unterstützung
+  hardware.enableRedistributableFirmware = true;
+
   # enable fingerprint
   services.fprintd = {
     enable = true;
+    tod = {
+      enable = true;
+      driver = pkgs.libfprint-2-tod1-goodix-550a; # Framework 13 AMD Fingerprint-Sensor
+    };
   };
 
   security.pam.services = {
@@ -112,10 +120,10 @@
     login.fprintAuth = true;
     # Enable fingerprint for sudo
     sudo.fprintAuth = true;
-    # Enable fingerprint for screen unlock
     kde.fprintAuth = true;
-    # Enable fingerprint for polkit (system authentication dialogs)
     polkit-1.fprintAuth = true;
+    sddm.fprintAuth = true;
+    sddm-greeter.fprintAuth = true;
   };
 
   # Enable Doocker
