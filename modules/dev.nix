@@ -9,7 +9,7 @@
         alias nrt='sudo nixos-rebuild test'
         alias hms='home-manager switch'
         alias hmn='home-manager news'
-        alias cdnx='cd /etc/nixos'
+        alias nx='code /etc/nixos'
       '';
     };
 
