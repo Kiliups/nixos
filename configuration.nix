@@ -13,6 +13,7 @@
     ];
 
   home-manager.users.kiliups = import ./home.nix;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -58,6 +59,7 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
+
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     konsole
   ];
@@ -107,24 +109,7 @@
   hardware.enableRedistributableFirmware = true;
 
   # enable fingerprint
-  services.fprintd = {
-    enable = true;
-    tod = {
-      enable = true;
-      driver = pkgs.libfprint-2-tod1-goodix-550a; # Framework 13 AMD Fingerprint-Sensor
-    };
-  };
-
-  security.pam.services = {
-    # Enable fingerprint for login
-    login.fprintAuth = true;
-    # Enable fingerprint for sudo
-    sudo.fprintAuth = true;
-    kde.fprintAuth = true;
-    polkit-1.fprintAuth = true;
-    sddm.fprintAuth = true;
-    sddm-greeter.fprintAuth = true;
-  };
+  services.fprintd.enable=true;  
 
   # Enable Doocker
   virtualisation.docker.enable = true;
@@ -143,6 +128,8 @@
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
+    kdePackages.partitionmanager
+    kdePackages.isoimagewriter
   ];
 
   system.activationScripts.nixos-config = ''
