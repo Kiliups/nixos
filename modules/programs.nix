@@ -7,6 +7,7 @@
     onedrive
     gimp
     chromium
+    zapzap
   ];
 
   programs.thunderbird = {
@@ -15,4 +16,9 @@
       isDefault = true;
     };
   };
+
+  services.syncthing = {
+    enable = true;
+  };
+
 }

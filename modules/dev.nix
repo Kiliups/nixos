@@ -10,6 +10,7 @@
         alias hms='home-manager switch'
         alias hmn='home-manager news'
         alias nx='code /etc/nixos'
+        alias nrsu='sudo nixos-rebuild switch --upgrade'
       '';
     };
 
@@ -35,7 +36,6 @@
         ];
       };
     };
-
   };
 
   home.packages = with pkgs; [
@@ -52,6 +52,8 @@
     gh
     dbeaver-bin
     miktex
+    code-cursor
+    postman
   ];
 
   home.sessionVariables = {
