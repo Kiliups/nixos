@@ -109,7 +109,7 @@
   hardware.enableRedistributableFirmware = true;
 
   # enable fingerprint
-  services.fprintd.enable=true;  
+  services.fprintd.enable = true;
 
   # Enable Doocker
   virtualisation.docker.enable = true;
@@ -136,6 +136,10 @@
     chown -R kiliups:users /etc/nixos
     chmod -R 755 /etc/nixos
   '';
+
+  services.syncthing = {
+    enable = true;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

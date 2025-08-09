@@ -1,13 +1,18 @@
 { config, pkgs, ... }:
+let
+  unstable = import <nixpkgs-unstable> { config = config.nixpkgs.config; };
+in
 {
   home.packages = with pkgs; [
     obsidian
     spotify
     discord
-    onedrive
+    unstable.onedrive
     gimp
     chromium
     zapzap
+    nextcloud-client
+    anki-bin
   ];
 
   programs.thunderbird = {
@@ -15,10 +20,6 @@
     profiles.default = {
       isDefault = true;
     };
-  };
-
-  services.syncthing = {
-    enable = true;
   };
 
 }

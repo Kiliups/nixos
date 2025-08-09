@@ -54,6 +54,9 @@
     miktex
     code-cursor
     postman
+    btop
+    fastfetch
+    android-studio
   ];
 
   home.sessionVariables = {
@@ -83,5 +86,21 @@
     }
     EOF
         fi
+  '';
+
+  # Add a service menu for opening directories in VS Code
+  xdg.dataFile."kio/servicemenus/vscode-here.desktop".text = ''
+    [Desktop Entry]
+    Type=Service
+    X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+    MimeType=inode/directory;
+    Actions=vscode-here;
+    X-KDE-Priority=TopLevel
+  
+    [Desktop Action vscode-here]
+    Name=Open VS Code here
+    Name[de]=Öffne VS Code hier
+    Icon=code
+    Exec=code %f
   '';
 }
