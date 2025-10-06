@@ -13,6 +13,7 @@ in
     zapzap
     nextcloud-client
     anki-bin
+    prismlauncher # Minecraft Launcher
   ];
 
   programs.thunderbird = {
