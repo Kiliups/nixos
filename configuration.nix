@@ -11,6 +11,8 @@
       ./hardware-configuration.nix
       <home-manager/nixos>
     ];
+  
+  programs.adb.enable = true;
 
   home-manager.users.kiliups = import ./home.nix;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -98,7 +100,7 @@
   users.users.kiliups = {
     isNormalUser = true;
     description = "Kilian Mayer";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "adbusers"];
     packages = with pkgs; [
       kdePackages.kate
       #  thunderbird
@@ -136,10 +138,6 @@
     chown -R kiliups:users /etc/nixos
     chmod -R 755 /etc/nixos
   '';
-
-  services.syncthing = {
-    enable = true;
-  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
