@@ -12,8 +12,6 @@
       <home-manager/nixos>
     ];
   
-  programs.adb.enable = true;
-
   home-manager.users.kiliups = import ./home.nix;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -21,7 +19,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "kiliups-nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -61,7 +59,6 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
-
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     konsole
   ];
@@ -86,11 +83,11 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+    # jack.enable = true;
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
-    #media-session.enable = true;
+    # media-session.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -100,24 +97,14 @@
   users.users.kiliups = {
     isNormalUser = true;
     description = "Kilian Mayer";
-    extraGroups = [ "networkmanager" "wheel" "docker" "adbusers"];
+    extraGroups = [ "networkmanager" "wheel" "docker"];
     packages = with pkgs; [
       kdePackages.kate
       #  thunderbird
     ];
   };
-
-  # Framework-spezifische Hardware-Unterstützung
-  hardware.enableRedistributableFirmware = true;
-
-  # enable fingerprint
-  services.fprintd.enable = true;
-
   # Enable Doocker
   virtualisation.docker.enable = true;
-
-  # Enable the uefi firmware updater
-  services.fwupd.enable = true;
 
   # Install flatpak
   services.flatpak.enable = true;
@@ -130,8 +117,8 @@
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
+    nixpkgs-fmt
     kdePackages.partitionmanager
-    kdePackages.isoimagewriter
   ];
 
   system.activationScripts.nixos-config = ''
