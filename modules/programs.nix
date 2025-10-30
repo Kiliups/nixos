@@ -8,7 +8,10 @@
     chromium
     zapzap
     nextcloud-client
-    prismlauncher # Minecraft Launcher
+    prismlauncher # Minecraft Launche
+    teams-for-linux
+    zotero
+    flatpak
   ];
 
   programs.thunderbird = {
@@ -18,4 +21,8 @@
     };
   };
 
+  home.activation.flatpak-setup = ''
+    ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    ${pkgs.flatpak}/bin/flatpak install -y flathub app.zen_browser.zen
+  '';
 }

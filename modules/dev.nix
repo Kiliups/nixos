@@ -11,8 +11,20 @@
         alias nrs='sudo nixos-rebuild switch'
         alias nx='code /etc/nixos'
         alias nrsu='sudo nixos-rebuild switch --upgrade'
+        alias ls='eza -lh --group-directories-first --icons=auto'
       '';
     };
+
+    fzf = {
+      enable = true;
+      enableBashIntegration = true;
+    };
+
+    zoxide = {
+      enable = true;
+      enableBashIntegration = true;
+    };
+
     
     git = {
       enable = true;
@@ -37,12 +49,39 @@
           dart-code.flutter
           jnoortheen.nix-ide
           ms-vscode-remote.remote-ssh
+          # latex
+          ltex-plus.vscode-ltex-plus
+          james-yu.latex-workshop
+          tomoki1207.pdf
+          # spell checking
+          streetsidesoftware.code-spell-checker
+          streetsidesoftware.code-spell-checker-german
+          golang.go
+          rust-lang.rust-analyzer
         ];
       };
     };
   };
 
   home.packages = with pkgs; [
+    (pkgs.writeShellScriptBin "update" ''
+    #!/usr/bin/env bash
+    
+    echo "🔄 Updating NixOS system..."
+    sudo nixos-rebuild switch --upgrade || {
+      echo "❌ NixOS rebuild failed!"
+      exit 1
+    }
+    
+    echo "🔄 Updating Flatpak packages..."
+    flatpak update -y || {
+      echo "⚠️  Flatpak update failed, but continuing..."
+    }
+    
+    echo "✅ System update complete!"
+  '')
+
+
     # Terminal & Tools
     ghostty
     btop
@@ -57,9 +96,19 @@
     gradle
     python3
     python3Packages.pip
+    go
+    golangci-lint
     code-cursor
+    zed-editor
     postman
     dbeaver-bin
+    opencode
+    # rust development
+    cargo
+    rustc 
+    
+    # Eduroam
+    openssl
     
     # Mobile Development
     android-studio
@@ -67,10 +116,18 @@
     
     # Document Processing
     miktex
+    ltex-ls
     
     # Containers
     docker
     docker-compose
+
+    # Utilities
+    fzf           
+    zoxide        
+    ripgrep       
+    eza           
+    fd            
   ];
 
   home.sessionVariables = {
@@ -91,12 +148,29 @@
     if [ ! -f ~/.config/Code/User/settings.json ]; then
       cat > ~/.config/Code/User/settings.json << 'EOF'
     {
+      "files.autoSave": "afterDelay",
       "editor.defaultFormatter": "esbenp.prettier-vscode",
       "editor.formatOnSave": true,
       "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit"
       },
+      "[go]": {
+        "editor.defaultFormatter": "golang.go",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        }
+      },
       "editor.formatOnPaste": true,
+      "ltex.language": "de-DE",
+      "ltex.enabled": ["latex", "markdown"],
+      "ltex.ltex-ls.path": "${pkgs.ltex-ls}/bin/ltex-ls"
+      "go.lintTool": "golangci-lint",
+      "go.lintOnSave": "package",
+      "go.lintFlags": [
+        "--fast"
+      ],
+      "go.useLanguageServer": true,
     }
     EOF
     fi
