@@ -6,6 +6,7 @@
 2. Install Zen via flatpak
    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
    flatpak install flathub app.zen_browser.zen
+   flatpak install flathub com.todoist.Todoist
 4. Configure nextcloud client
 5. Thunderbird config
 6. Syncthing config
