@@ -3,7 +3,7 @@
   services.syncthing = {
     enable = true;
   };
-  
+
   programs = {
     bash = {
       enable = true;
@@ -23,9 +23,12 @@
     zoxide = {
       enable = true;
       enableBashIntegration = true;
+      options = [
+        "--cmd cd"
+      ];
     };
 
-    
+
     git = {
       enable = true;
       userName = "Public User";
@@ -34,7 +37,7 @@
         init.defaultBranch = "main";
       };
     };
-    
+
     vscode = {
       enable = true;
       profiles.default = {
@@ -58,6 +61,9 @@
           streetsidesoftware.code-spell-checker-german
           golang.go
           rust-lang.rust-analyzer
+          ms-python.python
+          ms-vscode.cpptools
+          vscodevim.vim
         ];
       };
     };
@@ -65,21 +71,24 @@
 
   home.packages = with pkgs; [
     (pkgs.writeShellScriptBin "update" ''
-    #!/usr/bin/env bash
+      #!/usr/bin/env bash
     
-    echo "🔄 Updating NixOS system..."
-    sudo nixos-rebuild switch --upgrade || {
-      echo "❌ NixOS rebuild failed!"
-      exit 1
-    }
+      echo "🔄 Updating NixOS system..."
+      sudo nixos-rebuild switch --upgrade || {
+        echo "❌ NixOS rebuild failed!"
+        exit 1
+      }
+
+      echo "🗑️ Cleaning up NixOS system..."
+      sudo nix-collect-garbage -d --delete-older-than 7d
     
-    echo "🔄 Updating Flatpak packages..."
-    flatpak update -y || {
-      echo "⚠️  Flatpak update failed, but continuing..."
-    }
+      echo "🔄 Updating Flatpak packages..."
+      flatpak update -y || {
+        echo "⚠️  Flatpak update failed, but continuing..."
+      }
     
-    echo "✅ System update complete!"
-  '')
+      echo "✅ System update complete!"
+    '')
 
 
     # Terminal & Tools
@@ -87,15 +96,13 @@
     btop
     fastfetch
     gh
-    
+
     # Development Tools
     bun
     nodejs
     jdk21
     maven
     gradle
-    python3
-    python3Packages.pip
     go
     golangci-lint
     code-cursor
@@ -105,29 +112,33 @@
     opencode
     # rust development
     cargo
-    rustc 
-    
+    rustc
+    gcc
+    rustfmt
+    clippy
+    gdb
+
     # Eduroam
     openssl
-    
+
     # Mobile Development
     android-studio
     flutter
-    
+
     # Document Processing
     miktex
     ltex-ls
-    
+
     # Containers
     docker
     docker-compose
 
     # Utilities
-    fzf           
-    zoxide        
-    ripgrep       
-    eza           
-    fd            
+    fzf
+    zoxide
+    ripgrep
+    eza
+    fd
   ];
 
   home.sessionVariables = {
@@ -161,10 +172,14 @@
           "source.organizeImports": "explicit"
         }
       },
+      "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer",
+        "editor.formatOnSave": true
+      },
       "editor.formatOnPaste": true,
       "ltex.language": "de-DE",
       "ltex.enabled": ["latex", "markdown"],
-      "ltex.ltex-ls.path": "${pkgs.ltex-ls}/bin/ltex-ls"
+      "ltex.ltex-ls.path": "${pkgs.ltex-ls}/bin/ltex-ls",
       "go.lintTool": "golangci-lint",
       "go.lintOnSave": "package",
       "go.lintFlags": [
