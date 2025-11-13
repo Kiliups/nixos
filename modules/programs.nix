@@ -8,7 +8,7 @@
     chromium
     zapzap
     nextcloud-client
-    prismlauncher # Minecraft Launche
+    prismlauncher # Minecraft Launcher
     teams-for-linux
     zotero
     flatpak
