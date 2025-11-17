@@ -63,7 +63,7 @@
 
   home.sessionVariables = {
     TERMINAL = "ghostty";
-    jAVA_HOME = "${pkgs.jdk21}/lib/openjdk";
+    JAVA_HOME = "${pkgs.jdk21}/lib/openjdk";
   };
 
   # Ghostty configuration
