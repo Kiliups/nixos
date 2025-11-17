@@ -62,7 +62,7 @@
   ];
 
   home.sessionVariables = {
-    tERMINAL = "ghostty";
+    TERMINAL = "ghostty";
     jAVA_HOME = "${pkgs.jdk21}/lib/openjdk";
   };
 
