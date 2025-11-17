@@ -8,7 +8,7 @@
    flatpak install flathub app.zen_browser.zen
    flatpak install flathub com.todoist.Todoist
 4. Configure nextcloud client
-5. Thunderbird config
+5. Thunderbird configgg
 6. Syncthing config
    syncthing
    systemctl --user enable syncthing.service

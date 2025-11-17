@@ -1,16 +1,29 @@
-{ config, pkgs, ... }:
-
+{ pkgs, ... }:
+let
+  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
+  unstable = import (builtins.fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+  }) { config.allowUnfree = true; };
+in
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-      <home-manager/nixos>
-    ];
-  
+  imports = [
+    ./hardware-configuration.nix
+    "${home-manager}/nixos"
+  ];
+
   home-manager.users.kiliups = import ./home.nix;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  home-manager.extraSpecialArgs = {
+    pkgs = unstable;
+  };
+  home-manager.backupFileExtension = "backup";
+
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Bootloader.
+  boot.loader.systemd-boot.configurationLimit = 3;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -19,7 +32,7 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-  
+
   # Enable bluetooth
   hardware.bluetooth = {
     enable = true;
@@ -44,16 +57,10 @@
     LC_TIME = "de_DE.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
-
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
-  environment.plasma6.excludePackages = with pkgs.kdePackages; [
-    konsole
-  ];
+  environment.plasma6.excludePackages = with pkgs.kdePackages; [ konsole ];
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "de";
@@ -62,10 +69,10 @@
 
   # Configure console keymap
   console.keyMap = "de";
-  
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
-  
+
   # Audio
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -76,34 +83,31 @@
     pulse.enable = true;
   };
 
-
   users.users.kiliups = {
     isNormalUser = true;
     description = "Kilian Mayer";
-    extraGroups = [ "networkmanager" "wheel" "docker"];
-    packages = with pkgs; [
-      kdePackages.kate
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
     ];
+    packages = with pkgs; [ kdePackages.kate ];
   };
-  
+
   # Enable Doocker
   virtualisation.docker.enable = true;
 
   # Install flatpak
   services.flatpak.enable = true;
-  
 
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = with pkgs; [
-    nixpkgs-fmt
-    kdePackages.partitionmanager
-  ];
+  environment.systemPackages = with pkgs; [ kdePackages.partitionmanager ];
 
   system.activationScripts.nixos-config = ''
     chown -R kiliups:users /etc/nixos
     chmod -R 755 /etc/nixos
   '';
-  system.stateVersion = "25.05"; 
+  system.stateVersion = "25.05";
 
 }
