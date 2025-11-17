@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   home.packages = with pkgs; [
     obsidian
@@ -12,6 +12,7 @@
     teams-for-linux
     zotero
     flatpak
+    audacity
   ];
 
   programs.thunderbird = {
@@ -19,6 +20,10 @@
     profiles.default = {
       isDefault = true;
     };
+  };
+
+  services.syncthing = {
+    enable = true;
   };
 
   home.activation.flatpak-setup = ''
