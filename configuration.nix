@@ -41,7 +41,7 @@ in
     useOSProber = true;
     theme = pkgs.stdenv.mkDerivation {
       name = "catppuccin-frappe";
-      src = ./catppuccin-frappe-grub;
+      src = ./.config/catppuccin-frappe-grub;
       installPhase = ''
         mkdir -p $out
         cp -r * $out/
@@ -116,7 +116,7 @@ in
     ];
     packages = with pkgs; [ kdePackages.kate ];
   };
-
+  
   # Enable Doocker
   virtualisation.docker.enable = true;
 
