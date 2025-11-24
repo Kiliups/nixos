@@ -15,11 +15,9 @@
           dart-code.flutter
           jnoortheen.nix-ide
           ms-vscode-remote.remote-ssh
-          # latex
           ltex-plus.vscode-ltex-plus
           james-yu.latex-workshop
           tomoki1207.pdf
-          # spell checking
           streetsidesoftware.code-spell-checker
           streetsidesoftware.code-spell-checker-german
           golang.go
@@ -75,7 +73,6 @@
       "nix.formatterPath": "nixfmt",
       "ltex.language": "de-DE",
       "ltex.enabled": ["latex", "markdown"],
-      "ltex.ltex-ls.path": "${pkgs.ltex-ls}/bin/ltex-ls"    
     }
     EOF
     fi

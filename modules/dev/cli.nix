@@ -7,6 +7,8 @@
         alias nx='code /etc/nixos'
         alias ls='eza -lh --group-directories-first --icons=auto'
         alias neofetch='fastfetch'
+        alias nrs='sudo nixos-rebuild switch'
+        alias nrsu='nrs --upgrade'
       '';
     };
 
@@ -41,24 +43,6 @@
     eza
     fd
     tmux
-
-    (writeShellScriptBin "update" ''
-      #!/usr/bin/env bash
-
-      echo "🔄 Updating NixOS system..."
-      sudo nixos-rebuild switch --upgrade || {
-        echo "❌ NixOS rebuild failed!"
-        exit 1
-      }
-
-      echo "🗑️ Cleaning up NixOS system..."
-      sudo nix-collect-garbage -d --delete-older-than 7d
-
-      echo "🔄 Updating Flatpak packages..."
-      flatpak update -y
-
-      echo "✅ System update complete!"
-    '')
   ];
 
   home.sessionVariables = {
@@ -70,5 +54,6 @@
   xdg.configFile."ghostty/config".text = ''
     font-family = "JetBrains Mono"
     theme = "Catppuccin Frappe"
+    confirm-close-surface = false 
   '';
 }

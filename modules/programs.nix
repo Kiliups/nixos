@@ -11,7 +11,6 @@
     prismlauncher # Minecraft Launcher
     teams-for-linux
     zotero
-    flatpak
     audacity
   ];
 
@@ -25,9 +24,4 @@
   services.syncthing = {
     enable = true;
   };
-
-  home.activation.flatpak-setup = ''
-    ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    ${pkgs.flatpak}/bin/flatpak install -y flathub app.zen_browser.zen
-  '';
 }

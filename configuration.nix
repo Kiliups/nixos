@@ -17,14 +17,37 @@ in
   };
   home-manager.backupFileExtension = "backup";
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    auto-optimise-store = true;
+  };
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
 
   # Bootloader.
-  boot.loader.systemd-boot.configurationLimit = 3;
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 5;
+  boot.loader.systemd-boot.enable = false;
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    useOSProber = true;
+    theme = pkgs.stdenv.mkDerivation {
+      name = "catppuccin-frappe";
+      src = ./catppuccin-frappe-grub;
+      installPhase = ''
+        mkdir -p $out
+        cp -r * $out/
+      '';
+    };
+  };
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "kiliups-nixos"; # Define your hostname.
@@ -97,9 +120,6 @@ in
   # Enable Doocker
   virtualisation.docker.enable = true;
 
-  # Install flatpak
-  services.flatpak.enable = true;
-
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [ kdePackages.partitionmanager ];
@@ -108,6 +128,16 @@ in
     chown -R kiliups:users /etc/nixos
     chmod -R 755 /etc/nixos
   '';
+
+  services.flatpak.enable = true;
+  system.activationScripts.zen = ''
+    ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo 
+    if ! ${pkgs.flatpak}/bin/flatpak info app.zen_browser.zen >/dev/null 2>&1; then
+      ${pkgs.flatpak}/bin/flatpak install -y flathub app.zen_browser.zen
+    fi
+    ${pkgs.flatpak}/bin/flatpak update -y
+  '';
+
   system.stateVersion = "25.05";
 
 }
