@@ -23,21 +23,26 @@
 
           catppuccin.nixosModules.catppuccin
           home-manager.nixosModules.home-manager
-
           {
-            home-manager.users.kiliups = {
-              imports = [
-                ./home.nix
-                catppuccin.homeModules.catppuccin
-              ];
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "backup";
+
+              users.kiliups = {
+                imports = [
+                  ./home.nix
+                  catppuccin.homeModules.catppuccin
+                ];
+              };
+
+              users.leonie = {
+                imports = [
+                  ./leonie.nix
+                  catppuccin.homeModules.catppuccin
+                ];
+              };
             };
-            home-manager.users.leonie = {
-              imports = [
-                ./leonie.nix
-                catppuccin.homeModules.catppuccin
-              ];
-            };
-            home-manager.backupFileExtension = "backup";
           }
         ];
       };

@@ -32,9 +32,9 @@
 
     git = {
       enable = true;
-      userName = "Kilian Mayer";
-      userEmail = "mayer-kilian@gmx.de";
-      extraConfig = {
+      settings = {
+        user.name = "Kilian Mayer";
+        user.email = "mayer-kilian@gmx.de";
         init.defaultBranch = "main";
       };
     };
