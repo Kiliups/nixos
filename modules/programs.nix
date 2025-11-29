@@ -12,6 +12,7 @@
     teams-for-linux
     zotero
     audacity
+    eduvpn-client
   ];
 
   programs.thunderbird = {
