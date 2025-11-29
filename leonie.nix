@@ -3,7 +3,6 @@
   imports = [
     ./modules/programs.nix
   ];
-  nixpkgs.config.allowUnfree = true;
 
   home.username = "leonie";
   home.homeDirectory = "/home/leonie";

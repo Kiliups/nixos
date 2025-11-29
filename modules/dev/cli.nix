@@ -32,9 +32,9 @@
 
     git = {
       enable = true;
-      userName = "Public User";
-      userEmail = "user@example.invalid";
-      extraConfig = {
+      settings = {
+        user.name = "Public User";
+        user.email = "user@example.invalid";
         init.defaultBranch = "main";
       };
     };
