@@ -30,12 +30,19 @@
       };
     };
   };
-
+  
+  #todo not working
   home.activation.vscode-settings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p ~/.config/Code/User
     if [ ! -f ~/.config/Code/User/settings.json ]; then
       cat > ~/.config/Code/User/settings.json << EOF
     {
+      "catppuccin.accentColor": "lavender",
+      "editor.semanticHighlighting.enabled": true,
+      "terminal.integrated.minimumContrastRatio": 1,
+      "window.titleBarStyle": "custom",
+      "workbench.colorTheme": "Catppuccin Macchiato",
+      "workbench.iconTheme": "catppuccin-macchiato"
       "files.autoSave": "afterDelay",
       "editor.defaultFormatter": "esbenp.prettier-vscode",
       "editor.formatOnSave": true,

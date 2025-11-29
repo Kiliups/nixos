@@ -1,14 +1,21 @@
 { pkgs, ... }:
 {
+
+  home.sessionVariables = {
+    TERMINAL = "ghostty";
+    JAVA_HOME = "${pkgs.jdk21}/lib/openjdk";
+  };
+
   programs = {
     bash = {
       enable = true;
       bashrcExtra = ''
-        alias nx='code /etc/nixos'
+        alias nx='code ~/.config/nixos'
         alias ls='eza -lh --group-directories-first --icons=auto'
         alias neofetch='fastfetch'
-        alias nrs='sudo nixos-rebuild switch'
-        alias nrsu='nrs --upgrade'
+        alias nrs='sudo nixos-rebuild switch --flake ~/.config/nixos#kiliups-nixos --impure'
+        alias nfu='sudo nix flake update --flake ~/.config/nixos'
+        alias nrsu='nfu && nrs'
       '';
     };
 
@@ -45,15 +52,9 @@
     tmux
   ];
 
-  home.sessionVariables = {
-    TERMINAL = "ghostty";
-    JAVA_HOME = "${pkgs.jdk21}/lib/openjdk";
-  };
-
-  # Ghostty configuration
   xdg.configFile."ghostty/config".text = ''
     font-family = "JetBrains Mono"
-    theme = "Catppuccin Frappe"
+    theme = "Catppuccin Macchiato"
     confirm-close-surface = false 
   '';
 }

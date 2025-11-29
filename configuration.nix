@@ -1,21 +1,12 @@
 { pkgs, ... }:
-let
-  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
-  unstable = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-  }) { config.allowUnfree = true; };
-in
 {
   imports = [
-    ./hardware-configuration.nix
-    "${home-manager}/nixos"
+    /etc/nixos/hardware-configuration.nix
   ];
 
-  home-manager.users.kiliups = import ./home.nix;
-  home-manager.extraSpecialArgs = {
-    pkgs = unstable;
-  };
-  home-manager.backupFileExtension = "backup";
+  catppuccin.enable = true;
+  catppuccin.flavor = "macchiato";
+  catppuccin.accent = "lavender";
 
   nix.settings = {
     experimental-features = [
@@ -39,14 +30,6 @@ in
     device = "nodev";
     efiSupport = true;
     useOSProber = true;
-    theme = pkgs.stdenv.mkDerivation {
-      name = "catppuccin-frappe";
-      src = ./.config/catppuccin-frappe-grub;
-      installPhase = ''
-        mkdir -p $out
-        cp -r * $out/
-      '';
-    };
   };
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -116,18 +99,26 @@ in
     ];
     packages = with pkgs; [ kdePackages.kate ];
   };
-  
+
+  users.users.leonie = {
+    isNormalUser = true;
+    description = "Leonie Wendt";
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+    ];
+    packages = with pkgs; [ kdePackages.kate ];
+  };
+
   # Enable Doocker
   virtualisation.docker.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = with pkgs; [ kdePackages.partitionmanager ];
-
-  system.activationScripts.nixos-config = ''
-    chown -R kiliups:users /etc/nixos
-    chmod -R 755 /etc/nixos
-  '';
+  environment.systemPackages = with pkgs; [
+    kdePackages.partitionmanager
+  ];
 
   services.flatpak.enable = true;
   system.activationScripts.zen = ''

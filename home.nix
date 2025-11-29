@@ -1,10 +1,22 @@
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
     ./modules/dev/index.nix
     ./modules/programs.nix
   ];
   nixpkgs.config.allowUnfree = true;
+
+  catppuccin.enable = true;
+  catppuccin.flavor = "macchiato";
+  catppuccin.accent = "lavender";
+  catppuccin.vscode.enable = false;
+
+  home.packages = with pkgs; [
+    (catppuccin-kde.override {
+      flavour = [ "macchiato" ];
+      accents = [ "lavender" ];
+    })
+  ];
 
   home.username = "kiliups";
   home.homeDirectory = "/home/kiliups";
