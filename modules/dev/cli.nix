@@ -19,6 +19,35 @@
       '';
     };
 
+    starship = {
+      enable = true;
+      settings = {
+        # uses catppuccin macchiato colors
+        add_newline = false;
+        format = "[$username](bold #8aadf4) in [$directory](bold #a6da95)$git_branch $character";
+
+        username = {
+          show_always = true;
+          format = "$user";
+        };
+
+        directory = {
+          format = "$path";
+          truncation_length = 3;
+          truncate_to_repo = false;
+        };
+
+        git_branch = {
+          format = " on [\\[$branch\\]](bold #c6a0f6)";
+        };
+
+        character = {
+          success_symbol = "[>](bold #a6da95)";
+          error_symbol = "[>](bold #ed8796)";
+        };
+      };
+    };
+
     fzf = {
       enable = true;
       enableBashIntegration = true;
