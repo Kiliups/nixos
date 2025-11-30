@@ -15,13 +15,6 @@
     eduvpn-client
   ];
 
-  programs.thunderbird = {
-    enable = true;
-    profiles.default = {
-      isDefault = true;
-    };
-  };
-
   services.syncthing = {
     enable = true;
   };

@@ -35,13 +35,6 @@
                   catppuccin.homeModules.catppuccin
                 ];
               };
-
-              users.leonie = {
-                imports = [
-                  ./leonie.nix
-                  catppuccin.homeModules.catppuccin
-                ];
-              };
             };
           }
         ];
