@@ -2,6 +2,7 @@
 {
   imports = [
     /etc/nixos/hardware-configuration.nix
+    ./modules/flatpak.nix
   ];
 
   catppuccin.enable = true;
@@ -111,29 +112,5 @@
     kdePackages.partitionmanager
   ];
 
-  services.flatpak.enable = true;
-  systemd.services.flatpak-zen = {
-    wantedBy = [ "multi-user.target" ];
-    path = [ pkgs.flatpak ];
-    script = ''
-      flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    '';
-  };
-
-  system.activationScripts.zen = ''
-    ${pkgs.flatpak}/bin/flatpak install flathub app.zen_browser.zen -y
-    ${pkgs.flatpak}/bin/flatpak install flathub org.mozilla.Thunderbird -y
-    ${pkgs.flatpak}/bin/flatpak update -y
-  '';
-
-  xdg.mime.defaultApplications = {
-    "text/html" = "app.zen_browser.zen.desktop";
-    "x-scheme-handler/http" = "app.zen_browser.zen.desktop";
-    "x-scheme-handler/https" = "app.zen_browser.zen.desktop";
-    "x-scheme-handler/mailto" = "org.mozilla.Thunderbird.desktop";
-    "message/rfc822" = "org.mozilla.Thunderbird.desktop";
-  };
-
   system.stateVersion = "25.05";
-
 }
