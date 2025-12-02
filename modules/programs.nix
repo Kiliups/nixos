@@ -13,6 +13,7 @@
     zotero
     audacity
     eduvpn-client
+    localsend
   ];
 
   services.syncthing = {

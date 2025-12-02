@@ -61,9 +61,9 @@
 
     git = {
       enable = true;
-      settings = {
-        user.name = "Kilian Mayer";
-        user.email = "mayer-kilian@gmx.de";
+      userName = "Kilian Mayer";
+      userEmail = "mayer-kilian@gmx.de";
+      extraConfig = {
         init.defaultBranch = "main";
       };
     };
@@ -83,7 +83,7 @@
 
   xdg.configFile."ghostty/config".text = ''
     font-family = "JetBrains Mono"
-    theme = "Catppuccin Macchiato"
+    theme = "catppuccin-macchiato"
     confirm-close-surface = false 
   '';
 }

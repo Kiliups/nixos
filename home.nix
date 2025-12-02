@@ -5,18 +5,6 @@
     ./modules/programs.nix
   ];
 
-  catppuccin.enable = true;
-  catppuccin.flavor = "macchiato";
-  catppuccin.accent = "lavender";
-  catppuccin.vscode.profiles.default.enable = false;
-
-  home.packages = with pkgs; [
-    (catppuccin-kde.override {
-      flavour = [ "macchiato" ];
-      accents = [ "lavender" ];
-    })
-  ];
-
   home.username = "kiliups";
   home.homeDirectory = "/home/kiliups";
   home.stateVersion = "25.05";
