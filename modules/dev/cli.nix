@@ -61,9 +61,9 @@
 
     git = {
       enable = true;
-      settings = {
-        user.name = "Public User";
-        user.email = "user@example.invalid";
+      userName = "Public User";
+      userEmail = "user@example.invalid";
+      extraConfig = {
         init.defaultBranch = "main";
       };
     };
@@ -83,7 +83,7 @@
 
   xdg.configFile."ghostty/config".text = ''
     font-family = "JetBrains Mono"
-    theme = "Catppuccin Macchiato"
+    theme = "catppuccin-macchiato"
     confirm-close-surface = false 
   '';
 }

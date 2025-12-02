@@ -4,10 +4,12 @@
     /etc/nixos/hardware-configuration.nix
     ./modules/flatpak.nix
   ];
-
-  catppuccin.enable = true;
-  catppuccin.flavor = "macchiato";
-  catppuccin.accent = "lavender";
+  stylix = {
+    enable = true;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
+    image = ./config/wallpaper.png;
+    polarity = "dark";
+  };
 
   nix.settings = {
     experimental-features = [
