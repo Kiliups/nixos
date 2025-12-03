@@ -1,9 +1,5 @@
-{ pkgs, ... }:
-{
-  imports = [
-    ./modules/dev/index.nix
-    ./modules/programs.nix
-  ];
+{ pkgs, ... }: {
+  imports = [ ./modules/dev ./modules/programs.nix ];
 
   home.username = "user";
   home.homeDirectory = "/home/user";
