@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
 
   home.sessionVariables = {
     TERMINAL = "ghostty";
@@ -24,7 +23,8 @@
       settings = {
         # uses catppuccin macchiato colors
         add_newline = false;
-        format = "[$username](bold #8aadf4) in [$directory](bold #a6da95)$git_branch $character";
+        format =
+          "[$username](bold #8aadf4) in [$directory](bold #a6da95)$git_branch $character";
 
         username = {
           show_always = true;
@@ -37,9 +37,7 @@
           truncate_to_repo = false;
         };
 
-        git_branch = {
-          format = " on [\\[$branch\\]](bold #c6a0f6)";
-        };
+        git_branch = { format = " on [\\[$branch\\]](bold #c6a0f6)"; };
 
         character = {
           success_symbol = "[>](bold #a6da95)";
@@ -61,9 +59,9 @@
 
     git = {
       enable = true;
-      userName = "Kilian Mayer";
-      userEmail = "mayer-kilian@gmx.de";
-      extraConfig = {
+      settings = {
+        user.name = "Kilian Mayer";
+        user.email = "mayer-kilian@gmx.de";
         init.defaultBranch = "main";
       };
     };
@@ -83,7 +81,7 @@
 
   xdg.configFile."ghostty/config".text = ''
     font-family = "JetBrains Mono"
-    theme = "catppuccin-macchiato"
+    theme = "Catppuccin Macchiato"
     confirm-close-surface = false 
   '';
 }
