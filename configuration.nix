@@ -2,8 +2,8 @@
 {
   imports = [
     /etc/nixos/hardware-configuration.nix
-    ./modules/flatpak.nix
   ];
+
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
@@ -114,5 +114,5 @@
     kdePackages.partitionmanager
   ];
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
 }

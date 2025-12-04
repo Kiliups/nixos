@@ -1,6 +1,5 @@
-{ pkgs, lib, ... }: {
-  stylix.targets.vscode.enable = false;
-
+{ pkgs, lib, ... }:
+{
   programs.vscode = {
     enable = true;
     profiles.default.extensions = with pkgs.vscode-extensions; [
@@ -32,9 +31,7 @@
   home.activation.vscode-settings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p ~/.config/Code/User
     if [ ! -f ~/.config/Code/User/settings.json ]; then
-      cp ${
-        ./../../config/vscode/settings.json
-      } ~/.config/Code/User/settings.json
+      cp ${./../../config/vscode/settings.json} ~/.config/Code/User/settings.json
       chmod 644 ~/.config/Code/User/settings.json
     fi
   '';

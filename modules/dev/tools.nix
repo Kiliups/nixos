@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   home.packages = with pkgs; [
     # tools
     code-cursor
@@ -32,7 +33,7 @@
     gdb
 
     # nix
-    nixfmt-classic
+    nixfmt
     nixd
 
     # mobile
