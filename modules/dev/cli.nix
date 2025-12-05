@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, pomodoro, ... }:
+{
 
   home.sessionVariables = {
     TERMINAL = "ghostty";
@@ -23,8 +24,7 @@
       settings = {
         # uses catppuccin macchiato colors
         add_newline = false;
-        format =
-          "[$username](bold #8aadf4) in [$directory](bold #a6da95)$git_branch $character";
+        format = "[$username](bold #8aadf4) in [$directory](bold #a6da95)$git_branch $character";
 
         username = {
           show_always = true;
@@ -37,7 +37,9 @@
           truncate_to_repo = false;
         };
 
-        git_branch = { format = " on [\\[$branch\\]](bold #c6a0f6)"; };
+        git_branch = {
+          format = " on [\\[$branch\\]](bold #c6a0f6)";
+        };
 
         character = {
           success_symbol = "[>](bold #a6da95)";
@@ -77,6 +79,7 @@
     eza
     fd
     tmux
+    pomodoro.packages.x86_64-linux.default
   ];
 
   xdg.configFile."ghostty/config".text = ''

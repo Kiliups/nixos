@@ -16,6 +16,10 @@
         home-manager.follows = "home-manager";
       };
     };
+    pomodoro = {
+      url = "github:Kiliups/pomodoro-cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -24,6 +28,7 @@
       home-manager,
       stylix,
       zen-browser,
+      pomodoro,
       ...
     }:
     {
@@ -40,6 +45,9 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               backupFileExtension = "backup";
+              extraSpecialArgs = {
+                inherit pomodoro;
+              };
 
               users.kiliups = {
                 imports = [
