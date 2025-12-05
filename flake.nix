@@ -44,7 +44,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              backupFileExtension = "backup";
+              backupFileExtension = "backup-" + builtins.toString builtins.currentTime;
               extraSpecialArgs = {
                 inherit pomodoro;
               };

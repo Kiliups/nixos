@@ -37,6 +37,7 @@
     efiSupport = true;
     useOSProber = true;
     theme = ./config/catppuccin-macchiato-grub-theme;
+    splashImage = ./config/catppuccin-macchiato-grub-theme/background.png;
   };
   boot.loader.efi.canTouchEfiVariables = true;
 
