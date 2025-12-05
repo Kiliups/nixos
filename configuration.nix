@@ -9,6 +9,9 @@
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     image = ./config/wallpaper.png;
     polarity = "dark";
+    targets = {
+      grub.enable = false;
+    };
   };
 
   nix.settings = {
@@ -33,6 +36,7 @@
     device = "nodev";
     efiSupport = true;
     useOSProber = true;
+    theme = ./config/catppuccin-macchiato-grub-theme;
   };
   boot.loader.efi.canTouchEfiVariables = true;
 
