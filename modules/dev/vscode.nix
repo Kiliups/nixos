@@ -2,10 +2,10 @@
 {
   programs.vscode = {
     enable = true;
+    mutableExtensionsDir = true;
     profiles.default.extensions = with pkgs.vscode-extensions; [
       esbenp.prettier-vscode
       eamodio.gitlens
-      github.copilot
       github.copilot-chat
       vscjava.vscode-java-pack
       svelte.svelte-vscode
@@ -25,6 +25,7 @@
       vscodevim.vim
       tauri-apps.tauri-vscode
       catppuccin.catppuccin-vsc
+      kilocode.kilo-code
     ];
   };
 
