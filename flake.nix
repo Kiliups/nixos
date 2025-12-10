@@ -16,10 +16,6 @@
         home-manager.follows = "home-manager";
       };
     };
-    pomodoro = {
-      url = "github:Kiliups/pomodoro-cli";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -33,7 +29,6 @@
       home-manager,
       stylix,
       zen-browser,
-      pomodoro,
       plasma-manager,
       ...
     }:
@@ -51,10 +46,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               backupFileExtension = "backup-" + builtins.toString builtins.currentTime;
-              extraSpecialArgs = {
-                inherit pomodoro;
-              };
-
+             
               users.kiliups = {
                 imports = [
                   plasma-manager.homeModules.plasma-manager
