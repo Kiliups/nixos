@@ -24,7 +24,6 @@
       ms-vscode.cpptools
       vscodevim.vim
       tauri-apps.tauri-vscode
-      catppuccin.catppuccin-vsc
       kilocode.kilo-code
     ];
   };

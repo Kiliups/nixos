@@ -11,11 +11,11 @@
   home.stateVersion = "25.11";
 
   stylix = {
-    autoEnable = false;
     targets = {
-      zen-browser.enable = true;
       zen-browser.profileNames = [ "Default Profile" ];
-      gtk.enable = true;
+      vscode.enable = false;
+      vim.enable = false;
+      neovim.enable = false;
     };
   };
 

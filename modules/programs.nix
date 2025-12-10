@@ -19,10 +19,6 @@
     localsend
   ];
 
-  services.syncthing = {
-    enable = true;
-  };
-
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {

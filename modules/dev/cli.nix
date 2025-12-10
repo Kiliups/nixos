@@ -1,4 +1,4 @@
-{ pkgs, pomodoro, ... }:
+{ pkgs, ... }:
 {
 
   home.sessionVariables = {
@@ -79,7 +79,6 @@
     eza
     fd
     tmux
-    pomodoro.packages.x86_64-linux.default
   ];
 
   xdg.configFile."ghostty/config".text = ''
