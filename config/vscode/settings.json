@@ -6,6 +6,7 @@
   "workbench.colorTheme": "Catppuccin Macchiato",
   "workbench.iconTheme": "catppuccin-macchiato",
   "files.autoSave": "afterDelay",
+  "editor.wordWrap": "on",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
@@ -47,6 +48,4 @@
   "nix.enableLanguageServer": true,
   "nix.serverPath": "nixd",
   "nix.formatterPath": "nixfmt",
-  "ltex.language": "de-DE",
-  "ltex.enabled": ["latex", "markdown"]
-}
+  }

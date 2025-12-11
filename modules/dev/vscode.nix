@@ -13,7 +13,6 @@
       dart-code.flutter
       jnoortheen.nix-ide
       ms-vscode-remote.remote-ssh
-      ltex-plus.vscode-ltex-plus
       james-yu.latex-workshop
       tomoki1207.pdf
       streetsidesoftware.code-spell-checker

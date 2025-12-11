@@ -16,6 +16,7 @@
       vscode.enable = false;
       vim.enable = false;
       neovim.enable = false;
+      qt.enable = false;
     };
   };
 
