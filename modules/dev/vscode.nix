@@ -1,5 +1,6 @@
 { pkgs, lib, ... }:
 {
+  # TODO fix scaling issues
   programs.vscode = {
     enable = true;
     mutableExtensionsDir = true;
