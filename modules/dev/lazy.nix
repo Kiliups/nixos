@@ -1,5 +1,6 @@
 { pkgs, lib, ... }:
 {
+  # TODO fix issues with lazy.nvim and nix
   programs.neovim = {
     enable = true;
     defaultEditor = true;
