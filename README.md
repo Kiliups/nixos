@@ -72,7 +72,6 @@ Personal NixOS configuration with Home Manager integration.
 - **Catppuccin Macchiato**: Applied system-wide via Stylix
 - **GRUB Theme**: Catppuccin Macchiato bootloader theme
 
-## 🐛 Known Issues
 
 ## 🔄 Updating
 
