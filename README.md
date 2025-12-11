@@ -25,6 +25,8 @@ Personal NixOS configuration with Home Manager integration.
   - Shortcuts are configured but some have overlaping system shortcuts which need to be overwritten 
 - [ ] **KDE Session Management**: 
   - Configure session restore behavior in System Settings
+- [ ] **VsCode** scaling: set x11 scale to systems settings in kde settings
+- [ ] **eduroam** in ./config/eduroam there are two scripts to add eduroam but you need to download p12 from https://www.easyroam.de/home and extract it using the extract script in the folder
 
 ## 🗂️ Structure
 
@@ -84,13 +86,3 @@ nrsu
 ```bash
 nrs
 ```
-
-## 📝 Notes
-- Configuration uses NixOS 25.11
-
-## 🆘 Troubleshooting
-
-### Theme Issues
-- Ensure Stylix is properly configured in [`home.nix`](home.nix:13)
-- For VS Code, theme is manually configured in [`config/vscode/settings.json`](config/vscode/settings.json:6)
-
