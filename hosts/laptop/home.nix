@@ -10,6 +10,10 @@
   home.username = "user";
   home.homeDirectory = "/home/user";
 
+  home.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+  };
+
   stylix = {
     targets = {
       zen-browser.profileNames = [ "Default Profile" ];
