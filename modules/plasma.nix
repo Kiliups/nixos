@@ -2,6 +2,7 @@
 {
   programs.plasma = {
     enable = true;
+    # todo for fully declaritiv config overrideConfig = true;
 
     shortcuts = {
       # Window Management
@@ -49,6 +50,14 @@
 
       "systemsettings.desktop" = {
         "_launch" = "Meta+I"; # System Settings
+      };
+    };
+
+    configFile = {
+      ksmserverrc = {
+        General = {
+          loginMode = "emptySession";
+        };
       };
     };
   };

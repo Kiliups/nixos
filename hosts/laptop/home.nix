@@ -3,7 +3,7 @@
   imports = [
     ../../modules/dev
     ../../modules/programs.nix
-    ../../modules/shortcuts.nix
+    ../../modules/plasma.nix
   ];
 
   home.stateVersion = "25.11";
