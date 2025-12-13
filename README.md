@@ -25,7 +25,6 @@ Personal NixOS configuration with Home Manager integration.
   - Shortcuts are configured but some have overlaping system shortcuts which need to be overwritten 
 - [ ] **KDE Session Management**: 
   - Configure session restore behavior in System Settings
-- [ ] **VsCode** scaling: set x11 scale to systems settings in kde settings
 - [ ] **eduroam** in ./config/eduroam there are two scripts to add eduroam but you need to download p12 from https://www.easyroam.de/home and extract it using the extract script in the folder
 
 ## 🗂️ Structure
@@ -57,7 +56,6 @@ Personal NixOS configuration with Home Manager integration.
   - Go, Rust, Python, C++
   - Nix IDE support
   - Svelte, Dart/Flutter
-  - LaTeX, Markdown
   - Git integration (GitLens)
   - GitHub Copilot
   - Kilo Code
