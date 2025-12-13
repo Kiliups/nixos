@@ -13,7 +13,10 @@
         alias nx='code ~/.config/nixos'
         alias ls='eza -lh --group-directories-first --icons=auto'
         alias neofetch='fastfetch'
-        alias nrs='(cd ~/.config/nixos && git add -A && sudo nixos-rebuild switch --flake .#kiliups-nixos --impure)'
+        nrs() {
+          local host="''${1:-$(hostname)}"
+          (cd ~/.config/nixos && git add -A && sudo nixos-rebuild switch --flake .#''${host} --impure)
+        }
         alias nfu='sudo nix flake update --flake ~/.config/nixos'
         alias nrsu='nfu && nrs'
       '';
@@ -22,6 +25,7 @@
     starship = {
       enable = true;
       settings = {
+        # todo indicate nix shell
         # uses catppuccin macchiato colors
         add_newline = false;
         format = "[$username](bold #8aadf4) in [$directory](bold #a6da95)$git_branch $character";

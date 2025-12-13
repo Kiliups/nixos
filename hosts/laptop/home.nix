@@ -1,14 +1,14 @@
 { ... }:
 {
   imports = [
-    ./modules/dev
-    ./modules/programs.nix
-    ./modules/shortcuts.nix
+    ../../modules/dev
+    ../../modules/programs.nix
+    ../../modules/shortcuts.nix
   ];
 
+  home.stateVersion = "25.11";
   home.username = "kiliups";
   home.homeDirectory = "/home/kiliups";
-  home.stateVersion = "25.11";
 
   stylix = {
     targets = {
@@ -20,7 +20,5 @@
     };
   };
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
   programs.home-manager.enable = true;
 }
