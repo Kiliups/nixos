@@ -34,29 +34,54 @@
     }:
     {
 
-      nixosConfigurations.user-nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          stylix.nixosModules.stylix
-          ./configuration.nix
+      nixosConfigurations = {
+        laptop = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            stylix.nixosModules.stylix
+            ./hosts/laptop/configuration.nix
 
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "backup-" + builtins.toString builtins.currentTime;
-             
-              users.user = {
-                imports = [
-                  plasma-manager.homeModules.plasma-manager
-                  zen-browser.homeModules.default
-                  ./home.nix
-                ];
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup-" + builtins.toString builtins.currentTime;
+
+                users.user = {
+                  imports = [
+                    plasma-manager.homeModules.plasma-manager
+                    zen-browser.homeModules.default
+                    ./hosts/laptop/home.nix
+                  ];
+                };
               };
-            };
-          }
-        ];
+            }
+          ];
+        };
+        workstation = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            stylix.nixosModules.stylix
+            ./hosts/workstation/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup-" + builtins.toString builtins.currentTime;
+
+                users.user = {
+                  imports = [
+                    plasma-manager.homeModules.plasma-manager
+                    zen-browser.homeModules.default
+                    ./hosts/workstation/home.nix
+                  ];
+                };
+              };
+            }
+          ];
+        };
       };
     };
 }
