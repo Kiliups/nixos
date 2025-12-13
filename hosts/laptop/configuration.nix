@@ -7,4 +7,5 @@
 
   networking.hostName = "laptop";
 
+  services.fwupd.enable = true;
 }
