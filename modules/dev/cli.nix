@@ -13,7 +13,7 @@
         alias nx='code ~/.config/nixos'
         alias ls='eza -lh --group-directories-first --icons=auto'
         alias neofetch='fastfetch'
-        alias nrs='sudo nixos-rebuild switch --flake ~/.config/nixos#user-nixos --impure'
+        alias nrs='(cd ~/.config/nixos && git add -A && sudo nixos-rebuild switch --flake .#user-nixos --impure)'
         alias nfu='sudo nix flake update --flake ~/.config/nixos'
         alias nrsu='nfu && nrs'
       '';
