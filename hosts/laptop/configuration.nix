@@ -7,5 +7,6 @@
 
   networking.hostName = "rivendell";
 
+  services.fprintd.enable = true;
   services.fwupd.enable = true;
 }
