@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  imports = [
+    ./starship.nix
+  ];
 
   home.sessionVariables = {
     TERMINAL = "ghostty";
@@ -20,36 +23,6 @@
         alias nfu='sudo nix flake update --flake ~/.config/nixos'
         alias nrsu='nfu && nrs'
       '';
-    };
-
-    starship = {
-      enable = true;
-      settings = {
-        # todo indicate nix shell
-        # uses catppuccin macchiato colors
-        add_newline = false;
-        format = "[$username](bold #8aadf4) in [$directory](bold #a6da95)$git_branch $character";
-
-        username = {
-          show_always = true;
-          format = "$user";
-        };
-
-        directory = {
-          format = "$path";
-          truncation_length = 3;
-          truncate_to_repo = false;
-        };
-
-        git_branch = {
-          format = " on [\\[$branch\\]](bold #c6a0f6)";
-        };
-
-        character = {
-          success_symbol = "[>](bold #a6da95)";
-          error_symbol = "[>](bold #ed8796)";
-        };
-      };
     };
 
     fzf = {
