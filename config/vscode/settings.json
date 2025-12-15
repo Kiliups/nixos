@@ -7,6 +7,7 @@
   "workbench.iconTheme": "catppuccin-macchiato",
   "files.autoSave": "afterDelay",
   "editor.wordWrap": "on",
+  "editor.lineNumbers": "relative",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
@@ -47,5 +48,5 @@
 
   "nix.enableLanguageServer": true,
   "nix.serverPath": "nixd",
-  "nix.formatterPath": "nixfmt",
-  }
+  "nix.formatterPath": "nixfmt"
+}
