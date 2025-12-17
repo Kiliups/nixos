@@ -16,6 +16,16 @@
   # nix settings
   nixpkgs.config.allowUnfree = true;
 
+  system.autoUpgrade = {
+    enable = true;
+    dates = "daily";
+    flake = "~/.config/nixos";
+    flags = [
+      "--recreate-lock-file"
+    ];
+    allowReboot = false;
+  };
+
   nix.settings = {
     experimental-features = [
       "nix-command"
