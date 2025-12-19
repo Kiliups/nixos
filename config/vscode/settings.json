@@ -6,7 +6,6 @@
   "workbench.colorTheme": "Catppuccin Macchiato",
   "workbench.iconTheme": "catppuccin-macchiato",
   "files.autoSave": "afterDelay",
-  "editor.wordWrap": "on",
   "editor.lineNumbers": "relative",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
@@ -38,7 +37,9 @@
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 100
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -48,7 +49,14 @@
     "editor.defaultFormatter": "jnoortheen.nix-ide",
     "editor.formatOnSave": true
   },
-
+  "[markdown]": {
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 100
+  },
+  "[latex]": {
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 100
+  },
   "nix.enableLanguageServer": true,
   "nix.serverPath": "nixd",
   "nix.formatterPath": "nixfmt"

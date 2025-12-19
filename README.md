@@ -1,86 +1,36 @@
 # NixOS Configuration
 
-Personal NixOS configuration with Home Manager integration.
+Personal Nixos configuration with homemanager for my personal gaming machine and my notebook
 
-## 🚀 Quick Start
+# Quickstart
 
-### Initial Setup
+1. enable flake support in your configuration.nix:
 
-1. Clone this repository to `~/.config/nixos`
-2. Build the system configuration:
-   ```bash
-   sudo nixos-rebuild switch --flake .#
-   ```
+   - nix.settings.experimental-features = ["nix-command" "flakes"];
+   - sudo nixos-rebuild switch
 
-## 📋 Post-Installation Checklist
+2. Clone this repository to `~/.config/nixos`
+3. run sudo nixos-rebuild switch --flake .#{hostname} --impure // hostname is minas-tirth or laptop defined in the configuration.nix files
 
-### Required Manual Configuration
+# Manual Configuration
 
-- [ ] **Nextcloud Client**: Configure Nextcloud desktop client with your account credentials
-- [ ] **Thunderbird**: Set up email accounts and preferences in Thunderbird
-- [ ] **VS Code Catppuccin Theme**: 
-  - The Catppuccin theme is not managed via Nix because it showed errors
-  - may be fix in the future by installing catpuccin nix
-- [ ] **KDE Shortcuts**: 
-  - Shortcuts are configured but some have overlaping system shortcuts which need to be overwritten 
-- [ ] **KDE Session Management**: 
-  - Configure session restore behavior in System Settings
+- [ ] **VsCode**: Catppuccin Theme extension must be manually installed due to errors
+- [ ] **KDE Shortcuts**: Shortcuts are configured but some have overlaping system shortcuts which need to be overwritten
 - [ ] **eduroam** in ./config/eduroam there are two scripts to add eduroam but you need to download p12 from https://www.easyroam.de/home and extract it using the extract script in the folder
 
-## 🗂️ Structure
-
-```
-.
-├── configuration.nix      # System-level NixOS configuration
-├── flake.nix             # Flake configuration with inputs/outputs
-├── home.nix              # Home Manager entry point
-├── config/               # Application configurations
-│   ├── nvim/            # Neovim configuration
-│   ├── vscode/          # VS Code settings
-│   └── wallpaper.png    # Desktop wallpaper
-└── modules/             # Modular configuration files
-    ├── programs.nix     # System programs
-    ├── shortcuts.nix    # Keyboard shortcuts
-    └── dev/            # Development tools
-        ├── cli.nix      # CLI tools
-        ├── vscode.nix   # VS Code extensions
-        ├── lazy.nix     # LazyVim setup
-        └── tools.nix    # Development utilities
-```
-
-## 🔧 Configuration Highlights
-
-### Development Environment
-
-- **VS Code**: Configured with extensions for:
-  - Go, Rust, Python, C++
-  - Nix IDE support
-  - Svelte, Dart/Flutter
-  - Git integration (GitLens)
-  - GitHub Copilot
-  - Kilo Code
-
-- **Neovim**: LazyVim-based configuration with modern plugins
-
-- **CLI Tools**: Comprehensive development toolchain including:
-  - Git, Docker
-  - Modern shell utilities (eza, bat, ripgrep, etc.)
-  - Development languages and toolchains
-
-### Theming
+# Theming
 
 - **Catppuccin Macchiato**: Applied system-wide via Stylix
 - **GRUB Theme**: Catppuccin Macchiato bootloader theme
+- **VSCode**: Catppuccin Theme extension must be installed manually
 
+# Updating
 
-## 🔄 Updating
-
-### Update Flake Inputs
-```bash
-nrsu
-```
-
-### Rebuild System
-```bash
-nrs
-```
+1. update
+   ```bash
+   nrsu
+   ```
+2. rebuild
+   ```bash
+   nrs
+   ```
