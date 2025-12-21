@@ -20,6 +20,7 @@
       golang.go
       rust-lang.rust-analyzer
       ms-python.python
+      ms-toolsai.datawrangler
       ms-vscode.cpptools
       vscodevim.vim
       tauri-apps.tauri-vscode
