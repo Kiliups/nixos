@@ -17,6 +17,7 @@
     audacity
     eduvpn-client
     localsend
+    onlyoffice-desktopeditors
   ];
 
   xdg.mimeApps = {

@@ -1,6 +1,5 @@
 { pkgs, lib, ... }:
 {
-  # TODO fix issues with lazy.nvim and nix
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -21,6 +20,13 @@
       jdt-language-server
       pyright
     ];
+  };
+
+  # Provide lazy.nvim from the Nix store so Neovim can require it without
+  # cloning into the read-only home-manager tree.
+  xdg.dataFile."nvim/lazy/lazy.nvim" = {
+    source = pkgs.vimPlugins.lazy-nvim;
+    recursive = true;
   };
 
   home.file.".config/nvim" = {
