@@ -1,9 +1,14 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
 {
   programs.vscode = {
     enable = true;
     mutableExtensionsDir = true;
-    profiles.default.extensions = with pkgs.vscode-extensions; [
+    package = pkgs-unstable.vscode;
+    profiles.default.extensions = with pkgs-unstable.vscode-extensions; [
       esbenp.prettier-vscode
       eamodio.gitlens
       github.copilot-chat
@@ -13,10 +18,7 @@
       dart-code.flutter
       jnoortheen.nix-ide
       ms-vscode-remote.remote-ssh
-      james-yu.latex-workshop
       tomoki1207.pdf
-      streetsidesoftware.code-spell-checker
-      streetsidesoftware.code-spell-checker-german
       golang.go
       rust-lang.rust-analyzer
       ms-python.python
@@ -25,16 +27,73 @@
       vscodevim.vim
       tauri-apps.tauri-vscode
       kilocode.kilo-code
+      ltex-plus.vscode-ltex-plus
+      myriad-dreamin.tinymist
     ];
+    profiles.default.userSettings = {
+      "catppuccin.accentColor" = "lavender";
+      "editor.semanticHighlighting.enabled" = true;
+      "terminal.integrated.minimumContrastRatio" = 1;
+      "window.titleBarStyle" = "custom";
+      "workbench.colorTheme" = "Catppuccin Macchiato";
+      "workbench.iconTheme" = "catppuccin-macchiato";
+      "files.autoSave" = "afterDelay";
+      "editor.lineNumbers" = "relative";
+      "editor.defaultFormatter" = "esbenp.prettier-vscode";
+      "editor.formatOnSave" = true;
+      "editor.codeActionsOnSave" = {
+        "source.organizeImports" = "explicit";
+      };
+      "editor.formatOnPaste" = true;
+      "files.associations" = {
+        "*.svx" = "markdown";
+      };
+      "[go]" = {
+        "editor.defaultFormatter" = "golang.go";
+        "editor.formatOnSave" = true;
+        "editor.codeActionsOnSave" = {
+          "source.organizeImports" = "explicit";
+        };
+      };
+      "go.lintTool" = "golangci-lint";
+      "go.lintOnSave" = "package";
+      "go.lintFlags" = [ "--fast" ];
+      "go.useLanguageServer" = true;
+      "[rust]" = {
+        "editor.defaultFormatter" = "rust-lang.rust-analyzer";
+        "editor.formatOnSave" = true;
+      };
+      "[svelte]" = {
+        "editor.defaultFormatter" = "svelte.svelte-vscode";
+        "editor.formatOnSave" = true;
+      };
+      "[json]" = {
+        "editor.defaultFormatter" = "esbenp.prettier-vscode";
+        "editor.formatOnSave" = true;
+        "editor.wordWrap" = "bounded";
+        "editor.wordWrapColumn" = 100;
+      };
+      "[jsonc]" = {
+        "editor.defaultFormatter" = "esbenp.prettier-vscode";
+        "editor.formatOnSave" = true;
+      };
+      "[nix]" = {
+        "editor.defaultFormatter" = "jnoortheen.nix-ide";
+        "editor.formatOnSave" = true;
+      };
+      "[markdown]" = {
+        "editor.wordWrap" = "bounded";
+        "editor.wordWrapColumn" = 100;
+      };
+      "[typst]" = {
+        "editor.formatOnSave" = true;
+      };
+      "nix.enableLanguageServer" = true;
+      "nix.serverPath" = "nixd";
+      "nix.formatterPath" = "nixfmt";
+      "ltex.ltex-ls.path" = "${pkgs.ltex-ls-plus}";
+    };
   };
-
-  home.activation.vscode-settings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    mkdir -p ~/.config/Code/User
-    if [ ! -f ~/.config/Code/User/settings.json ]; then
-      cp ${./../../config/vscode/settings.json} ~/.config/Code/User/settings.json
-      chmod 644 ~/.config/Code/User/settings.json
-    fi
-  '';
 
   xdg.dataFile."kio/servicemenus/vscode-here.desktop".text = ''
     [Desktop Entry]
