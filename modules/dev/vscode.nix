@@ -92,6 +92,7 @@
       "nix.serverPath" = "nixd";
       "nix.formatterPath" = "nixfmt";
       "ltex.ltex-ls.path" = "${pkgs.ltex-ls-plus}";
+      "ltex.language" = "de-DE";
     };
   };
 
