@@ -39,9 +39,12 @@
     # mobile
     flutter
 
-    # latex
-    miktex
-    ltex-ls
+    # language tool 
+    ltex-ls-plus
+
+    # typst
+    typst
+    tinymist
 
     #docker
     docker
