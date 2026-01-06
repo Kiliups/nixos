@@ -2,6 +2,7 @@
 {
   imports = [
     ../common.nix
+    ../../modules/dev/vm.nix
     /etc/nixos/hardware-configuration.nix
   ];
 
