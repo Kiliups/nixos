@@ -1,8 +1,76 @@
 {
   pkgs,
   pkgs-unstable,
+  lib,
+  config,
   ...
 }:
+let
+  vsCodeSettings = {
+    "catppuccin.accentColor" = "lavender";
+    "editor.semanticHighlighting.enabled" = true;
+    "terminal.integrated.minimumContrastRatio" = 1;
+    "window.titleBarStyle" = "custom";
+    "workbench.colorTheme" = "Catppuccin Macchiato";
+    "workbench.iconTheme" = "catppuccin-macchiato";
+    "files.autoSave" = "afterDelay";
+    "editor.lineNumbers" = "relative";
+    "editor.defaultFormatter" = "esbenp.prettier-vscode";
+    "editor.formatOnSave" = true;
+    "editor.codeActionsOnSave" = {
+      "source.organizeImports" = "explicit";
+    };
+    "editor.formatOnPaste" = true;
+    "files.associations" = {
+      "*.svx" = "markdown";
+    };
+    "[go]" = {
+      "editor.defaultFormatter" = "golang.go";
+      "editor.formatOnSave" = true;
+      "editor.codeActionsOnSave" = {
+        "source.organizeImports" = "explicit";
+      };
+    };
+    "go.lintTool" = "golangci-lint";
+    "go.lintOnSave" = "package";
+    "go.lintFlags" = [ "--fast" ];
+    "go.useLanguageServer" = true;
+    "[rust]" = {
+      "editor.defaultFormatter" = "rust-lang.rust-analyzer";
+      "editor.formatOnSave" = true;
+    };
+    "[svelte]" = {
+      "editor.defaultFormatter" = "svelte.svelte-vscode";
+      "editor.formatOnSave" = true;
+    };
+    "[json]" = {
+      "editor.defaultFormatter" = "esbenp.prettier-vscode";
+      "editor.formatOnSave" = true;
+      "editor.wordWrap" = "bounded";
+      "editor.wordWrapColumn" = 100;
+    };
+    "[jsonc]" = {
+      "editor.defaultFormatter" = "esbenp.prettier-vscode";
+      "editor.formatOnSave" = true;
+    };
+    "[nix]" = {
+      "editor.defaultFormatter" = "jnoortheen.nix-ide";
+      "editor.formatOnSave" = true;
+    };
+    "[markdown]" = {
+      "editor.wordWrap" = "bounded";
+      "editor.wordWrapColumn" = 100;
+    };
+    "[typst]" = {
+      "editor.formatOnSave" = true;
+    };
+    "nix.enableLanguageServer" = true;
+    "nix.serverPath" = "nixd";
+    "nix.formatterPath" = "nixfmt";
+    "ltex.ltex-ls.path" = "${pkgs.ltex-ls-plus}";
+    "ltex.language" = "de-DE";
+  };
+in
 {
   programs.vscode = {
     enable = true;
@@ -30,71 +98,15 @@
       ltex-plus.vscode-ltex-plus
       myriad-dreamin.tinymist
     ];
-    profiles.default.userSettings = {
-      "catppuccin.accentColor" = "lavender";
-      "editor.semanticHighlighting.enabled" = true;
-      "terminal.integrated.minimumContrastRatio" = 1;
-      "window.titleBarStyle" = "custom";
-      "workbench.colorTheme" = "Catppuccin Macchiato";
-      "workbench.iconTheme" = "catppuccin-macchiato";
-      "files.autoSave" = "afterDelay";
-      "editor.lineNumbers" = "relative";
-      "editor.defaultFormatter" = "esbenp.prettier-vscode";
-      "editor.formatOnSave" = true;
-      "editor.codeActionsOnSave" = {
-        "source.organizeImports" = "explicit";
-      };
-      "editor.formatOnPaste" = true;
-      "files.associations" = {
-        "*.svx" = "markdown";
-      };
-      "[go]" = {
-        "editor.defaultFormatter" = "golang.go";
-        "editor.formatOnSave" = true;
-        "editor.codeActionsOnSave" = {
-          "source.organizeImports" = "explicit";
-        };
-      };
-      "go.lintTool" = "golangci-lint";
-      "go.lintOnSave" = "package";
-      "go.lintFlags" = [ "--fast" ];
-      "go.useLanguageServer" = true;
-      "[rust]" = {
-        "editor.defaultFormatter" = "rust-lang.rust-analyzer";
-        "editor.formatOnSave" = true;
-      };
-      "[svelte]" = {
-        "editor.defaultFormatter" = "svelte.svelte-vscode";
-        "editor.formatOnSave" = true;
-      };
-      "[json]" = {
-        "editor.defaultFormatter" = "esbenp.prettier-vscode";
-        "editor.formatOnSave" = true;
-        "editor.wordWrap" = "bounded";
-        "editor.wordWrapColumn" = 100;
-      };
-      "[jsonc]" = {
-        "editor.defaultFormatter" = "esbenp.prettier-vscode";
-        "editor.formatOnSave" = true;
-      };
-      "[nix]" = {
-        "editor.defaultFormatter" = "jnoortheen.nix-ide";
-        "editor.formatOnSave" = true;
-      };
-      "[markdown]" = {
-        "editor.wordWrap" = "bounded";
-        "editor.wordWrapColumn" = 100;
-      };
-      "[typst]" = {
-        "editor.formatOnSave" = true;
-      };
-      "nix.enableLanguageServer" = true;
-      "nix.serverPath" = "nixd";
-      "nix.formatterPath" = "nixfmt";
-      "ltex.ltex-ls.path" = "${pkgs.ltex-ls-plus}";
-      "ltex.language" = "de-DE";
-    };
   };
+
+  # This allows VS Code to edit it, while rebuild overwrites with defaults
+  home.activation.writeVscodeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p "${config.home.homeDirectory}/.config/Code/User"
+        cat > "${config.home.homeDirectory}/.config/Code/User/settings.json" << 'EOF'
+        ${builtins.toJSON vsCodeSettings}
+    EOF
+  '';
 
   xdg.dataFile."kio/servicemenus/vscode-here.desktop".text = ''
     [Desktop Entry]

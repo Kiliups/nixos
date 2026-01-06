@@ -18,6 +18,7 @@
     eduvpn-client
     localsend
     onlyoffice-desktopeditors
+    zoom-us
   ];
 
   xdg.mimeApps = {
