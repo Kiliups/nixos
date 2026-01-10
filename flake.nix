@@ -86,5 +86,12 @@
           ];
         };
       };
+
+      templates = {
+        python = {
+          path = ./templates/python;
+          description = "Python development environment with venv support";
+        };
+      };
     };
 }
