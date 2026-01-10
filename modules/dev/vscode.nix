@@ -63,6 +63,11 @@ let
     "[typst]" = {
       "editor.formatOnSave" = true;
     };
+    "[python]" = {
+      "editor.formatOnSave" = true;
+      "editor.defaultFormatter" = "ms-python.black-formatter";
+      "source.organizeImports" = "explicit";
+    };
     "nix.enableLanguageServer" = true;
     "nix.serverPath" = "nixd";
     "nix.formatterPath" = "nixfmt";
@@ -88,6 +93,7 @@ in
       golang.go
       rust-lang.rust-analyzer
       ms-python.python
+      ms-python.black-formatter
       ms-toolsai.datawrangler
       ms-vscode.cpptools
       vscodevim.vim
