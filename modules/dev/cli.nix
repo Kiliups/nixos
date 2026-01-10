@@ -7,6 +7,7 @@
   home.sessionVariables = {
     TERMINAL = "ghostty";
     JAVA_HOME = "${pkgs.jdk21}/lib/openjdk";
+    NIX = "$HOME/.config/nixos";
   };
 
   programs = {
