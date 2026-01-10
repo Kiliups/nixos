@@ -7,6 +7,7 @@
     obsidian
     spotify
     discord
+    bitwarden-desktop
     gimp
     chromium
     zapzap

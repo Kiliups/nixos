@@ -2,8 +2,6 @@
 {
   home.packages = with pkgs; [
     # tools
-    code-cursor
-    zed-editor
     postman
     dbeaver-bin
     opencode
@@ -39,7 +37,7 @@
     # mobile
     flutter
 
-    # language tool 
+    # language tool
     ltex-ls-plus
 
     # typst

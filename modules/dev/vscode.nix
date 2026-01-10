@@ -1,6 +1,5 @@
 {
   pkgs,
-  pkgs-unstable,
   lib,
   config,
   ...
@@ -68,15 +67,14 @@ let
     "nix.serverPath" = "nixd";
     "nix.formatterPath" = "nixfmt";
     "ltex.ltex-ls.path" = "${pkgs.ltex-ls-plus}";
-    "ltex.language" = "de-DE";
+    "ltex.language" = "en-US";
   };
 in
 {
   programs.vscode = {
     enable = true;
     mutableExtensionsDir = true;
-    package = pkgs-unstable.vscode;
-    profiles.default.extensions = with pkgs-unstable.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       esbenp.prettier-vscode
       eamodio.gitlens
       github.copilot-chat
