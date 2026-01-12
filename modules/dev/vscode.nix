@@ -6,23 +6,28 @@
 }:
 let
   vsCodeSettings = {
+    # theme
     "catppuccin.accentColor" = "lavender";
-    "editor.semanticHighlighting.enabled" = true;
-    "terminal.integrated.minimumContrastRatio" = 1;
-    "window.titleBarStyle" = "custom";
     "workbench.colorTheme" = "Catppuccin Macchiato";
     "workbench.iconTheme" = "catppuccin-macchiato";
-    "files.autoSave" = "afterDelay";
+
+    # editor general
+    "editor.semanticHighlighting.enabled" = true;
     "editor.lineNumbers" = "relative";
     "editor.defaultFormatter" = "esbenp.prettier-vscode";
     "editor.formatOnSave" = true;
+    "editor.formatOnPaste" = true;
     "editor.codeActionsOnSave" = {
       "source.organizeImports" = "explicit";
     };
-    "editor.formatOnPaste" = true;
+
+    # files
+    "files.autoSave" = "afterDelay";
     "files.associations" = {
       "*.svx" = "markdown";
     };
+
+    # go
     "[go]" = {
       "editor.defaultFormatter" = "golang.go";
       "editor.formatOnSave" = true;
@@ -34,14 +39,20 @@ let
     "go.lintOnSave" = "package";
     "go.lintFlags" = [ "--fast" ];
     "go.useLanguageServer" = true;
+
+    # rust
     "[rust]" = {
       "editor.defaultFormatter" = "rust-lang.rust-analyzer";
       "editor.formatOnSave" = true;
     };
+
+    # typescript/svelte
     "[svelte]" = {
       "editor.defaultFormatter" = "svelte.svelte-vscode";
       "editor.formatOnSave" = true;
     };
+
+    # json
     "[json]" = {
       "editor.defaultFormatter" = "esbenp.prettier-vscode";
       "editor.formatOnSave" = true;
@@ -52,25 +63,35 @@ let
       "editor.defaultFormatter" = "esbenp.prettier-vscode";
       "editor.formatOnSave" = true;
     };
+
+    # nix
     "[nix]" = {
       "editor.defaultFormatter" = "jnoortheen.nix-ide";
       "editor.formatOnSave" = true;
     };
-    "[markdown]" = {
-      "editor.wordWrap" = "bounded";
-      "editor.wordWrapColumn" = 100;
-    };
-    "[typst]" = {
-      "editor.formatOnSave" = true;
-    };
+    "nix.enableLanguageServer" = true;
+    "nix.serverPath" = "nixd";
+    "nix.formatterPath" = "nixfmt";
+
+    # python
     "[python]" = {
       "editor.formatOnSave" = true;
       "editor.defaultFormatter" = "ms-python.black-formatter";
       "source.organizeImports" = "explicit";
     };
-    "nix.enableLanguageServer" = true;
-    "nix.serverPath" = "nixd";
-    "nix.formatterPath" = "nixfmt";
+
+    # typst
+    "[typst]" = {
+      "editor.formatOnSave" = true;
+    };
+
+    # markdown
+    "[markdown]" = {
+      "editor.wordWrap" = "bounded";
+      "editor.wordWrapColumn" = 100;
+    };
+
+    # ltex (grammar/spell check)
     "ltex.ltex-ls.path" = "${pkgs.ltex-ls-plus}";
     "ltex.language" = "en-US";
   };
@@ -78,28 +99,45 @@ in
 {
   programs.vscode = {
     enable = true;
-    mutableExtensionsDir = true;
     profiles.default.extensions = with pkgs.vscode-extensions; [
+      # general/editor
       esbenp.prettier-vscode
-      eamodio.gitlens
       github.copilot-chat
-      vscjava.vscode-java-pack
-      svelte.svelte-vscode
-      dart-code.dart-code
-      dart-code.flutter
-      jnoortheen.nix-ide
       ms-vscode-remote.remote-ssh
       tomoki1207.pdf
+      vscodevim.vim
+      ltex-plus.vscode-ltex-plus
+
+      # java
+      vscjava.vscode-java-pack
+
+      # typescript/svelte
+      svelte.svelte-vscode
+
+      # dart/flutter
+      dart-code.dart-code
+      dart-code.flutter
+
+      # nix
+      jnoortheen.nix-ide
+
+      # go
       golang.go
+
+      # rust
       rust-lang.rust-analyzer
+      tauri-apps.tauri-vscode
+
+      # python
       ms-python.python
       ms-python.black-formatter
       ms-toolsai.datawrangler
+      ms-toolsai.jupyter
+
+      # c/c++
       ms-vscode.cpptools
-      vscodevim.vim
-      tauri-apps.tauri-vscode
-      kilocode.kilo-code
-      ltex-plus.vscode-ltex-plus
+
+      # typst
       myriad-dreamin.tinymist
     ];
   };
