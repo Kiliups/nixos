@@ -44,8 +44,11 @@
     typst
     tinymist
 
-    #docker
+    # docker
     docker
     docker-compose
+
+    # ai
+    ollama
   ];
 }

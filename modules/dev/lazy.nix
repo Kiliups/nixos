@@ -7,17 +7,32 @@
     vimAlias = true;
 
     extraPackages = with pkgs; [
+      # general tools
       lazygit
       lazydocker
 
-      # lsp servers
+      # lua
       lua-language-server
+
+      # nix
       nil
+
+      # typescript
       nodePackages.typescript-language-server
+
+      # bash
       nodePackages.bash-language-server
+
+      # go
       gopls
+
+      # rust
       rust-analyzer
+
+      # java
       jdt-language-server
+
+      # python
       pyright
     ];
   };
