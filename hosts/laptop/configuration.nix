@@ -13,4 +13,9 @@
   security.pam.services.login.fprintAuth = false;
 
   services.fwupd.enable = true;
+
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama;
+  };
 }
