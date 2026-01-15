@@ -47,8 +47,5 @@
     # docker
     docker
     docker-compose
-
-    # ai
-    ollama
   ];
 }
