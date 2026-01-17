@@ -59,6 +59,18 @@
     tmux
   ];
 
+  home.file.".tmux/tmux.conf" = {
+    source = ../../config/tmux/tmux.conf;
+  };
+
+  home.file.".tmux/plugins/tpm" = {
+    source = fetchGit {
+      url = "https://github.com/tmux-plugins/tpm";
+      ref = "master";
+    };
+    recursive = true;
+  };
+
   xdg.configFile."ghostty/config".text = ''
     font-family = "JetBrains Mono"
     theme = "Catppuccin Macchiato"
