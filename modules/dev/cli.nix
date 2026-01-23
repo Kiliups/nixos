@@ -74,6 +74,6 @@
   xdg.configFile."ghostty/config".text = ''
     font-family = "JetBrains Mono"
     theme = "Catppuccin Macchiato"
-    confirm-close-surface = false 
+    confirm-close-surface = false
   '';
 }

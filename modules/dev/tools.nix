@@ -5,7 +5,6 @@
     postman
     dbeaver-bin
     opencode
-    openssl
 
     # javascript/ts
     bun
