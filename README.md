@@ -16,7 +16,7 @@ Personal Nixos configuration with homemanager for my personal gaming machine and
 
 - [ ] **VsCode**: Catppuccin Theme extension must be manually installed due to errors
 - [ ] **KDE Shortcuts**: Shortcuts are configured but some have overlaping system shortcuts which need to be overwritten
-- [ ] **eduroam** in ./config/eduroam there are two scripts to add eduroam but you need to download p12 from https://www.easyroam.de/home and extract it using the extract script in the folder
+- [ ] **eduroam** in ./config/eduroam there are two scripts to add eduroam but you need to download p12 from https://www.easyroam.de/home and extract it using the extract script in the folder (you may need to change read permissions if it does not work)
 
 # Theming
 

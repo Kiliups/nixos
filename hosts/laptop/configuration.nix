@@ -2,13 +2,13 @@
 {
   imports = [
     ../common.nix
-    ../../modules/dev/vm.nix
     /etc/nixos/hardware-configuration.nix
   ];
 
   networking.hostName = "rivendell";
 
   services.fprintd.enable = true;
+
   # to fix sddm problems:
   security.pam.services.login.fprintAuth = false;
 
@@ -18,4 +18,10 @@
     enable = true;
     package = pkgs.ollama;
   };
+
+  # eduroam setup scripts dependencies
+  environment.systemPackages = with pkgs; [
+    iw
+    openssl
+  ];
 }
