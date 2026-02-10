@@ -52,6 +52,13 @@ let
       "editor.formatOnSave" = true;
     };
 
+    # astro
+    "[astro]" = {
+      "editor.defaultFormatter" = "astro-build.astro-vscode";
+      "editor.formatOnSave" = true;
+    };
+    "prettier.documentSelectors" = [ "**/*.astro" ];
+
     # json
     "[json]" = {
       "editor.defaultFormatter" = "esbenp.prettier-vscode";
@@ -113,6 +120,9 @@ in
 
       # typescript/svelte
       svelte.svelte-vscode
+
+      # astro
+      astro-build.astro-vscode
 
       # dart/flutter
       dart-code.dart-code
