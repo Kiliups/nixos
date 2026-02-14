@@ -12,6 +12,9 @@
     splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
   };
   boot.loader.efi.canTouchEfiVariables = true;
+  
+  # kernel
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # nix settings
   nixpkgs.config.allowUnfree = true;

@@ -46,5 +46,12 @@
     # docker
     docker
     docker-compose
+
+    # vpn
+    wireguard-tools
+
+    # image and video
+    imagemagick
+    ffmpeg-full
   ];
 }

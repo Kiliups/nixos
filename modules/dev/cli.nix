@@ -57,6 +57,7 @@
     eza
     fd
     tmux
+    wl-clipboard # for tmux-yank clipboard support on Wayland
   ];
 
   home.file.".tmux/tmux.conf" = {
