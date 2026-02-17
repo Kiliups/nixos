@@ -2,7 +2,7 @@
 {
   home.packages = with pkgs; [
     # tools
-    postman
+    bruno
     dbeaver-bin
     opencode
 

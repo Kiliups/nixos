@@ -37,6 +37,11 @@
     ];
   };
 
+  home.packages = with pkgs; [
+    lazygit
+    lazydocker
+  ];
+
   # Provide lazy.nvim from the Nix store so Neovim can require it without
   # cloning into the read-only home-manager tree.
   xdg.dataFile."nvim/lazy/lazy.nvim" = {
