@@ -149,6 +149,9 @@ in
 
       # typst
       myriad-dreamin.tinymist
+
+      # todo
+      gruntfuggly.todo-tree
     ];
   };
 
