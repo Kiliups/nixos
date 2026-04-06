@@ -7,12 +7,12 @@
     enable = true;
     device = "nodev";
     efiSupport = true;
-    useOSProber = true;
+    useOSProber = false;
     theme = ../config/catppuccin-macchiato-grub-theme;
     splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
   };
   boot.loader.efi.canTouchEfiVariables = true;
-  
+
   # kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
@@ -58,6 +58,8 @@
 
   # I/O
   networking.networkmanager.enable = true;
+
+  security.pam.services.sddm.kwallet.enable = true;
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
@@ -111,6 +113,11 @@
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     konsole
     discover
+  ];
+
+  # fonts
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
   ];
 
   # system packages
