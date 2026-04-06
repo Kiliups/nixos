@@ -18,10 +18,10 @@
       nil
 
       # typescript
-      nodePackages.typescript-language-server
+      typescript-language-server
 
       # bash
-      nodePackages.bash-language-server
+      bash-language-server
 
       # go
       gopls
