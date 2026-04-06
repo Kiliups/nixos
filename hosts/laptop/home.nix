@@ -4,6 +4,7 @@
     ../../modules/dev
     ../../modules/programs.nix
     ../../modules/plasma.nix
+    ../../modules/hypr/default.nix
   ];
 
   home.stateVersion = "26.05";
