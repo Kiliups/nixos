@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+
   home.packages = with pkgs; [
     # tools
     bruno
@@ -53,5 +54,9 @@
     # image and video
     imagemagick
     ffmpeg-full
+
+    #pdf
+    poppler-utils
   ];
+
 }

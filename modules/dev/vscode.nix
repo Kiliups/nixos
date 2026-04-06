@@ -20,6 +20,7 @@ let
     "editor.codeActionsOnSave" = {
       "source.organizeImports" = "explicit";
     };
+    "editor.fontFamily" = "JetBrainsMono Nerd Font";
 
     # files
     "files.autoSave" = "afterDelay";
@@ -84,8 +85,17 @@ let
     "[python]" = {
       "editor.formatOnSave" = true;
       "editor.defaultFormatter" = "ms-python.black-formatter";
-      "source.organizeImports" = "explicit";
+      "editor.codeActionsOnSave" = {
+        "source.organizeImports" = "explicit";
+        "source.fixAll" = "explicit";
+      };
     };
+    "python.languageServer" = "Pylance";
+    "python.analysis.typeCheckingMode" = "basic";
+    "python.analysis.autoImportCompletions" = true;
+    "python.analysis.diagnosticMode" = "workspace";
+    "python.analysis.inlayHints.functionReturnTypes" = true;
+    "python.analysis.inlayHints.variableTypes" = true;
 
     # typst
     "[typst]" = {
@@ -140,7 +150,9 @@ in
 
       # python
       ms-python.python
+      ms-python.vscode-pylance
       ms-python.black-formatter
+      charliermarsh.ruff
       ms-toolsai.datawrangler
       ms-toolsai.jupyter
 

@@ -13,7 +13,11 @@
   programs = {
     bash = {
       enable = true;
+      enableCompletion = true;
       bashrcExtra = ''
+        [[ $- == *i* ]] || return
+        shopt -s progcomp 2>/dev/null || true
+
         alias nx='code ~/.config/nixos'
         alias ls='eza -lh --group-directories-first --icons=auto'
         alias neofetch='fastfetch'
@@ -59,6 +63,10 @@
     tmux
     wl-clipboard # for tmux-yank clipboard support on Wayland
   ];
+
+  xdg.configFile."fastfetch/config.jsonc" = {
+    source = ../../config/fastfetch/config.jsonc;
+  };
 
   home.file.".tmux/tmux.conf" = {
     source = ../../config/tmux/tmux.conf;
