@@ -7,10 +7,6 @@
     vimAlias = true;
 
     extraPackages = with pkgs; [
-      # general tools
-      lazygit
-      lazydocker
-
       # lua
       lua-language-server
 
@@ -49,6 +45,7 @@
     recursive = true;
   };
 
+  # TODO clone lazyvim 
   home.file.".config/nvim" = {
     source = ../../config/nvim;
     recursive = true;

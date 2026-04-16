@@ -7,7 +7,7 @@
     enable = true;
     device = "nodev";
     efiSupport = true;
-    useOSProber = false;
+    useOSProber = true;
     theme = ../config/catppuccin-macchiato-grub-theme;
     splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
   };
@@ -61,6 +61,7 @@
 
   security.pam.services.sddm.kwallet.enable = true;
 
+  # Fix scaling for vscode
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
@@ -125,11 +126,14 @@
     kdePackages.partitionmanager
   ];
 
+  programs.zsh.enable = true;
+
   virtualisation.docker.enable = true;
 
   users.users.kiliups = {
     isNormalUser = true;
     description = "Kilian Mayer";
+    shell = pkgs.zsh;
     extraGroups = [
       "networkmanager"
       "wheel"
