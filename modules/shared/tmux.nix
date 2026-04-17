@@ -1,13 +1,17 @@
 { pkgs, ... }:
 let
+  # tdl = "tmux agent development layout for a single project"
   tdl = pkgs.writeShellApplication {
     name = "tdl";
-    runtimeInputs = [ pkgs.tmux pkgs.coreutils ];
+    runtimeInputs = [
+      pkgs.tmux
+      pkgs.coreutils
+    ];
     text = ''
       set -euo pipefail
 
       [[ -z "''${1:-}" ]] && {
-        echo "Usage: tdl <c|cx|codex|other_ai> [<second_ai>]"
+        echo "Usage: tdl <claude(cc)|codex(cx)|cursor-agent(ccli)|opencode(opc)|other_ai> [<second_ai>]"
         exit 1
       }
       [[ -z "''${TMUX:-}" ]] && {
@@ -36,14 +40,19 @@ let
     '';
   };
 
+  # tdlm = "tmux agent development layout for multiple projects in subdirectories"
   tdlm = pkgs.writeShellApplication {
     name = "tdlm";
-    runtimeInputs = [ pkgs.tmux pkgs.coreutils tdl ];
+    runtimeInputs = [
+      pkgs.tmux
+      pkgs.coreutils
+      tdl
+    ];
     text = ''
       set -euo pipefail
 
       [[ -z "''${1:-}" ]] && {
-        echo "Usage: tdlm <c|cx|codex|other_ai> [<second_ai>]"
+        echo "Usage: tdlm <claude(cc)|codex(cx)|cursor-agent(ccli)|opencode(opc)|other_ai> [<second_ai>]"
         exit 1
       }
       [[ -z "''${TMUX:-}" ]] && {
@@ -73,9 +82,13 @@ let
     '';
   };
 
+  # tsl = "tmux swarm agent layout"
   tsl = pkgs.writeShellApplication {
     name = "tsl";
-    runtimeInputs = [ pkgs.tmux pkgs.coreutils ];
+    runtimeInputs = [
+      pkgs.tmux
+      pkgs.coreutils
+    ];
     text = ''
       set -euo pipefail
 
@@ -110,78 +123,60 @@ let
       tmux select-pane -t "$first_pane"
     '';
   };
+
+  # tml = "tmux multi agent layout"
+  tml = pkgs.writeShellApplication {
+    name = "tml";
+    runtimeInputs = [
+      pkgs.tmux
+      pkgs.coreutils
+    ];
+    text = ''
+      set -euo pipefail
+      [[ $# -eq 0 ]] && {
+        echo "Usage: tml <claude(cc)|codex(cx)|cursor-agent(ccli)|opencode(opc)|other_ai> [other_ai] [other_ai] ..."
+        exit 1
+      }
+      [[ -z "''${TMUX:-}" ]] && {
+        echo "You must start tmux to use tml."
+        exit 1
+      }
+      cmds=("$@")
+      count="''${#cmds[@]}"
+      current_dir="$PWD"
+      first_pane="$TMUX_PANE"
+      panes=("$first_pane")
+      tmux rename-window -t "$first_pane" "$(basename "$current_dir")"
+      while (( ''${#panes[@]} < count )); do
+        split_target="''${panes[''${#panes[@]} - 1]}"
+        new_pane="$(tmux split-window -h -t "$split_target" -c "$current_dir" -P -F '#{pane_id}')"
+        panes+=("$new_pane")
+        tmux select-layout -t "$first_pane" tiled
+      done
+      for i in "''${!panes[@]}"; do
+        cmd="''${cmds[i % count]}"
+        tmux send-keys -t "''${panes[$i]}" "$cmd" C-m
+      done
+      tmux select-pane -t "$first_pane"
+    '';
+  };
 in
 {
-  imports = [
-    ./starship.nix
-  ];
-
-  home.sessionVariables = {
-    TERMINAL = "ghostty";
-    JAVA_HOME = "${pkgs.jdk21}/lib/openjdk";
-    NIX = "$HOME/.config/nixos";
-  };
-
-  programs = {
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-      autosuggestion.enable = true;
-      syntaxHighlighting.enable = true;
-      shellAliases = {
-        nx = "code ~/.config/nixos";
-        ls = "eza -lh --group-directories-first --icons=auto";
-        neofetch = "fastfetch";
-        nfu = "sudo nix flake update --flake ~/.config/nixos";
-        nrsu = "nfu && nrs";
-      };
-      initContent = ''
-        nrs() {
-          local host="''${1:-$(hostname)}"
-          (cd ~/.config/nixos && git add -A && sudo nixos-rebuild switch --flake .#''${host} --impure)
-        }
-      '';
-    };
-
-    fzf = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
-    zoxide = {
-      enable = true;
-      enableZshIntegration = true;
-      options = [ "--cmd cd" ];
-    };
-
-    git = {
-      enable = true;
-      settings = {
-        user.name = "Kilian Mayer";
-        user.email = "mayer-kilian@gmx.de";
-        init.defaultBranch = "main";
-      };
-    };
-  };
-
   home.packages = with pkgs; [
-    ghostty
-
-    btop
-    fastfetch
-    gh
-    ripgrep
-    eza
-    fd
     tmux
-    wl-clipboard
+
     tdl
     tdlm
     tsl
+    tml
   ];
 
-  xdg.configFile."fastfetch/config.jsonc" = {
-    source = ../../config/fastfetch/config.jsonc;
+  programs = {
+    zsh = {
+      shellAliases = {
+        tmlall = "tml claude codex cursor-agent";
+      };
+    };
   };
 
   home.file.".tmux/tmux.conf" = {
@@ -195,10 +190,4 @@ in
     };
     recursive = true;
   };
-
-  xdg.configFile."ghostty/config".text = ''
-    font-family = "JetBrains Mono"
-    theme = "Catppuccin Macchiato"
-    confirm-close-surface = false
-  '';
 }

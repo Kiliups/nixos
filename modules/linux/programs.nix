@@ -4,12 +4,9 @@
 
   home.packages = with pkgs; [
     thunderbird
-    obsidian
-    spotify
     discord
     bitwarden-desktop
     gimp
-    chromium
     zapzap
     nextcloud-client
     prismlauncher # Minecraft Launcher

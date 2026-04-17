@@ -1,12 +1,10 @@
 { pkgs, ... }:
 {
-
   home.packages = with pkgs; [
     # tools
     bruno
     dbeaver-bin
-    opencode
-
+    
     # javascript/ts
     bun
     nodejs
@@ -29,10 +27,6 @@
     # c/c++
     gcc
     gdb
-
-    # nix
-    nixfmt
-    nixd
 
     # mobile
     flutter
@@ -57,6 +51,9 @@
 
     #pdf
     poppler-utils
+    
+    # docker
+    docker
+    docker-compose
   ];
-
 }

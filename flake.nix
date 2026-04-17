@@ -2,6 +2,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+    darwin = {
+      url = "github:nix-darwin/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,6 +32,7 @@
     {
       nixpkgs,
       nixos-hardware,
+      darwin,
       home-manager,
       stylix,
       zen-browser,
@@ -49,8 +54,8 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                backupFileExtension = "backup-" + builtins.toString builtins.currentTime;
-                
+                backupFileExtension = "backup-" + toString builtins.currentTime;
+
                 users.kiliups = {
                   imports = [
                     plasma-manager.homeModules.plasma-manager
@@ -72,13 +77,36 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                backupFileExtension = "backup-" + builtins.toString builtins.currentTime;
-                
+                backupFileExtension = "backup-" + toString builtins.currentTime;
+
                 users.kiliups = {
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
                     ./hosts/workstation/home.nix
+                  ];
+                };
+              };
+            }
+          ];
+        };
+      };
+
+      darwinConfigurations = {
+        macbook = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          modules = [
+            ./hosts/macbook/configuration.nix
+            home-manager.darwinModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup-" + toString builtins.currentTime;
+
+                users."kilian.mayer" = {
+                  imports = [
+                    ./hosts/macbook/home.nix
                   ];
                 };
               };
