@@ -1,9 +1,7 @@
 { ... }:
 {
   imports = [
-    ../../modules/dev
-    ../../modules/programs.nix
-    ../../modules/plasma.nix
+    ../../modules/linux
   ];
 
   home.stateVersion = "26.05";

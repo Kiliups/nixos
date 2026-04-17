@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 {
   programs.neovim = {
     enable = true;
@@ -16,36 +16,26 @@
       # typescript
       typescript-language-server
 
+      # php
+      phpactor
+
       # bash
       bash-language-server
-
-      # go
-      gopls
-
-      # rust
-      rust-analyzer
-
-      # java
-      jdt-language-server
-
-      # python
-      pyright
     ];
   };
 
+  # lazygit and lazydocker for terminal git and docker management, respectively
   home.packages = with pkgs; [
     lazygit
     lazydocker
   ];
 
-  # Provide lazy.nvim from the Nix store so Neovim can require it without
-  # cloning into the read-only home-manager tree.
+  # lazy.nvim for managing neovim plugins
   xdg.dataFile."nvim/lazy/lazy.nvim" = {
     source = pkgs.vimPlugins.lazy-nvim;
     recursive = true;
   };
 
-  # TODO clone lazyvim 
   home.file.".config/nvim" = {
     source = ../../config/nvim;
     recursive = true;

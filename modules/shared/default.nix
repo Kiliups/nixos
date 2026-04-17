@@ -1,9 +1,12 @@
 { ... }:
 {
   imports = [
+    ./shell.nix
     ./tools.nix
-    ./cli.nix
+    ./tmux.nix
     ./lazy.nix
+    ./starship.nix
     ./vscode.nix
+    ./programs.nix
   ];
 }
