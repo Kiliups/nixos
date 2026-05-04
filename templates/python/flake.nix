@@ -14,7 +14,6 @@
         with pkgs;
         mkShell {
           packages = [
-            bashInteractive
             python313
             python313Packages.venvShellHook
           ];

@@ -7,6 +7,10 @@
 
   networking.hostName = "laptop";
 
+  programs.hyprland = {
+    enable = true;
+  };
+
   services.fprintd.enable = true;
 
   # to fix sddm problems:
