@@ -7,6 +7,10 @@
 
   networking.hostName = "rivendell";
 
+  programs.hyprland = {
+    enable = true;
+  };
+
   services.fprintd.enable = true;
 
   # to fix sddm problems:

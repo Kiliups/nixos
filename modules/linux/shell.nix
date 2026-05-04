@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   home.sessionVariables = {
-    JAVA_HOME = "${pkgs.jdk21}/lib/openjdk";
+    JAVA_HOME = "${pkgs.jdk25}/lib/openjdk";
     NIX = "$HOME/.config/nixos";
   };
 
@@ -13,12 +13,14 @@
         neofetch = "fastfetch";
         nfu = "sudo nix flake update --flake ~/.config/nixos";
         nrsu = "nfu && nrs";
+        nd = "nix develop -c zsh";
       };
       initContent = ''
         nrs() {
           local host="''${1:-$(hostname)}"
           (cd ~/.config/nixos && git add -A && sudo nixos-rebuild switch --flake .#''${host} --impure)
         }
+        bindkey -e
       '';
     };
   };

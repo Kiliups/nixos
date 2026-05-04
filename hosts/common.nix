@@ -7,7 +7,7 @@
     enable = true;
     device = "nodev";
     efiSupport = true;
-    useOSProber = true;
+    useOSProber = false;
     theme = ../config/catppuccin-macchiato-grub-theme;
     splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
   };
@@ -64,7 +64,24 @@
   # Fix scaling for vscode
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+
+    # GTK apps
+    GDK_BACKEND = "wayland,x11,*";
+
+    # Qt apps
+    QT_QPA_PLATFORM = "wayland;xcb";
+    # SDL apps
+    SDL_VIDEODRIVER = "wayland,x11";
+
+    # Firefox / Mozilla
+    MOZ_ENABLE_WAYLAND = "1";
+
+    # Electron / Chromium
+    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+    OZONE_PLATFORM = "wayland";
+
+    # General session hint
+    XDG_SESSION_TYPE = "wayland";
   };
 
   services.pulseaudio.enable = false;

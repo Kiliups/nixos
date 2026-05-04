@@ -4,13 +4,13 @@
     # tools
     bruno
     dbeaver-bin
-    
+
     # javascript/ts
     bun
     nodejs
 
     # java
-    jdk21
+    jdk25
     maven
     gradle
 
@@ -51,7 +51,7 @@
 
     #pdf
     poppler-utils
-    
+
     # docker
     docker
     docker-compose

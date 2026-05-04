@@ -149,8 +149,11 @@ in
         github.copilot-chat
         tomoki1207.pdf
         ltex-plus.vscode-ltex-plus
+        eamodio.gitlens
+
         # java
         vscjava.vscode-java-pack
+        oracle.oracle-java
 
         # dart/flutter
         dart-code.dart-code
@@ -186,6 +189,15 @@ in
       cat > "${vsCodeUserDir}/settings.json" << 'EOF'
       ${builtins.toJSON vsCodeSettings}
       EOF
+    ''
+  );
+
+  # VS Code can cache a broken per-profile extension inventory in ~/.vscode/extensions
+  # and then hide Nix-managed extensions until that metadata is cleared.
+  home.activation.resetVscodeExtensionState = lib.mkIf isLinux (
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      rm -f "${config.home.homeDirectory}/.vscode/extensions/.obsolete"
+      rm -f "${config.home.homeDirectory}/.vscode/extensions/extensions.json"
     ''
   );
 }

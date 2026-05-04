@@ -26,6 +26,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    elephant.url = "github:abenz1267/elephant";
+    walker = {
+      url = "github:abenz1267/walker";
+      inputs.elephant.follows = "elephant";
+    };
   };
 
   outputs =
@@ -37,6 +42,7 @@
       stylix,
       zen-browser,
       plasma-manager,
+      walker,
       ...
     }:
     {
@@ -60,6 +66,7 @@
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
+                    walker.homeManagerModules.default
                     ./hosts/laptop/home.nix
                   ];
                 };
