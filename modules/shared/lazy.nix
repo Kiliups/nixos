@@ -21,6 +21,9 @@
 
       # bash
       bash-language-server
+
+      # treesitter
+      tree-sitter
     ];
   };
 

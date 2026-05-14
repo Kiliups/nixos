@@ -166,6 +166,9 @@ in
         rust-lang.rust-analyzer
         tauri-apps.tauri-vscode
 
+        # vue
+        vue.volar
+
         # python
         ms-python.python
         ms-python.vscode-pylance

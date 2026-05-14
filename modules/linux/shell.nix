@@ -21,6 +21,11 @@
           (cd ~/.config/nixos && git add -A && sudo nixos-rebuild switch --flake .#''${host} --impure)
         }
         bindkey -e
+
+        bindkey '^[[1;5D' backward-word
+        bindkey '^[[1;5C' forward-word
+        bindkey '^[[5D' backward-word
+        bindkey '^[[5C' forward-word
       '';
     };
   };
