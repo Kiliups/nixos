@@ -18,6 +18,10 @@
 
   services.fwupd.enable = true;
 
+  services.ollama = {
+    enable = true;
+  };
+
   # eduroam setup scripts dependencies
   environment.systemPackages = with pkgs; [
     iw
