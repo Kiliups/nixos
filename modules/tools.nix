@@ -1,6 +1,24 @@
 { pkgs, ... }:
 {
+  programs.zsh.shellAliases = {
+    cc = "claude";
+    ccli = "cursor-agent";
+    cx = "codex";
+    opc = "opencode";
+  };
+
   home.packages = with pkgs; [
+    # agents
+    opencode
+    cursor-cli
+    claude-code
+    codex
+    pi-coding-agent
+
+    # nix
+    nixfmt
+    nixd
+
     # tools
     bruno
     dbeaver-bin
@@ -51,9 +69,5 @@
 
     #pdf
     poppler-utils
-
-    # docker
-    docker
-    docker-compose
   ];
 }

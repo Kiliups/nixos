@@ -9,13 +9,12 @@
         spacing = 0;
         height = 32;
         modules-left = [
-          "hyprland/workspaces"
+          "niri/workspaces"
         ];
         modules-center = [
           "clock"
         ];
         modules-right = [
-          # "custom/dropbox"
           "tray"
           "bluetooth"
           "network"
@@ -24,7 +23,7 @@
           "power-profiles-daemon"
           "battery"
         ];
-        "hyprland/workspaces" = {
+        "niri/workspaces" = {
           on-click = "activate";
           format = "{icon}";
           format-icons = {
@@ -39,13 +38,6 @@
             "8" = "8";
             "9" = "9";
             active = "󱓻";
-          };
-          persistent-workspaces = {
-            "1" = [ ];
-            "2" = [ ];
-            "3" = [ ];
-            "4" = [ ];
-            "5" = [ ];
           };
         };
         cpu = {
@@ -125,13 +117,13 @@
           on-click = "blueberry";
         };
         wireplumber = {
-          "format" = "";
+          format = "";
           format-muted = "󰝟";
           scroll-step = 5;
           on-click = "pavucontrol";
           tooltip-format = "Playing at {volume}%";
-          on-click-right = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; # Updated command
-          max-volume = 150; 
+          on-click-right = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+          max-volume = 150;
         };
         tray = {
           spacing = 12;
@@ -152,7 +144,7 @@
     style = ''
       * {
         border: none;
-        border-radius: 0 0 8px 8px;
+        border-radius: 0;
         min-height: 0;
         font-family: "JetBrainsMono Nerd Font", monospace;
       }

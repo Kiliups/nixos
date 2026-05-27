@@ -1,8 +1,7 @@
 { ... }:
 {
   imports = [
-    ../../modules/linux
-    ../../modules/linux/hypr
+    ../modules
   ];
 
   home.stateVersion = "26.05";

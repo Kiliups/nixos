@@ -7,7 +7,7 @@
 
   networking.hostName = "laptop";
 
-  programs.hyprland = {
+  programs.niri = {
     enable = true;
   };
 

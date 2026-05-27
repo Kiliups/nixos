@@ -1,8 +1,8 @@
 { ... }:
 {
   imports = [
-    ./hyperland.nix
+    ./fuzzel.nix
+    ./niri.nix
     ./waybar.nix
-    ./walker.nix
   ];
 }

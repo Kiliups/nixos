@@ -7,21 +7,6 @@
     vimAlias = true;
 
     extraPackages = with pkgs; [
-      # lua
-      lua-language-server
-
-      # nix
-      nil
-
-      # typescript
-      typescript-language-server
-
-      # php
-      phpactor
-
-      # bash
-      bash-language-server
-
       # treesitter
       tree-sitter
     ];
@@ -40,7 +25,7 @@
   };
 
   home.file.".config/nvim" = {
-    source = ../../config/nvim;
+    source = ../config/nvim;
     recursive = true;
   };
 }

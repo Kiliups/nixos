@@ -1,12 +1,18 @@
 { pkgs, ... }:
 {
   home.sessionVariables = {
+    TERMINAL = "ghostty";
     JAVA_HOME = "${pkgs.jdk25}/lib/openjdk";
     NIX = "$HOME/.config/nixos";
   };
 
   programs = {
     zsh = {
+      enable = true;
+      enableCompletion = true;
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+
       shellAliases = {
         nx = "code ~/.config/nixos";
         ls = "eza -lh --group-directories-first --icons=auto";
@@ -28,14 +34,47 @@
         bindkey '^[[5C' forward-word
       '';
     };
+
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
+    zoxide = {
+      enable = true;
+      enableZshIntegration = true;
+      options = [ "--cmd cd" ];
+    };
+
+    git = {
+      enable = true;
+      settings = {
+        user.name = "Public User";
+        user.email = "user@example.invalid";
+        init.defaultBranch = "main";
+      };
+    };
   };
 
   home.packages = with pkgs; [
+    ghostty
+
+    btop
+    fastfetch
+    ripgrep
+    eza
+    fd
     wl-clipboard
     gh
   ];
 
+  xdg.configFile."ghostty/config.ghostty".text = ''
+    font-family = "JetBrains Mono"
+    theme = "Catppuccin Macchiato"
+    confirm-close-surface = false
+  '';
+
   xdg.configFile."fastfetch/config.jsonc" = {
-    source = ../../config/fastfetch/config.jsonc;
+    source = ../config/fastfetch/config.jsonc;
   };
 }

@@ -3,6 +3,9 @@
   programs.zen-browser.enable = true;
 
   home.packages = with pkgs; [
+    obsidian
+    spotify
+    chromium
     thunderbird
     discord
     bitwarden-desktop

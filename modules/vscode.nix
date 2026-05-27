@@ -5,15 +5,6 @@
   ...
 }:
 let
-  isLinux = pkgs.stdenv.hostPlatform.isLinux;
-  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-  vsCodeUserDir =
-    if isLinux then
-      "${config.home.homeDirectory}/.config/Code/User"
-    else if isDarwin then
-      "${config.home.homeDirectory}/Library/Application Support/Code/User"
-    else
-      null;
   vsCodeSettings = {
     # theme
     "catppuccin.accentColor" = "lavender";
@@ -65,8 +56,6 @@ let
       "editor.wordWrap" = "bounded";
       "editor.wordWrapColumn" = 100;
     };
-  }
-  // lib.optionalAttrs isLinux {
     "files.associations" = {
       "*.svx" = "markdown";
     };
@@ -125,82 +114,73 @@ in
 {
   programs.vscode = {
     enable = true;
-    profiles.default.extensions =
-      with pkgs.vscode-extensions;
-      [
-        # general/editor
-        esbenp.prettier-vscode
-        ms-vscode-remote.remote-ssh
-        vscodevim.vim
+    profiles.default.extensions = with pkgs.vscode-extensions; [
+      # general/editor
+      esbenp.prettier-vscode
+      ms-vscode-remote.remote-ssh
+      vscodevim.vim
+      github.copilot-chat
+      tomoki1207.pdf
+      ltex-plus.vscode-ltex-plus
+      eamodio.gitlens
 
-        # typescript/svelte
-        svelte.svelte-vscode
+      # typescript/svelte
+      svelte.svelte-vscode
 
-        # astro
-        astro-build.astro-vscode
+      # astro
+      astro-build.astro-vscode
 
-        # nix
-        jnoortheen.nix-ide
+      # nix
+      jnoortheen.nix-ide
 
-        # todo
-        gruntfuggly.todo-tree
-      ]
-      ++ lib.optionals isLinux [
-        github.copilot-chat
-        tomoki1207.pdf
-        ltex-plus.vscode-ltex-plus
-        eamodio.gitlens
+      # todo
+      gruntfuggly.todo-tree
 
-        # java
-        vscjava.vscode-java-pack
-        oracle.oracle-java
+      # java
+      vscjava.vscode-java-pack
+      oracle.oracle-java
 
-        # dart/flutter
-        dart-code.dart-code
-        dart-code.flutter
+      # dart/flutter
+      dart-code.dart-code
+      dart-code.flutter
 
-        # go
-        golang.go
+      # go
+      golang.go
 
-        # rust
-        rust-lang.rust-analyzer
-        tauri-apps.tauri-vscode
+      # rust
+      rust-lang.rust-analyzer
+      tauri-apps.tauri-vscode
 
-        # vue
-        vue.volar
+      # vue
+      vue.volar
 
-        # python
-        ms-python.python
-        ms-python.vscode-pylance
-        ms-python.black-formatter
-        charliermarsh.ruff
-        ms-toolsai.datawrangler
-        ms-toolsai.jupyter
+      # python
+      ms-python.python
+      ms-python.vscode-pylance
+      ms-python.black-formatter
+      charliermarsh.ruff
+      ms-toolsai.datawrangler
+      ms-toolsai.jupyter
 
-        # c/c++
-        ms-vscode.cpptools
+      # c/c++
+      ms-vscode.cpptools
 
-        # typst
-        myriad-dreamin.tinymist
-      ];
+      # typst
+      myriad-dreamin.tinymist
+    ];
   };
 
   # This allows VS Code to edit it, while rebuild overwrites with defaults.
-  home.activation.writeVscodeSettings = lib.mkIf (vsCodeUserDir != null) (
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      mkdir -p "${vsCodeUserDir}"
-      cat > "${vsCodeUserDir}/settings.json" << 'EOF'
-      ${builtins.toJSON vsCodeSettings}
-      EOF
-    ''
-  );
-
+  home.activation.writeVscodeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p "${config.home.homeDirectory}/.config/Code/User"
+        cat > "${config.home.homeDirectory}/.config/Code/User/settings.json" << 'EOF'
+        ${builtins.toJSON vsCodeSettings}
+    EOF
+  '';
   # VS Code can cache a broken per-profile extension inventory in ~/.vscode/extensions
   # and then hide Nix-managed extensions until that metadata is cleared.
-  home.activation.resetVscodeExtensionState = lib.mkIf isLinux (
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      rm -f "${config.home.homeDirectory}/.vscode/extensions/.obsolete"
-      rm -f "${config.home.homeDirectory}/.vscode/extensions/extensions.json"
-    ''
-  );
+  home.activation.resetVscodeExtensionState = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    rm -f "${config.home.homeDirectory}/.vscode/extensions/.obsolete"
+    rm -f "${config.home.homeDirectory}/.vscode/extensions/extensions.json"
+  '';
 }

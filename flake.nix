@@ -2,10 +2,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
-    darwin = {
-      url = "github:nix-darwin/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -26,23 +22,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
-    elephant.url = "github:abenz1267/elephant";
-    walker = {
-      url = "github:abenz1267/walker";
-      inputs.elephant.follows = "elephant";
-    };
   };
 
   outputs =
     {
       nixpkgs,
       nixos-hardware,
-      darwin,
       home-manager,
       stylix,
       zen-browser,
       plasma-manager,
-      walker,
       ...
     }:
     {
@@ -66,8 +55,7 @@
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
-                    walker.homeManagerModules.default
-                    ./hosts/laptop/home.nix
+                    ./hosts/home.nix
                   ];
                 };
               };
@@ -90,7 +78,7 @@
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
-                    ./hosts/workstation/home.nix
+                    ./hosts/home.nix
                   ];
                 };
               };
@@ -98,30 +86,6 @@
           ];
         };
       };
-
-      darwinConfigurations = {
-        macbook = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          modules = [
-            ./hosts/macbook/configuration.nix
-            home-manager.darwinModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "backup-" + toString builtins.currentTime;
-
-                users."user" = {
-                  imports = [
-                    ./hosts/macbook/home.nix
-                  ];
-                };
-              };
-            }
-          ];
-        };
-      };
-
       templates = {
         python = {
           path = ./templates/python;
