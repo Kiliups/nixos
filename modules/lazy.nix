@@ -18,12 +18,6 @@
     lazydocker
   ];
 
-  # lazy.nvim for managing neovim plugins
-  xdg.dataFile."nvim/lazy/lazy.nvim" = {
-    source = pkgs.vimPlugins.lazy-nvim;
-    recursive = true;
-  };
-
   home.file.".config/nvim" = {
     source = ../config/nvim;
     recursive = true;

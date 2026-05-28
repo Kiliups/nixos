@@ -70,9 +70,10 @@ in
         Super+K { show-hotkey-overlay; }
 
         Super+Return { spawn "ghostty"; }
+        Super+Shift+Return { spawn "ghostty" "-e" "tmux"; }
         Super+B { spawn "zen-beta"; }
-        Super+D { spawn "dolphin"; }
-        Super+E { spawn "thunderbird"; }
+        Super+E { spawn "dolphin"; }
+        Super+M { spawn "thunderbird"; }
 
         Super+Q repeat=false { close-window; }
         Super+T { toggle-window-floating; }
@@ -129,7 +130,7 @@ in
         Super+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
         Super+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
 
-        Print { screenshot; }
+        Super+S { screenshot; }
         Ctrl+Print { screenshot-screen; }
         Alt+Print { screenshot-window; }
     }
@@ -181,13 +182,6 @@ in
 
     overview {
         backdrop-color "${colors.base00}"
-
-        workspace-shadow {
-            softness 45
-            spread 8
-            offset x=0 y=10
-            color "${colors.base00}"
-        }
     }
 
     window-rule {

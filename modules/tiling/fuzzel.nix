@@ -32,17 +32,17 @@ in
       };
 
       colors = {
-        background = "${colors.base00}";
-        text = "${colors.base05}";
-        prompt = "${colors.base0D}";
-        placeholder = "${colors.base03}";
-        input = "${colors.base05}";
-        match = "${colors.base0A}";
-        selection = "${colors.base02}";
-        selection-text = "${colors.base05}";
-        selection-match = "${colors.base0A}";
-        counter = "${colors.base04}";
-        border = "${colors.base0D}";
+        background = "${colors.base00}ff";
+        text = "${colors.base05}ff";
+        prompt = "${colors.base0D}ff";
+        placeholder = "${colors.base03}ff";
+        input = "${colors.base05}ff";
+        match = "${colors.base0A}ff";
+        selection = "${colors.base02}ff";
+        selection-text = "${colors.base05}ff";
+        selection-match = "${colors.base0A}ff";
+        counter = "${colors.base04}ff";
+        border = "${colors.base0D}ff";
       };
 
       border = {
