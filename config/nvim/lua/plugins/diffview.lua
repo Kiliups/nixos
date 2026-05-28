@@ -17,13 +17,5 @@ return {
         desc = "Toggle Diffview",
       },
     },
-    cmd = {
-        "DiffviewOpen",        
-        "DiffviewToggle",
-        "DiffviewFileHistory",
-        "DiffviewDiffFiles",
-        "DiffviewLog",
-        "DiffviewClose",
-    },
   },
 }
