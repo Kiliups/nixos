@@ -1,20 +1,28 @@
 { pkgs, ... }:
 {
-  # boot
-  boot.loader.systemd-boot.configurationLimit = 5;
-  boot.loader.systemd-boot.enable = false;
-  boot.loader.grub = {
-    enable = true;
-    device = "nodev";
-    efiSupport = true;
-    useOSProber = false;
-    theme = ../config/catppuccin-macchiato-grub-theme;
-    splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
-  };
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    # boot
+    loader = {
+      systemd-boot = {
+        configurationLimit = 5;
+        enable = false;
+      };
 
-  # kernel
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+      grub = {
+        enable = true;
+        device = "nodev";
+        efiSupport = true;
+        useOSProber = false;
+        theme = ../config/catppuccin-macchiato-grub-theme;
+        splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
+      };
+
+      efi.canTouchEfiVariables = true;
+    };
+
+    # kernel
+    kernelPackages = pkgs.linuxPackages_latest;
+  };
 
   # nix settings
   nixpkgs.config.allowUnfree = true;
@@ -61,44 +69,72 @@
 
   security.pam.services.sddm.kwallet.enable = true;
 
-  # Fix scaling for vscode
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
+  environment = {
+    # Fix scaling for vscode
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1";
 
-    # GTK apps
-    GDK_BACKEND = "wayland,x11,*";
+      # GTK apps
+      GDK_BACKEND = "wayland,x11,*";
 
-    # Qt apps
-    QT_QPA_PLATFORM = "wayland;xcb";
-    # SDL apps
-    SDL_VIDEODRIVER = "wayland,x11";
+      # Qt apps
+      QT_QPA_PLATFORM = "wayland;xcb";
+      # SDL apps
+      SDL_VIDEODRIVER = "wayland,x11";
 
-    # Firefox / Mozilla
-    MOZ_ENABLE_WAYLAND = "1";
+      # Firefox / Mozilla
+      MOZ_ENABLE_WAYLAND = "1";
 
-    # Electron / Chromium
-    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
-    OZONE_PLATFORM = "wayland";
+      # Electron / Chromium
+      ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+      OZONE_PLATFORM = "wayland";
 
-    # General session hint
-    XDG_SESSION_TYPE = "wayland";
+      # General session hint
+      XDG_SESSION_TYPE = "wayland";
+    };
+
+    plasma6.excludePackages = with pkgs.kdePackages; [
+      konsole
+      discover
+    ];
+
+    # system packages
+    systemPackages = with pkgs; [
+      kdePackages.partitionmanager
+    ];
   };
 
-  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
+
+  services = {
+    pulseaudio.enable = false;
+
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+
+    printing.enable = true;
+
+    xserver.xkb = {
+      layout = "de";
+      variant = "";
+    };
+
+    displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
+    };
+
+    desktopManager.plasma6.enable = true;
   };
 
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
   };
-
-  services.printing.enable = true;
 
   # Internationalization
   time.timeZone = "Europe/Berlin";
@@ -115,32 +151,11 @@
     LC_TIME = "de_DE.UTF-8";
   };
 
-  services.xserver.xkb = {
-    layout = "de";
-    variant = "";
-  };
-
   console.keyMap = "de";
-
-  # KDE
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-  };
-  services.desktopManager.plasma6.enable = true;
-  environment.plasma6.excludePackages = with pkgs.kdePackages; [
-    konsole
-    discover
-  ];
 
   # fonts
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
-  ];
-
-  # system packages
-  environment.systemPackages = with pkgs; [
-    kdePackages.partitionmanager
   ];
 
   programs.zsh.enable = true;

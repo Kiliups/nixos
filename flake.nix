@@ -50,7 +50,7 @@
       mkDarwinHost =
         hostName: host:
         nix-darwin.lib.darwinSystem {
-          system = host.system;
+          inherit (host) system;
           specialArgs = {
             inherit inputs host hostName;
           };
@@ -77,6 +77,10 @@
         };
     in
     {
+      darwinHomeModules = {
+        default = ./modules/darwin;
+      };
+
       darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHost;
 
       nixosConfigurations = {

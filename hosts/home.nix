@@ -4,9 +4,11 @@
     ../modules/linux
   ];
 
-  home.stateVersion = "26.05";
-  home.username = "user";
-  home.homeDirectory = "/home/user";
+  home = {
+    stateVersion = "26.05";
+    username = "user";
+    homeDirectory = "/home/user";
+  };
 
   stylix = {
     targets = {

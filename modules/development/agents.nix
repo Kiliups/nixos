@@ -72,12 +72,13 @@ let
 
 in
 {
-
-  options.dev.claude.enable = lib.mkEnableOption "claude code";
-  options.dev.codex.enable = lib.mkEnableOption "codex";
-  options.dev.cursor.enable = lib.mkEnableOption "cursor-agent";
-  options.dev.opencode.enable = lib.mkEnableOption "opencode";
-  options.dev.pi.enable = lib.mkEnableOption "pi-coding-agent";
+  options.dev = {
+    claude.enable = lib.mkEnableOption "claude code";
+    codex.enable = lib.mkEnableOption "codex";
+    cursor.enable = lib.mkEnableOption "cursor-agent";
+    opencode.enable = lib.mkEnableOption "opencode";
+    pi.enable = lib.mkEnableOption "pi-coding-agent";
+  };
 
   config = {
     home.packages =
@@ -100,7 +101,12 @@ in
         ".claude/skills/caveman/SKILL.md".text = caveman;
       })
       (lib.mkIf
-        (config.dev.cursor.enable || config.dev.codex.enable || config.dev.opencode.enable || config.dev.pi.enable)
+        (
+          config.dev.cursor.enable
+          || config.dev.codex.enable
+          || config.dev.opencode.enable
+          || config.dev.pi.enable
+        )
         {
           ".agents/skills/grill-me/SKILL.md".text = grill-me;
           ".agents/skills/caveman/SKILL.md".text = caveman;

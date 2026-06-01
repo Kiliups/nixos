@@ -15,6 +15,12 @@
       vimAlias = true;
 
       extraPackages = with pkgs; [
+        # language servers
+        nil
+
+        # linters
+        statix
+
         # treesitter
         tree-sitter
       ];

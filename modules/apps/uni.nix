@@ -1,9 +1,8 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-   teams-for-linux
+    teams-for-linux
     zotero
     eduvpn-client
   ];
-
 }

@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
 
   programs.zen-browser.enable = true;
   xdg.mimeApps = {

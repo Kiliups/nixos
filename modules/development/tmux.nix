@@ -170,14 +170,30 @@ in
   options.dev.tmux.enable = lib.mkEnableOption "tmux setup";
 
   config = lib.mkIf config.dev.tmux.enable {
-    home.packages = with pkgs; [
-      tmux
+    home = {
+      packages = with pkgs; [
+        tmux
 
-      tdl
-      tdlm
-      tsl
-      tml
-    ];
+        tdl
+        tdlm
+        tsl
+        tml
+      ];
+
+      file = {
+        ".tmux.conf" = {
+          source = ../../config/tmux/tmux.conf;
+        };
+
+        ".tmux/plugins/tpm" = {
+          source = fetchGit {
+            url = "https://github.com/tmux-plugins/tpm";
+            ref = "master";
+          };
+          recursive = true;
+        };
+      };
+    };
 
     programs = {
       zsh = {
@@ -185,18 +201,6 @@ in
           tmlall = "tml claude codex cursor-agent";
         };
       };
-    };
-
-    home.file.".tmux.conf" = {
-      source = ../../config/tmux/tmux.conf;
-    };
-
-    home.file.".tmux/plugins/tpm" = {
-      source = fetchGit {
-        url = "https://github.com/tmux-plugins/tpm";
-        ref = "master";
-      };
-      recursive = true;
     };
   };
 }
