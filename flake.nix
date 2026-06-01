@@ -6,6 +6,8 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     stylix = {
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,16 +27,56 @@
   };
 
   outputs =
-    {
+    inputs@{
       nixpkgs,
       nixos-hardware,
       home-manager,
+      nix-darwin,
       stylix,
       zen-browser,
       plasma-manager,
       ...
     }:
+    let
+      darwinHost = {
+        user = {
+          username = "user";
+          name = "Public User";
+          email = "user@example.invalid";
+          system = "aarch64-darwin";
+        };
+      };
+
+      mkDarwinHost =
+        _hostName: host:
+        nix-darwin.lib.darwinSystem {
+          system = host.system;
+          specialArgs = {
+            inherit inputs host;
+          };
+          modules = [
+            stylix.darwinModules.stylix
+            ./hosts/darwin/configuration.nix
+            home-manager.darwinModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup-" + toString builtins.currentTime;
+                extraSpecialArgs = {
+                  inherit inputs host;
+                };
+
+                users.${host.username}.imports = [
+                  ./hosts/darwin/home.nix
+                ];
+              };
+            }
+          ];
+        };
+    in
     {
+      darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHost;
 
       nixosConfigurations = {
         laptop = nixpkgs.lib.nixosSystem {
@@ -55,7 +97,7 @@
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
-                    ./hosts/home.nix
+                    ./hosts/laptop/home.nix
                   ];
                 };
               };

@@ -1,83 +1,11 @@
-{ pkgs, ... }:
 {
-  programs.zsh.shellAliases = {
-    cc = "claude";
-    ccli = "cursor-agent";
-    cx = "codex";
-    opc = "opencode";
-  };
-
-  home.packages = with pkgs; [
-    # agents
-    opencode
-    cursor-cli
-    claude-code
-    codex
-    pi-coding-agent
-
-    # nix
-    nixfmt
-    nixd
-
-    # tools
-    bruno
-    dbeaver-bin
-
-    # javascript/ts
-    bun
-    nodejs
-
-    # java
-    jdk25
-    maven
-    gradle
-
-    # go
-    go
-    golangci-lint
-
-    # rust
-    cargo
-    rustc
-    rustfmt
-    clippy
-
-    # c/c++
-    gcc
-    gdb
-
-    # mobile
-    flutter
-
-    # language tool
-    ltex-ls-plus
-
-    # typst
-    typst
-    tinymist
-
-    # docker
-    docker
-    docker-compose
-
-    # vpn
-    wireguard-tools
-
-    # image and video
-    imagemagick
-    ffmpeg-full
-
-    #pdf
-    poppler-utils
-  ];
-
-  home.file.".config/opencode/AGENTS.md".text = ''
-    - always very concise responses
-    - always minimal, idiomatic code
-    - if necessary search the web for docs or source code
-  '';
-
-  home.file.".agents/skills/grill-me/SKILL.md".text = ''
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+let
+  grill-me = ''
     ---
     name: grill-me
     description: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when user wants to stress-test a plan, get grilled on their design, or mentions "grill me".
@@ -88,9 +16,9 @@
     Ask the questions one at a time.
 
     If a question can be answered by exploring the codebase, explore the codebase instead.
-  '';
 
-  home.file.".agents/skills/caveman/SKILL.md".text = ''
+  '';
+  caveman = ''
     ---
     name: caveman
     description: >
@@ -141,4 +69,43 @@
     >
     > Caveman resume. Verify backup exist first.
   '';
+
+in
+{
+
+  options.dev.claude.enable = lib.mkEnableOption "claude code";
+  options.dev.codex.enable = lib.mkEnableOption "codex";
+  options.dev.cursor.enable = lib.mkEnableOption "cursor-agent";
+  options.dev.opencode.enable = lib.mkEnableOption "opencode";
+  options.dev.pi.enable = lib.mkEnableOption "pi-coding-agent";
+
+  config = {
+    home.packages =
+      lib.optionals config.dev.claude.enable [ pkgs.claude-code ]
+      ++ lib.optionals config.dev.cursor.enable [ pkgs.cursor-cli ]
+      ++ lib.optionals config.dev.codex.enable [ pkgs.codex ]
+      ++ lib.optionals config.dev.opencode.enable [ pkgs.opencode ]
+      ++ lib.optionals config.dev.pi.enable [ pkgs.pi-coding-agent ];
+
+    programs.zsh.shellAliases = lib.mkMerge [
+      (lib.mkIf config.dev.claude.enable { cc = "claude"; })
+      (lib.mkIf config.dev.cursor.enable { ccli = "cursor-agent"; })
+      (lib.mkIf config.dev.codex.enable { cx = "codex"; })
+      (lib.mkIf config.dev.opencode.enable { opc = "opencode"; })
+    ];
+
+    home.file = lib.mkMerge [
+      (lib.mkIf config.dev.claude.enable {
+        ".claude/skills/grill-me/SKILL.md".text = grill-me;
+        ".claude/skills/caveman/SKILL.md".text = caveman;
+      })
+      (lib.mkIf
+        (config.dev.cursor.enable || config.dev.codex.enable || config.dev.opencode.enable || config.dev.pi.enable)
+        {
+          ".agents/skills/grill-me/SKILL.md".text = grill-me;
+          ".agents/skills/caveman/SKILL.md".text = caveman;
+        }
+      )
+    ];
+  };
 }

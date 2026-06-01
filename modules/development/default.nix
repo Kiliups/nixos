@@ -1,14 +1,12 @@
 { ... }:
 {
   imports = [
-    ./lazy.nix
-    ./plasma.nix
-    ./programs.nix
+    ./agents.nix
+    ./neovim.nix
     ./shell.nix
     ./starship.nix
     ./tmux.nix
-    ./tools.nix
     ./vscode.nix
-    ./tiling
+    ./languages
   ];
 }

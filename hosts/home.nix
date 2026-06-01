@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ../modules
+    ../modules/linux
   ];
 
   home.stateVersion = "26.05";
@@ -12,8 +12,6 @@
     targets = {
       zen-browser.profileNames = [ "Default Profile" ];
       vscode.enable = false;
-      vim.enable = false;
-      neovim.enable = false;
       qt.enable = false;
     };
   };

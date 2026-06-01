@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   # tdl = "tmux agent development layout for a single project"
   tdl = pkgs.writeShellApplication {
@@ -162,32 +167,36 @@ let
   };
 in
 {
-  home.packages = with pkgs; [
-    tmux
+  options.dev.tmux.enable = lib.mkEnableOption "tmux setup";
 
-    tdl
-    tdlm
-    tsl
-    tml
-  ];
+  config = lib.mkIf config.dev.tmux.enable {
+    home.packages = with pkgs; [
+      tmux
 
-  programs = {
-    zsh = {
-      shellAliases = {
-        tmlall = "tml claude codex cursor-agent";
+      tdl
+      tdlm
+      tsl
+      tml
+    ];
+
+    programs = {
+      zsh = {
+        shellAliases = {
+          tmlall = "tml claude codex cursor-agent";
+        };
       };
     };
-  };
 
-  home.file.".tmux/tmux.conf" = {
-    source = ../config/tmux/tmux.conf;
-  };
-
-  home.file.".tmux/plugins/tpm" = {
-    source = fetchGit {
-      url = "https://github.com/tmux-plugins/tpm";
-      ref = "master";
+    home.file.".tmux/tmux.conf" = {
+      source = ../../config/tmux/tmux.conf;
     };
-    recursive = true;
+
+    home.file.".tmux/plugins/tpm" = {
+      source = fetchGit {
+        url = "https://github.com/tmux-plugins/tpm";
+        ref = "master";
+      };
+      recursive = true;
+    };
   };
 }
