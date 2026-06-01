@@ -3,16 +3,18 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
   outputs =
-    { self, nixpkgs }:
+    { nixpkgs, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      python = pkgs.python313;
     in
     {
       devShells.${system}.default =
         with pkgs;
         mkShell {
           packages = [
+            python
             uv
           ];
           env.LD_LIBRARY_PATH = lib.makeLibraryPath [
@@ -20,9 +22,15 @@
             zlib
           ];
           shellHook = ''
-            uv venv --python ${python313}/bin/python3
+            if [ ! -d .venv ]; then
+              uv venv --python ${python}/bin/python3
+            fi
+
             source .venv/bin/activate
-            uv init
+
+            if [ ! -f pyproject.toml ]; then
+              uv init --bare --python ${python.pythonVersion}
+            fi
           '';
         };
     };
