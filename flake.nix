@@ -39,7 +39,7 @@
     }:
     let
       darwinHost = {
-        user = {
+        kilian-mayer = {
           username = "user";
           name = "Public User";
           email = "user@example.invalid";
@@ -48,11 +48,11 @@
       };
 
       mkDarwinHost =
-        _hostName: host:
+        hostName: host:
         nix-darwin.lib.darwinSystem {
           system = host.system;
           specialArgs = {
-            inherit inputs host;
+            inherit inputs host hostName;
           };
           modules = [
             stylix.darwinModules.stylix
@@ -68,6 +68,7 @@
                 };
 
                 users.${host.username}.imports = [
+                  stylix.homeModules.stylix
                   ./hosts/darwin/home.nix
                 ];
               };

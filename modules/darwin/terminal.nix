@@ -1,12 +1,9 @@
 {
   pkgs,
   host,
-  lib,
-  config,
   ...
 }:
 {
-
   programs = {
     zsh = {
       initContent = ''
@@ -34,21 +31,19 @@
     };
   };
 
-  options.dev.ghostty.enable = lib.mkEnableOption "ghostty";
-
-  config = lib.mkIf config.dev.ghostty.enable {
-    home.sessionVariables = {
-      TERMINAL = "ghostty";
-    };
-
-    home.packages = with pkgs; [
-      ghostty-bin
-    ];
-
-    xdg.configFile."ghostty/config.ghostty".text = ''
-      font-family = "JetBrains Mono"
-      theme = "Catppuccin Macchiato"
-      confirm-close-surface = false
-    '';
+  home.sessionVariables = {
+    TERMINAL = "ghostty";
   };
+
+  home.packages = with pkgs; [
+    ghostty-bin
+
+    gh
+  ];
+
+  xdg.configFile."ghostty/config.ghostty".text = ''
+    font-family = "JetBrains Mono"
+    theme = "Catppuccin Macchiato"
+    confirm-close-surface = false
+  '';
 }

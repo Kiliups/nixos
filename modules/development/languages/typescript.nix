@@ -9,7 +9,7 @@ let
   cfg = config.languages.typescript;
   packageManagerPackages = {
     bun = [ pkgs.bun ];
-    yarn-berry = [ pkgs.yarn-berry ];
+    yarn = [ pkgs.yarn-berry ];
   };
 in
 {
@@ -19,7 +19,7 @@ in
     packageManager = lib.mkOption {
       type = lib.types.enum [
         "bun"
-        "yarn-berry"
+        "yarn"
       ];
     };
   };

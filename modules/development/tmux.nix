@@ -187,7 +187,7 @@ in
       };
     };
 
-    home.file.".tmux/tmux.conf" = {
+    home.file.".tmux.conf" = {
       source = ../../config/tmux/tmux.conf;
     };
 
