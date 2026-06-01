@@ -20,7 +20,7 @@ in
 
       (lib.mkIf config.dev.vscode.enable {
         programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
-          # TODO make platform independent
+          bmewburn.vscode-intelephense-client
           xdebug.php-debug
         ];
       })

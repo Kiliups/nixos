@@ -33,6 +33,7 @@
     };
     typst.enable = true;
     vue.enable = true;
+    php.enable = true;
   };
 
   home.packages = with pkgs; [
