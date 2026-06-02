@@ -24,6 +24,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    tpm = {
+      url = "github:tmux-plugins/tpm";
+      flake = false;
+    };
   };
 
   outputs =
@@ -35,6 +39,7 @@
       stylix,
       zen-browser,
       plasma-manager,
+      tpm,
       ...
     }:
     let
@@ -97,6 +102,9 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "backup-" + toString builtins.currentTime;
+                extraSpecialArgs = {
+                  inherit inputs tpm;
+                };
 
                 users.user = {
                   imports = [
@@ -120,6 +128,9 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "backup-" + toString builtins.currentTime;
+                extraSpecialArgs = {
+                  inherit inputs tpm;
+                };
 
                 users.user = {
                   imports = [

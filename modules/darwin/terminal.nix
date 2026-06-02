@@ -10,7 +10,7 @@
         drs() {
           local flake="''${1:-.}"
           local host="''${2:-$(hostname)}"
-          (cd "$flake" && git add -A && sudo darwin-rebuild switch --flake ".#''${host}" --impure)
+          (cd "$flake" && git add -A && sudo darwin-rebuild switch --flake ".#''${host}")
         }
 
         nfu() {

@@ -14,7 +14,7 @@
       initContent = ''
         nrs() {
           local host="''${1:-$(hostname)}"
-          (cd ~/.config/nixos && git add -A && sudo nixos-rebuild switch --flake .#''${host} --impure)
+          (cd ~/.config/nixos && git add -A && sudo nixos-rebuild switch --flake .#''${host})
         }
 
         bindkey '^[[1;5D' backward-word
@@ -36,7 +36,7 @@
 
   home.packages = with pkgs; [
     ghostty
-    
+
     wl-clipboard
     gh
   ];

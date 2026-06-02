@@ -5,7 +5,6 @@
     spotify
     chromium
     discord
-    bitwarden-desktop
     gimp
     zapzap
     nextcloud-client

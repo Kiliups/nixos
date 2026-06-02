@@ -61,6 +61,7 @@
     polarity = "dark";
     targets = {
       grub.enable = false;
+      kmscon.enable = false;
     };
   };
 

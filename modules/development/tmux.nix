@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  tpm,
   ...
 }:
 let
@@ -186,10 +187,7 @@ in
         };
 
         ".tmux/plugins/tpm" = {
-          source = fetchGit {
-            url = "https://github.com/tmux-plugins/tpm";
-            ref = "master";
-          };
+          source = tpm;
           recursive = true;
         };
       };
