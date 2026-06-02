@@ -43,7 +43,6 @@
     };
   };
 
-  # TODO ghostty optional
   # TODO git hooks
   # TODO ssh config
   # TODO everthing form onboarding

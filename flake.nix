@@ -6,7 +6,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
+    nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     stylix = {
       url = "github:nix-community/stylix";
@@ -77,8 +77,8 @@
         };
     in
     {
-      darwinHomeModules = {
-        default = ./modules/darwin;
+      developmentModules = {
+        default = ./modules/development;
       };
 
       darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHost;
