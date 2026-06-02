@@ -8,8 +8,20 @@
     zsh = {
       initContent = ''
         drs() {
+          local flake="''${1:-.}"
           local host="''${2:-$(hostname)}"
-          (cd $1 && git add -A && sudo darwin-rebuild switch --flake $1#''${host} --impure)
+          (cd "$flake" && git add -A && sudo darwin-rebuild switch --flake ".#''${host}" --impure)
+        }
+
+        nfu() {
+          local flake="''${1:-.}"
+          (cd "$flake" && nix flake update)
+        }
+
+        drsu() {
+          local flake="''${1:-.}"
+          local host="''${2:-$(hostname)}"
+          nfu "$flake" && drs "$flake" "$host"
         }
 
         if [[ -S "$SSH_AUTH_SOCK" ]]; then
@@ -31,6 +43,10 @@
     };
   };
 
+  # TODO ghostty optional
+  # TODO git hooks
+  # TODO ssh config
+  # TODO everthing form onboarding
   home.sessionVariables = {
     TERMINAL = "ghostty";
   };

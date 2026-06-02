@@ -4,6 +4,13 @@
   config,
   ...
 }:
+let
+  vsCodeUserDir =
+    if pkgs.stdenv.isDarwin then
+      "${config.home.homeDirectory}/Library/Application Support/Code/User"
+    else
+      "${config.home.homeDirectory}/.config/Code/User";
+in
 {
 
   options = {
@@ -87,8 +94,8 @@
 
     # This allows VS Code to edit it, while rebuild overwrites with defaults.
     home.activation.writeVscodeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          mkdir -p "${config.home.homeDirectory}/.config/Code/User"
-          cat > "${config.home.homeDirectory}/.config/Code/User/settings.json" << 'EOF'
+          mkdir -p "${vsCodeUserDir}"
+          cat > "${vsCodeUserDir}/settings.json" << 'EOF'
           ${builtins.toJSON config.vscode.mergedSettings}
       EOF
     '';

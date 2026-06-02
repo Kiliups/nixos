@@ -15,7 +15,7 @@ in
       {
         # TODO
         home.sessionVariables = {
-          JAVA_HOME = "${pkgs.jdk25}/lib/openjdk}";
+          JAVA_HOME = "${pkgs.jdk25}/lib/openjdk";
         };
 
         home.packages = with pkgs; [
