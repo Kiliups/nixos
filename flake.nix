@@ -82,8 +82,8 @@
         };
     in
     {
-      developmentModules = {
-        default = ./modules/development;
+      homeModules = {
+        development = ./modules/development;
       };
 
       darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHost;
