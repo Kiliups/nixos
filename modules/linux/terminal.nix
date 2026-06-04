@@ -30,6 +30,7 @@
         user.name = "Public User";
         user.email = "user@example.invalid";
         init.defaultBranch = "main";
+        pull.rebase = true;
       };
     };
   };

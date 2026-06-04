@@ -6,6 +6,9 @@
 {
   programs = {
     zsh = {
+      shellAliases = {
+        gac = "git add -A && git commit";
+      };
       initContent = ''
         drs() {
           local flake="''${1:-.}"
@@ -35,26 +38,83 @@
 
     git = {
       enable = true;
+      includes = [
+        {
+          condition = "gitdir:~/projects/";
+          path = "~/.config/git/work.inc";
+        }
+        {
+          condition = "gitdir:~/private/";
+          path = "~/.config/git/private.inc";
+        }
+      ];
       settings = {
-        user.name = host.name;
-        user.email = host.email;
         init.defaultBranch = "main";
+        pull.rebase = true;
       };
     };
   };
 
-  # TODO git hooks
   # TODO ssh config
   # TODO everthing form onboarding
-  home.sessionVariables = {
-    TERMINAL = "ghostty";
+  home = {
+    sessionVariables = {
+      TERMINAL = "ghostty";
+    };
+
+    packages = with pkgs; [
+      ghostty-bin
+
+      gh
+    ];
+
+    file = {
+      ".config/git/work.inc".text = ''
+        [user]
+          name = ${host.name}
+          email = ${host.email}
+        [core]
+          hooksPath = ~/.config/git/hooks/work
+      '';
+
+      ".config/git/private.inc".text = ''
+        [user]
+          name = Public User
+          email = user@example.invalid
+      '';
+
+      ".config/git/hooks/work/prepare-commit-msg" = {
+        executable = true;
+        text = ''
+          #!/usr/bin/env bash
+          [[ "$2" == "" || "$2" == "message" ]] || exit 0
+
+          branch_name=$(git rev-parse --abbrev-ref HEAD)
+          [[ "$branch_name" != "HEAD" ]] || exit 0
+
+          commit_message=$(<"$1")
+          [[ "$commit_message" == "[$branch_name]"* ]] || printf '[%s] %s\n' "$branch_name" "$commit_message" > "$1"
+        '';
+      };
+
+      ".config/git/hooks/work/pre-push" = {
+        executable = true;
+        text = ''
+          #!/usr/bin/env bash
+          read -r -p "formatted and linted? [y/N] " answer
+          case "$answer" in
+            [yY]|[yY][eE][sS])
+              exit 0
+              ;;
+            *)
+              echo "Push cancelled. formatting/linting first."
+              exit 1
+              ;;
+          esac
+        '';
+      };
+    };
   };
-
-  home.packages = with pkgs; [
-    ghostty-bin
-
-    gh
-  ];
 
   xdg.configFile."ghostty/config.ghostty".text = ''
     font-family = "JetBrains Mono"
