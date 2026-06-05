@@ -4,6 +4,8 @@
     ../../modules/darwin
   ];
 
+  targets.darwin.copyApps.enable = false;
+
   home = {
     inherit (host) username;
     homeDirectory = "/Users/${host.username}";
@@ -17,7 +19,6 @@
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     targets.vscode.enable = false;
   };
-
   dev = {
     shell.enable = true;
     tmux.enable = true;
@@ -41,12 +42,4 @@
       packageManager = "yarn";
     };
   };
-
-  targets.darwin.copyApps.enable = false;
-
-  home.packages = with pkgs; [
-    spotify
-    obsidian
-    google-chrome
-  ];
 }
