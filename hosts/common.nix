@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ host, pkgs, ... }:
 {
   boot = {
     # boot
@@ -163,9 +163,9 @@
 
   virtualisation.docker.enable = true;
 
-  users.users.user = {
+  users.users.${host.username} = {
     isNormalUser = true;
-    description = "Public User";
+    description = host.name;
     shell = pkgs.zsh;
     extraGroups = [
       "networkmanager"

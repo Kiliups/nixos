@@ -43,14 +43,21 @@
       ...
     }:
     let
-      darwinHost = {
-        kilian-mayer = {
-          username = "user";
-          name = "Public User";
-          email = "user@example.invalid";
-          system = "aarch64-darwin";
-        };
-      };
+      privateEnv = builtins.getEnv "NIXOS_PRIVATE_CONFIG";
+      privatePath =
+        if privateEnv != "" then
+          /. + privateEnv
+        else
+          /. + "${builtins.getEnv "PWD"}/hosts/private.nix";
+      hosts =
+        if builtins.pathExists privatePath then
+          import privatePath
+        else
+          {
+            darwinHosts = { };
+            nixosHosts = { };
+          };
+      inherit (hosts) darwinHosts nixosHosts;
 
       mkDarwinHost =
         hostName: host:
@@ -82,70 +89,54 @@
             }
           ];
         };
+
+      mkNixosHost =
+        hostName: host:
+        nixpkgs.lib.nixosSystem {
+          inherit (host) system;
+          specialArgs = {
+            inherit inputs host hostName;
+          };
+          modules = [
+            stylix.nixosModules.stylix
+            (
+              if host.type == "laptop" then
+                ./hosts/laptop/configuration.nix
+              else
+                ./hosts/workstation/configuration.nix
+            )
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useUserPackages = true;
+                backupFileExtension = "backup-" + toString builtins.currentTime;
+                extraSpecialArgs = {
+                  inherit inputs host tpm;
+                };
+
+                users.${host.username} = {
+                  nixpkgs.config.allowUnfree = true;
+                  imports = [
+                    plasma-manager.homeModules.plasma-manager
+                    zen-browser.homeModules.default
+                    (if host.type == "laptop" then ./hosts/laptop/home.nix else ./hosts/home.nix)
+                  ];
+                };
+              };
+            }
+          ]
+          ++ nixpkgs.lib.optional (host.type == "laptop") nixos-hardware.nixosModules.framework-13-7040-amd;
+        };
     in
     {
       homeModules = {
         development = ./modules/development;
       };
 
-      darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHost;
+      darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHosts;
 
-      nixosConfigurations = {
-        laptop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            nixos-hardware.nixosModules.framework-13-7040-amd
-            stylix.nixosModules.stylix
-            ./hosts/laptop/configuration.nix
+      nixosConfigurations = nixpkgs.lib.mapAttrs mkNixosHost nixosHosts;
 
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useUserPackages = true;
-                backupFileExtension = "backup-" + toString builtins.currentTime;
-                extraSpecialArgs = {
-                  inherit inputs tpm;
-                };
-
-                users.user = {
-                  nixpkgs.config.allowUnfree = true;
-                  imports = [
-                    plasma-manager.homeModules.plasma-manager
-                    zen-browser.homeModules.default
-                    ./hosts/laptop/home.nix
-                  ];
-                };
-              };
-            }
-          ];
-        };
-        workstation = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            stylix.nixosModules.stylix
-            ./hosts/workstation/configuration.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useUserPackages = true;
-                backupFileExtension = "backup-" + toString builtins.currentTime;
-                extraSpecialArgs = {
-                  inherit inputs tpm;
-                };
-
-                users.user = {
-                  nixpkgs.config.allowUnfree = true;
-                  imports = [
-                    plasma-manager.homeModules.plasma-manager
-                    zen-browser.homeModules.default
-                    ./hosts/home.nix
-                  ];
-                };
-              };
-            }
-          ];
-        };
-      };
       templates = {
         python = {
           path = ./templates/python;

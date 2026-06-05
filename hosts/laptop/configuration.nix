@@ -1,11 +1,11 @@
-{ pkgs, ... }:
+{ hostName, pkgs, ... }:
 {
   imports = [
     ../common.nix
     /etc/nixos/hardware-configuration.nix
   ];
 
-  networking.hostName = "laptop";
+  networking.hostName = hostName;
 
   programs.niri = {
     enable = true;

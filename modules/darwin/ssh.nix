@@ -17,9 +17,9 @@
   home.file.".ssh/config".text = ''
     Include ~/.orbstack/ssh/config
 
-    Include ~/projects/work-scripts/bash/.ssh/config
-    Include ~/projects/work-scripts/bash/.ssh/includes/*.conf
-    Include ~/projects/work-scripts/bash/.ssh/departments/*.conf
+    Include ${host.dirs.workScripts}/bash/.ssh/config
+    Include ${host.dirs.workScripts}/bash/.ssh/includes/*.conf
+    Include ${host.dirs.workScripts}/bash/.ssh/departments/*.conf
 
     Host *
       AddKeysToAgent yes
@@ -31,6 +31,5 @@
       User ${host.username} 
       IdentityFile ~/.ssh/id_ed25519
       AddKeysToAgent yes
-      ForwardAgent yes
   '';
 }

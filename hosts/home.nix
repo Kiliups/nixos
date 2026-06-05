@@ -1,4 +1,4 @@
-{ ... }:
+{ host, ... }:
 {
   imports = [
     ../modules/linux
@@ -6,8 +6,8 @@
 
   home = {
     stateVersion = "26.11";
-    username = "user";
-    homeDirectory = "/home/user";
+    inherit (host) username;
+    homeDirectory = "/home/${host.username}";
   };
 
   stylix = {

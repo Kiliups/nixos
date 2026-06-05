@@ -1,2 +1,12 @@
 hardware-configuration.nix
 .idea
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.*
+.sops.yaml
+.claude/settings.local.json
+hosts/private.nix

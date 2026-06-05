@@ -8,9 +8,9 @@ theming from one repository.
 
 | Host | Platform | Purpose | User |
 | --- | --- | --- | --- |
-| `laptop` | NixOS, `x86_64-linux` | Framework laptop | `user` |
+| `laptop` | NixOS, `x86_64-linux` | Laptop | `user` |
 | `workstation` | NixOS, `x86_64-linux` | Workstation | `user` |
-| `kilian-mayer` | nix-darwin, `aarch64-darwin` | macOS machine | `user` |
+| `macbook` | nix-darwin, `aarch64-darwin` | macOS machine | `user` |
 
 ## Quickstart
 
@@ -19,6 +19,13 @@ Clone the repository to the location used by automatic upgrades:
 ```bash
 git clone <repo-url> ~/.config/nixos
 cd ~/.config/nixos
+```
+
+Create ignored private host data from the example and adjust it. Host attr names
+are also the flake output names and machine hostnames.
+
+```bash
+cp hosts/private.example.nix hosts/private.nix
 ```
 
 Enable flakes on a fresh NixOS install if they are not enabled yet:
@@ -37,7 +44,7 @@ sudo nixos-rebuild switch --flake .#workstation --impure
 Apply the macOS host:
 
 ```bash
-sudo -H nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#kilian-mayer --impure
+sudo -H nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#macbook --impure
 ```
 
 ## Updating

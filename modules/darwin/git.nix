@@ -4,11 +4,11 @@
     enable = true;
     includes = [
       {
-        condition = "gitdir:~/projects/";
+        condition = "gitdir:${host.dirs.projects}/";
         path = "~/.config/git/work.inc";
       }
       {
-        condition = "gitdir:~/private/";
+        condition = "gitdir:${host.dirs.private}/";
         path = "~/.config/git/private.inc";
       }
     ];
@@ -34,8 +34,8 @@
 
       ".config/git/private.inc".text = ''
         [user]
-          name = Public User
-          email = user@example.invalid
+          name = ${host.privateName}
+          email = ${host.privateEmail}
       '';
 
       ".config/git/hooks/work/prepare-commit-msg" = {

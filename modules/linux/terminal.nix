@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ host, pkgs, ... }:
 {
   home.sessionVariables = {
     TERMINAL = "ghostty";
@@ -6,15 +6,27 @@
 
   programs = {
     zsh = {
-      shellAliases = {
-        nx = "code ~/.config/nixos";
-        nfu = "sudo nix flake update --flake ~/.config/nixos";
-        nrsu = "nfu && nrs";
-      };
+      shellAliases = { };
       initContent = ''
+        nx() {
+          code "''${NIXOS_FLAKE:-$HOME/.config/nixos}"
+        }
+
+        nfu() {
+          local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+          (cd "$flake" && nix flake update)
+        }
+
         nrs() {
-          local host="''${1:-$(hostname)}"
-          (cd ~/.config/nixos && git add -A && sudo nixos-rebuild switch --flake .#''${host})
+          local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+          local host="''${2:-$(hostname)}"
+          (cd "$flake" && git add -A && sudo env NIXOS_PRIVATE_CONFIG="$flake/hosts/private.nix" nixos-rebuild switch --flake ".#$host" --impure)
+        }
+
+        nrsu() {
+          local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+          local host="''${2:-$(hostname)}"
+          nfu "$flake" && nrs "$flake" "$host"
         }
 
         bindkey '^[[1;5D' backward-word
@@ -27,8 +39,8 @@
     git = {
       enable = true;
       settings = {
-        user.name = "Public User";
-        user.email = "user@example.invalid";
+        user.name = host.name;
+        user.email = host.email;
         init.defaultBranch = "main";
         pull.rebase = true;
       };
