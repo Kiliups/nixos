@@ -33,3 +33,4 @@ map("x", "<leader>p", [['_dP]], { desc = "Paste without yanking replaced text" }
 
 -- Delete without yanking
 map({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete to black hole register" })
+-- TODO: :echo expand('%:p')

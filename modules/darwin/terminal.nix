@@ -101,7 +101,13 @@
         executable = true;
         text = ''
           #!/usr/bin/env bash
-          read -r -p "formatted and linted? [y/N] " answer
+          if [[ ! -r /dev/tty ]]; then
+            echo "Push cancelled. no interactive terminal available." >&2
+            exit 1
+          fi
+
+          printf "formatted and linted? [y/N] " > /dev/tty
+          read -r answer < /dev/tty
           case "$answer" in
             [yY]|[yY][eE][sS])
               exit 0

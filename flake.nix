@@ -65,17 +65,19 @@
             home-manager.darwinModules.home-manager
             {
               home-manager = {
-                useGlobalPkgs = true;
                 useUserPackages = true;
-                backupFileExtension = "backup-" + toString builtins.currentTime;
+                backupFileExtension = "backup";
                 extraSpecialArgs = {
-                  inherit inputs host;
+                  inherit inputs host tpm;
                 };
 
-                users.${host.username}.imports = [
-                  stylix.homeModules.stylix
-                  ./hosts/darwin/home.nix
-                ];
+                users.${host.username} = {
+                  nixpkgs.config.allowUnfree = true;
+                  imports = [
+                    stylix.homeModules.stylix
+                    ./hosts/darwin/home.nix
+                  ];
+                };
               };
             }
           ];
@@ -99,7 +101,6 @@
             home-manager.nixosModules.home-manager
             {
               home-manager = {
-                useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "backup-" + toString builtins.currentTime;
                 extraSpecialArgs = {
@@ -107,6 +108,7 @@
                 };
 
                 users.user = {
+                  nixpkgs.config.allowUnfree = true;
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
@@ -125,7 +127,6 @@
             home-manager.nixosModules.home-manager
             {
               home-manager = {
-                useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "backup-" + toString builtins.currentTime;
                 extraSpecialArgs = {
@@ -133,6 +134,7 @@
                 };
 
                 users.user = {
+                  nixpkgs.config.allowUnfree = true;
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
