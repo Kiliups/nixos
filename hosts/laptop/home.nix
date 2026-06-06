@@ -29,7 +29,7 @@
     svelte.enable = true;
     typescript = {
       enable = true;
-      packageManager = "bun";
+      extraPackages = with pkgs; [ bun ];
     };
     typst.enable = true;
     vue.enable = true;

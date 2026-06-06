@@ -39,7 +39,7 @@
     php.enable = true;
     typescript = {
       enable = true;
-      packageManager = "yarn";
+      extraPackages = with pkgs; [ yarn-berry ];
     };
   };
 }

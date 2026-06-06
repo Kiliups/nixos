@@ -7,27 +7,23 @@
 let
   vars = import ./lib.nix;
   cfg = config.languages.typescript;
-  packageManagerPackages = {
-    bun = [ pkgs.bun ];
-    yarn = [ pkgs.yarn-berry ];
-  };
 in
 {
   options.languages.typescript = {
     enable = lib.mkEnableOption "TypeScript setup";
 
-    packageManager = lib.mkOption {
-      type = lib.types.enum [
-        "bun"
-        "yarn"
-      ];
+    extraPackages = lib.mkOption {
+      type = lib.types.listOf lib.types.package;
+      default = [ ];
+      description = "Extra packages for TypeScript projects.";
+      example = lib.literalExpression "with pkgs; [ bun pnpm yarn-berry ]";
     };
   };
 
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
       {
-        home.packages = [ pkgs.nodejs ] ++ packageManagerPackages.${cfg.packageManager};
+        home.packages = [ pkgs.nodejs ] ++ cfg.extraPackages;
       }
 
       (lib.mkIf config.dev.lazyvim.enable {
