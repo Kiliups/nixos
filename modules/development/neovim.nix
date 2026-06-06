@@ -58,6 +58,8 @@ in
       vimAlias = true;
 
       extraPackages = with pkgs; [
+        cargo
+        rustc
         tree-sitter
       ];
     };
