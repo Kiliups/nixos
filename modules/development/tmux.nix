@@ -2,7 +2,7 @@
   pkgs,
   lib,
   config,
-  tpm,
+  tpm ? null,
   ...
 }:
 let
@@ -168,9 +168,24 @@ let
   };
 in
 {
-  options.dev.tmux.enable = lib.mkEnableOption "tmux setup";
+  options.dev.tmux = {
+    enable = lib.mkEnableOption "tmux setup";
+
+    configSource = lib.mkOption {
+      type = lib.types.path;
+      default = ../../config/tmux/tmux.conf;
+      description = "Path to the tmux configuration file.";
+    };
+  };
 
   config = lib.mkIf config.dev.tmux.enable {
+    assertions = [
+      {
+        assertion = tpm != null;
+        message = "The tpm flake input must be set when dev.tmux.enable is true.";
+      }
+    ];
+
     home = {
       packages = with pkgs; [
         tmux
@@ -183,7 +198,7 @@ in
 
       file = {
         ".tmux.conf" = {
-          source = ../../config/tmux/tmux.conf;
+          source = config.dev.tmux.configSource;
         };
 
         ".tmux/plugins/tpm" = {

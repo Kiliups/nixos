@@ -21,6 +21,18 @@
   security.pam.services.sudo_local.touchIdAuth = true;
   security.pam.services.sudo_local.reattach = true;
 
+  homebrew = {
+    enable = true;
+    enableZshIntegration = true;
+    taps = [
+      "michaelroosz/ssh"
+      "theseal/ssh-askpass"
+    ];
+    casks = [
+      "libsk-libfido2-install"
+    ];
+  };
+
   # install homebrew
   system.activationScripts.preActivation.text = ''
     if [ ! -x /opt/homebrew/bin/brew ]; then

@@ -1,3 +1,3 @@
 {
-  nvimPluginDir = ".config/nvim/lua/config/extras";
+  nvimPluginDir = ".config/nvim/lua/plugins/extras";
 }

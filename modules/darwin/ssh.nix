@@ -1,8 +1,5 @@
-{ host, pkgs, ... }:
+{ host, ... }:
 {
-  home.packages = [
-    pkgs.openssh
-  ];
 
   programs.zsh = {
     initContent = ''
@@ -11,6 +8,9 @@
       else
         export SSH_AUTH_SOCK="$HOME/.ssh/agent"
       fi
+    '';
+    profileExtra = ''
+      export SSH_SK_PROVIDER=/usr/local/lib/libsk-libfido2.dylib
     '';
   };
 
