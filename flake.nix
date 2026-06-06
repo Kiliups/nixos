@@ -43,15 +43,10 @@
       ...
     }:
     let
-      privateEnv = builtins.getEnv "NIXOS_PRIVATE_CONFIG";
-      privatePath =
-        if privateEnv != "" then
-          /. + privateEnv
-        else
-          /. + "${builtins.getEnv "PWD"}/hosts/private.nix";
+      privateHostsPath = /. + "${builtins.getEnv "PWD"}/hosts/private.nix";
       hosts =
-        if builtins.pathExists privatePath then
-          import privatePath
+        if builtins.pathExists privateHostsPath then
+          import privateHostsPath
         else
           {
             darwinHosts = { };

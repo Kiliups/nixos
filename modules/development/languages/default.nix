@@ -17,6 +17,7 @@
   home.packages = with pkgs; [
     nixfmt
     nixd
+    statix
 
     # c/c++
     gcc

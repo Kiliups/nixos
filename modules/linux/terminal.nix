@@ -14,13 +14,13 @@
 
         nfu() {
           local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
-          (cd "$flake" && nix flake update)
+          nix flake update --flake "$flake"
         }
 
         nrs() {
           local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
           local host="''${2:-$(hostname)}"
-          (cd "$flake" && git add -A && sudo env NIXOS_PRIVATE_CONFIG="$flake/hosts/private.nix" nixos-rebuild switch --flake ".#$host" --impure)
+          (cd "$flake" && git add -A && sudo nixos-rebuild switch --flake "path:$PWD#$host" --impure)
         }
 
         nrsu() {

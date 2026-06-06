@@ -15,12 +15,6 @@
       vimAlias = true;
 
       extraPackages = with pkgs; [
-        # language servers
-        nil
-
-        # linters
-        statix
-
         # treesitter
         tree-sitter
       ];
@@ -32,10 +26,10 @@
       lazydocker
     ];
 
-    xdg.dataFile."nvim/lazy/lazy.nvim" = {
-      source = pkgs.vimPlugins.lazy-nvim;
-      recursive = true;
-    };
+    home.activation.installLazyNvim = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      mkdir -p "$HOME/.local/share/nvim/lazy"
+      cp -r --no-preserve=mode ${pkgs.vimPlugins.lazy-nvim} "$HOME/.local/share/nvim/lazy/lazy.nvim"
+    '';
 
     home.file.".config/nvim" = {
       source = ../../config/nvim;
