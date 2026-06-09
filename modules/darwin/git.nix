@@ -51,29 +51,6 @@
           [[ "$commit_message" == "[$branch_name]"* ]] || printf '[%s] %s\n' "$branch_name" "$commit_message" > "$1"
         '';
       };
-
-      ".config/git/hooks/work/pre-push" = {
-        executable = true;
-        text = ''
-          #!/usr/bin/env bash
-          if [[ ! -r /dev/tty ]]; then
-            echo "Push cancelled. no interactive terminal available." >&2
-            exit 1
-          fi
-
-          printf "formatted and linted? [y/N] " > /dev/tty
-          read -r answer < /dev/tty
-          case "$answer" in
-            [yY]|[yY][eE][sS])
-              exit 0
-              ;;
-            *)
-              echo "Push cancelled. formatting/linting first."
-              exit 1
-              ;;
-          esac
-        '';
-      };
     };
   };
 }

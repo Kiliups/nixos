@@ -19,6 +19,7 @@
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     targets.vscode.enable = false;
   };
+
   dev = {
     shell.enable = true;
     tmux.enable = true;
@@ -29,7 +30,7 @@
     codex.enable = true;
     cursor.enable = true;
     opencode.enable = true;
-    pi.enable = true;
+    pi.enable = false;
   };
 
   languages = {

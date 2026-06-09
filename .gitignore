@@ -10,3 +10,4 @@ secrets.*
 .sops.yaml
 .claude/settings.local.json
 hosts/private.nix
+.DS_Store
