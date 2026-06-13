@@ -69,6 +69,12 @@ let
     >
     > Caveman resume. Verify backup exist first.
   '';
+  agentInstructions = ''
+    # Agent Instructions
+
+    - Make the smallest idiomatic code change that solves the task.
+    - Preserve the project's existing style, structure, and conventions.
+  '';
 
 in
 {
@@ -97,6 +103,7 @@ in
 
     home.file = lib.mkMerge [
       (lib.mkIf config.dev.claude.enable {
+        ".claude/CLAUDE.md".text = agentInstructions;
         ".claude/skills/grill-me/SKILL.md".text = grill-me;
         ".claude/skills/caveman/SKILL.md".text = caveman;
       })
@@ -108,6 +115,7 @@ in
           || config.dev.pi.enable
         )
         {
+          ".agents/AGENTS.md".text = agentInstructions;
           ".agents/skills/grill-me/SKILL.md".text = grill-me;
           ".agents/skills/caveman/SKILL.md".text = caveman;
         }
