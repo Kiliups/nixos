@@ -17,7 +17,7 @@ in
         languages.typescript.enable = true;
       }
 
-      (lib.mkIf config.dev.vscode.enable {
+      (lib.mkIf config.development.vscode.enable {
         programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
           svelte.svelte-vscode
         ];
@@ -30,7 +30,7 @@ in
         };
       })
 
-      (lib.mkIf config.dev.lazyvim.enable {
+      (lib.mkIf config.development.lazyvim.enable {
         home.file."${vars.nvimPluginDir}/svelte.lua" = {
           text = ''
             return   {

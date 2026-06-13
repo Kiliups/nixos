@@ -18,14 +18,14 @@ in
         ];
       }
 
-      (lib.mkIf config.dev.vscode.enable {
+      (lib.mkIf config.development.vscode.enable {
         programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
           bmewburn.vscode-intelephense-client
           xdebug.php-debug
         ];
       })
 
-      (lib.mkIf config.dev.lazyvim.enable {
+      (lib.mkIf config.development.lazyvim.enable {
         home.file."${vars.nvimPluginDir}/php.lua" = {
           text = ''
             return   {

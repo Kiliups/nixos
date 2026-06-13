@@ -22,7 +22,7 @@ in
         ];
       }
 
-      (lib.mkIf config.dev.vscode.enable {
+      (lib.mkIf config.development.vscode.enable {
         programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
           rust-lang.rust-analyzer
           tauri-apps.tauri-vscode
@@ -36,7 +36,7 @@ in
         };
       })
 
-      (lib.mkIf config.dev.lazyvim.enable {
+      (lib.mkIf config.development.lazyvim.enable {
         home.file."${vars.nvimPluginDir}/rust.lua" = {
           text = ''
             return   {

@@ -49,8 +49,31 @@
       ...
     }:
     let
+      inherit (nixpkgs) lib;
       darwinHosts = nixos-private.darwinHosts or { };
       nixosHosts = nixos-private.nixosHosts or { };
+      systems = [
+        "x86_64-linux"
+        "aarch64-darwin"
+      ];
+      forAllSystems = lib.genAttrs systems;
+
+      mkPkgs =
+        system:
+        import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
+
+      nixosRoleModules = {
+        laptop = ./hosts/laptop/configuration.nix;
+        workstation = ./hosts/workstation/configuration.nix;
+      };
+
+      homeRoleModules = {
+        laptop = ./hosts/laptop/home.nix;
+        workstation = ./hosts/workstation/home.nix;
+      };
 
       mkDarwinHost =
         hostName: host:
@@ -75,7 +98,6 @@
                 };
 
                 users.${host.username} = {
-                  nixpkgs.config.allowUnfree = true;
                   imports = [
                     stylix.homeModules.stylix
                     ./hosts/darwin/home.nix
@@ -89,6 +111,11 @@
 
       mkNixosHost =
         hostName: host:
+        let
+          roleModule = nixosRoleModules.${host.type} or (throw "Unknown NixOS host type: ${host.type}");
+          homeRoleModule =
+            homeRoleModules.${host.type} or (throw "Unknown NixOS home host type: ${host.type}");
+        in
         nixpkgs.lib.nixosSystem {
           inherit (host) system;
           specialArgs = {
@@ -96,12 +123,7 @@
           };
           modules = [
             stylix.nixosModules.stylix
-            (
-              if host.type == "laptop" then
-                ./hosts/laptop/configuration.nix
-              else
-                ./hosts/workstation/configuration.nix
-            )
+            roleModule
           ]
           ++ (host.modules or [ ])
           ++ [
@@ -115,19 +137,18 @@
                 };
 
                 users.${host.username} = {
-                  nixpkgs.config.allowUnfree = true;
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
                     inputs.noctalia-shell.homeModules.default
-                    (if host.type == "laptop" then ./hosts/laptop/home.nix else ./hosts/home.nix)
+                    homeRoleModule
                   ]
                   ++ (host.homeModules or [ ]);
                 };
               };
             }
           ]
-          ++ nixpkgs.lib.optional (host.type == "laptop") nixos-hardware.nixosModules.framework-13-7040-amd;
+          ++ lib.optional (host.type == "laptop") nixos-hardware.nixosModules.framework-13-7040-amd;
         };
     in
     {
@@ -145,5 +166,25 @@
           description = "Python development environment with venv support";
         };
       };
+
+      formatter = forAllSystems (system: (mkPkgs system).nixfmt-tree);
+
+      checks = forAllSystems (
+        system:
+        let
+          pkgs = mkPkgs system;
+        in
+        {
+          statix = pkgs.runCommand "statix-check" { nativeBuildInputs = [ pkgs.statix ]; } ''
+            statix check ${./.}
+            touch $out
+          '';
+
+          deadnix = pkgs.runCommand "deadnix-check" { nativeBuildInputs = [ pkgs.deadnix ]; } ''
+            deadnix --fail ${./.}
+            touch $out
+          '';
+        }
+      );
     };
 }

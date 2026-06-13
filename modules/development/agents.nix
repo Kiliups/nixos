@@ -78,7 +78,7 @@ let
 
 in
 {
-  options.dev = {
+  options.development = {
     claude.enable = lib.mkEnableOption "claude code";
     codex.enable = lib.mkEnableOption "codex";
     cursor.enable = lib.mkEnableOption "cursor-agent";
@@ -88,31 +88,31 @@ in
 
   config = {
     home.packages =
-      lib.optionals config.dev.claude.enable [ pkgs.claude-code ]
-      ++ lib.optionals config.dev.cursor.enable [ pkgs.cursor-cli ]
-      ++ lib.optionals config.dev.codex.enable [ pkgs.codex ]
-      ++ lib.optionals config.dev.opencode.enable [ pkgs.opencode ]
-      ++ lib.optionals config.dev.pi.enable [ pkgs.pi-coding-agent ];
+      lib.optionals config.development.claude.enable [ pkgs.claude-code ]
+      ++ lib.optionals config.development.cursor.enable [ pkgs.cursor-cli ]
+      ++ lib.optionals config.development.codex.enable [ pkgs.codex ]
+      ++ lib.optionals config.development.opencode.enable [ pkgs.opencode ]
+      ++ lib.optionals config.development.pi.enable [ pkgs.pi-coding-agent ];
 
     programs.zsh.shellAliases = lib.mkMerge [
-      (lib.mkIf config.dev.claude.enable { cc = "claude"; })
-      (lib.mkIf config.dev.cursor.enable { ccli = "cursor-agent"; })
-      (lib.mkIf config.dev.codex.enable { cx = "codex"; })
-      (lib.mkIf config.dev.opencode.enable { opc = "opencode"; })
+      (lib.mkIf config.development.claude.enable { cc = "claude"; })
+      (lib.mkIf config.development.cursor.enable { ccli = "cursor-agent"; })
+      (lib.mkIf config.development.codex.enable { cx = "codex"; })
+      (lib.mkIf config.development.opencode.enable { opc = "opencode"; })
     ];
 
     home.file = lib.mkMerge [
-      (lib.mkIf config.dev.claude.enable {
+      (lib.mkIf config.development.claude.enable {
         ".claude/CLAUDE.md".text = agentInstructions;
         ".claude/skills/grill-me/SKILL.md".text = grill-me;
         ".claude/skills/caveman/SKILL.md".text = caveman;
       })
       (lib.mkIf
         (
-          config.dev.cursor.enable
-          || config.dev.codex.enable
-          || config.dev.opencode.enable
-          || config.dev.pi.enable
+          config.development.cursor.enable
+          || config.development.codex.enable
+          || config.development.opencode.enable
+          || config.development.pi.enable
         )
         {
           ".agents/AGENTS.md".text = agentInstructions;

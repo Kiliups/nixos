@@ -168,7 +168,7 @@ let
   };
 in
 {
-  options.dev.tmux = {
+  options.development.tmux = {
     enable = lib.mkEnableOption "tmux setup";
 
     configSource = lib.mkOption {
@@ -178,11 +178,11 @@ in
     };
   };
 
-  config = lib.mkIf config.dev.tmux.enable {
+  config = lib.mkIf config.development.tmux.enable {
     assertions = [
       {
         assertion = tpm != null;
-        message = "The tpm flake input must be set when dev.tmux.enable is true.";
+        message = "The tpm flake input must be set when development.tmux.enable is true.";
       }
     ];
 
@@ -198,7 +198,7 @@ in
 
       file = {
         ".tmux.conf" = {
-          source = config.dev.tmux.configSource;
+          source = config.development.tmux.configSource;
         };
 
         ".tmux/plugins/tpm" = {

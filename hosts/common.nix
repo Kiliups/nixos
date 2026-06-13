@@ -1,59 +1,59 @@
 { host, pkgs, ... }:
 {
-  boot = {
-    # boot
-    loader = {
-      systemd-boot = {
-        configurationLimit = 5;
-        enable = false;
-      };
-
-      grub = {
-        enable = true;
-        device = "nodev";
-        efiSupport = true;
-        useOSProber = false;
-        theme = ../config/catppuccin-macchiato-grub-theme;
-        splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
-      };
-
-      efi.canTouchEfiVariables = true;
+  boot.loader = {
+    systemd-boot = {
+      configurationLimit = 5;
+      enable = false;
     };
 
-    # kernel
-    kernelPackages = pkgs.linuxPackages_latest;
+    grub = {
+      enable = true;
+      device = "nodev";
+      efiSupport = true;
+      useOSProber = false;
+      theme = ../config/catppuccin-macchiato-grub-theme;
+      splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
+    };
+
+    efi.canTouchEfiVariables = true;
   };
 
-  # nix settings
   nixpkgs.config.allowUnfree = true;
 
-  system.autoUpgrade = {
-    enable = true;
-    dates = "daily";
-    flake = "~/.config/nixos";
-    flags = [
-      "--recreate-lock-file"
-    ];
-    allowReboot = false;
+  system = {
+    autoUpgrade = {
+      enable = true;
+      dates = "daily";
+      flake = "/home/${host.username}/.config/nixos";
+      flags = [
+        "--update-input"
+        "nixpkgs"
+        "--override-input"
+        "nixos-private"
+        "path:/home/${host.username}/.config/nixos/private"
+      ];
+      allowReboot = false;
+    };
+
+    stateVersion = "25.11";
   };
 
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    auto-optimise-store = true;
+  nix = {
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      auto-optimise-store = true;
+    };
+
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
   };
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-
-  system.stateVersion = "25.11";
-
-  # theming
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
@@ -65,44 +65,17 @@
     };
   };
 
-  # I/O
   networking.networkmanager.enable = true;
 
-  security.pam.services.sddm.kwallet.enable = true;
-
-  environment = {
-    # Fix scaling for vscode
-    sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-
-      # GTK apps
-      GDK_BACKEND = "wayland,x11,*";
-
-      # Qt apps
-      QT_QPA_PLATFORM = "wayland;xcb";
-      # SDL apps
-      SDL_VIDEODRIVER = "wayland,x11";
-
-      # Firefox / Mozilla
-      MOZ_ENABLE_WAYLAND = "1";
-
-      # Electron / Chromium
-      ELECTRON_OZONE_PLATFORM_HINT = "wayland";
-      OZONE_PLATFORM = "wayland";
-
-      # General session hint
-      XDG_SESSION_TYPE = "wayland";
-    };
-
-    plasma6.excludePackages = with pkgs.kdePackages; [
-      konsole
-      discover
-    ];
-
-    # system packages
-    systemPackages = with pkgs; [
-      kdePackages.partitionmanager
-    ];
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    GDK_BACKEND = "wayland,x11,*";
+    QT_QPA_PLATFORM = "wayland;xcb";
+    SDL_VIDEODRIVER = "wayland,x11";
+    MOZ_ENABLE_WAYLAND = "1";
+    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+    OZONE_PLATFORM = "wayland";
+    XDG_SESSION_TYPE = "wayland";
   };
 
   security.rtkit.enable = true;
@@ -128,8 +101,6 @@
       enable = true;
       wayland.enable = true;
     };
-
-    desktopManager.plasma6.enable = true;
   };
 
   hardware.bluetooth = {
@@ -137,24 +108,24 @@
     powerOnBoot = true;
   };
 
-  # Internationalization
   time.timeZone = "Europe/Berlin";
-  i18n.defaultLocale = "de_DE.UTF-8";
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "de_DE.UTF-8";
-    LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT = "de_DE.UTF-8";
-    LC_MONETARY = "de_DE.UTF-8";
-    LC_NAME = "de_DE.UTF-8";
-    LC_NUMERIC = "de_DE.UTF-8";
-    LC_PAPER = "de_DE.UTF-8";
-    LC_TELEPHONE = "de_DE.UTF-8";
-    LC_TIME = "de_DE.UTF-8";
+  i18n = {
+    defaultLocale = "de_DE.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "de_DE.UTF-8";
+      LC_IDENTIFICATION = "de_DE.UTF-8";
+      LC_MEASUREMENT = "de_DE.UTF-8";
+      LC_MONETARY = "de_DE.UTF-8";
+      LC_NAME = "de_DE.UTF-8";
+      LC_NUMERIC = "de_DE.UTF-8";
+      LC_PAPER = "de_DE.UTF-8";
+      LC_TELEPHONE = "de_DE.UTF-8";
+      LC_TIME = "de_DE.UTF-8";
+    };
   };
 
   console.keyMap = "de";
 
-  # fonts
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
   ];
@@ -171,9 +142,6 @@
       "networkmanager"
       "wheel"
       "docker"
-    ];
-    packages = with pkgs; [
-      kdePackages.kate
     ];
   };
 }

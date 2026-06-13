@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   imports = [
     ./personal.nix
     ./thunderbird.nix

@@ -18,13 +18,13 @@ in
         languages.typescript.enable = true;
       }
 
-      (lib.mkIf config.dev.vscode.enable {
+      (lib.mkIf config.development.vscode.enable {
         programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
           vue.volar
         ];
       })
 
-      (lib.mkIf config.dev.lazyvim.enable {
+      (lib.mkIf config.development.lazyvim.enable {
         home.file."${vars.nvimPluginDir}/vue.lua" = {
           text = ''
             return   {

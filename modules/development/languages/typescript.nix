@@ -26,7 +26,7 @@ in
         home.packages = [ pkgs.nodejs ] ++ cfg.extraPackages;
       }
 
-      (lib.mkIf config.dev.lazyvim.enable {
+      (lib.mkIf config.development.lazyvim.enable {
         home.file."${vars.nvimPluginDir}/typescript.lua" = {
           text = ''
             return   {

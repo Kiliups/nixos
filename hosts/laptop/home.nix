@@ -3,15 +3,12 @@
   imports = [
     ../home.nix
     ../../modules/apps
+    ../../modules/linux/tiling
   ];
 
-  dev = {
-    shell.enable = true;
-    tmux.enable = true;
-    starship.enable = true;
-    lazyvim.enable = true;
-    vscode.enable = true;
+  development.full.enable = true;
 
+  development = {
     claude.enable = false;
     codex.enable = false;
     cursor.enable = false;
@@ -20,20 +17,9 @@
   };
 
   languages = {
-    angular.enable = true;
-    astro.enable = true;
-    go.enable = true;
-    java.enable = true;
-    python.enable = true;
-    rust.enable = true;
-    svelte.enable = true;
     typescript = {
-      enable = true;
       extraPackages = with pkgs; [ bun ];
     };
-    typst.enable = true;
-    vue.enable = true;
-    php.enable = true;
   };
 
   home.packages = with pkgs; [

@@ -1,20 +1,12 @@
 {
-  pkgs,
   lib,
   config,
+  pkgs,
   ...
 }:
-let
-  vsCodeUserDir =
-    if pkgs.stdenv.isDarwin then
-      "${config.home.homeDirectory}/Library/Application Support/Code/User"
-    else
-      "${config.home.homeDirectory}/.config/Code/User";
-in
 {
-
   options = {
-    dev.vscode.enable = lib.mkEnableOption "VS Code setup";
+    development.vscode.enable = lib.mkEnableOption "VS Code setup";
 
     vscode.mergedSettings = lib.mkOption {
       type = lib.types.attrsOf lib.types.anything;
@@ -23,7 +15,7 @@ in
     };
   };
 
-  config = lib.mkIf config.dev.vscode.enable {
+  config = lib.mkIf config.development.vscode.enable {
     programs.vscode = {
       enable = true;
       profiles.default.extensions = with pkgs.vscode-extensions; [
@@ -42,6 +34,7 @@ in
         # todo
         gruntfuggly.todo-tree
       ];
+      profiles.default.userSettings = config.vscode.mergedSettings;
     };
 
     vscode.mergedSettings = {
@@ -92,19 +85,5 @@ in
       "nix.formatterPath" = "nixfmt";
     };
 
-    # This allows VS Code to edit it, while rebuild overwrites with defaults.
-    home.activation.writeVscodeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          mkdir -p "${vsCodeUserDir}"
-          cat > "${vsCodeUserDir}/settings.json" << 'EOF'
-          ${builtins.toJSON config.vscode.mergedSettings}
-      EOF
-    '';
-
-    # VS Code can cache a broken per-profile extension inventory in ~/.vscode/extensions
-    # and then hide Nix-managed extensions until that metadata is cleared.
-    home.activation.resetVscodeExtensionState = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      rm -f "${config.home.homeDirectory}/.vscode/extensions/.obsolete"
-      rm -f "${config.home.homeDirectory}/.vscode/extensions/extensions.json"
-    '';
   };
 }

@@ -26,10 +26,10 @@ let
     lib.nameValuePair ".config/nvim/${target}" (
       if file.source != null then { inherit (file) source; } else { inherit (file) text; }
     )
-  ) config.dev.lazyvim.files;
+  ) config.development.lazyvim.files;
 in
 {
-  options.dev.lazyvim = {
+  options.development.lazyvim = {
     enable = lib.mkEnableOption "lazyvim setup";
 
     configSource = lib.mkOption {
@@ -50,7 +50,7 @@ in
     };
   };
 
-  config = lib.mkIf config.dev.lazyvim.enable {
+  config = lib.mkIf config.development.lazyvim.enable {
     programs.neovim = {
       enable = true;
       defaultEditor = true;
@@ -78,7 +78,7 @@ in
 
       file = {
         ".config/nvim" = {
-          source = config.dev.lazyvim.configSource;
+          source = config.development.lazyvim.configSource;
           recursive = true;
         };
       }

@@ -5,10 +5,12 @@
   ];
 
   home = {
-    stateVersion = "26.11";
+    stateVersion = "26.05";
     inherit (host) username;
     homeDirectory = "/home/${host.username}";
   };
+
+  nixpkgs.config.allowUnfree = true;
 
   stylix = {
     targets = {

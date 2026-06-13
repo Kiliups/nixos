@@ -2,6 +2,7 @@
 {
   imports = [
     ../common.nix
+    ../../modules/linux/kde.nix
   ];
 
   networking.hostName = hostName;
@@ -19,9 +20,7 @@
     loader.timeout = 0;
   };
 
-  programs.niri = {
-    enable = true;
-  };
+  programs.niri.enable = true;
 
   services = {
     fprintd.enable = true;

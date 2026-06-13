@@ -1,15 +1,5 @@
 { pkgs, ... }:
 {
-  xdg.desktopEntries."tmux_ghostty" = {
-    name = "Ghostty + tmux";
-    exec = "${pkgs.ghostty}/bin/ghostty -e ${pkgs.tmux}/bin/tmux new-session -A -s main";
-    terminal = false;
-    categories = [
-      "System"
-      "TerminalEmulator"
-    ];
-  };
-
   programs.plasma = {
     enable = true;
     # todo for fully declaritiv config overrideConfig = true;
@@ -44,10 +34,6 @@
 
       "com.mitchellh.ghostty.desktop" = {
         "_launch" = "Meta+Return"; # Terminal (Hyprland uses Super+Return)
-      };
-
-      "tmux_ghostty.desktop" = {
-        "_launch" = "Meta+Shift+Return";
       };
 
       "spotify.desktop" = {

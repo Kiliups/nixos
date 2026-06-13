@@ -13,5 +13,4 @@
     onlyoffice-desktopeditors
     zoom-us
   ];
-
 }

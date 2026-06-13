@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.dev.shell.enable = lib.mkEnableOption "shell setup";
+  options.development.shell.enable = lib.mkEnableOption "shell setup";
 
-  config = lib.mkIf config.dev.shell.enable {
+  config = lib.mkIf config.development.shell.enable {
     programs = {
       zsh = {
         enable = true;

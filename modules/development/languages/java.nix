@@ -25,14 +25,14 @@ in
         ];
       }
 
-      (lib.mkIf config.dev.vscode.enable {
+      (lib.mkIf config.development.vscode.enable {
         programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
           vscjava.vscode-java-pack
           oracle.oracle-java
         ];
       })
 
-      (lib.mkIf config.dev.lazyvim.enable {
+      (lib.mkIf config.development.lazyvim.enable {
         home.file."${vars.nvimPluginDir}/java.lua" = {
           text = ''
             return   {

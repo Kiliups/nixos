@@ -14,13 +14,15 @@
 
   programs.home-manager.enable = true;
 
+  nixpkgs.config.allowUnfree = true;
+
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     targets.vscode.enable = false;
   };
 
-  dev = {
+  development = {
     shell.enable = true;
     tmux.enable = true;
     starship.enable = true;

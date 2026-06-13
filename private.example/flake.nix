@@ -1,7 +1,7 @@
 {
   description = "Example private host data";
 
-  outputs = { ... }: {
+  outputs = _: {
     darwinHosts = {
       macbook = {
         username = "user";
