@@ -24,10 +24,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    noctalia-shell = {
+      url = "github:noctalia-dev/noctalia/legacy-v4";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     tpm = {
       url = "github:tmux-plugins/tpm";
       flake = false;
     };
+    nixos-private.url = "path:./private.example";
   };
 
   outputs =
@@ -39,20 +44,13 @@
       stylix,
       zen-browser,
       plasma-manager,
+      nixos-private,
       tpm,
       ...
     }:
     let
-      privateHostsPath = /. + "${builtins.getEnv "PWD"}/hosts/private.nix";
-      hosts =
-        if builtins.pathExists privateHostsPath then
-          import privateHostsPath
-        else
-          {
-            darwinHosts = { };
-            nixosHosts = { };
-          };
-      inherit (hosts) darwinHosts nixosHosts;
+      darwinHosts = nixos-private.darwinHosts or { };
+      nixosHosts = nixos-private.nixosHosts or { };
 
       mkDarwinHost =
         hostName: host:
@@ -64,6 +62,9 @@
           modules = [
             stylix.darwinModules.stylix
             ./hosts/darwin/configuration.nix
+          ]
+          ++ (host.modules or [ ])
+          ++ [
             home-manager.darwinModules.home-manager
             {
               home-manager = {
@@ -78,7 +79,8 @@
                   imports = [
                     stylix.homeModules.stylix
                     ./hosts/darwin/home.nix
-                  ];
+                  ]
+                  ++ (host.homeModules or [ ]);
                 };
               };
             }
@@ -100,11 +102,14 @@
               else
                 ./hosts/workstation/configuration.nix
             )
+          ]
+          ++ (host.modules or [ ])
+          ++ [
             home-manager.nixosModules.home-manager
             {
               home-manager = {
                 useUserPackages = true;
-                backupFileExtension = "backup-" + toString builtins.currentTime;
+                backupFileExtension = "backup";
                 extraSpecialArgs = {
                   inherit inputs host tpm;
                 };
@@ -114,8 +119,10 @@
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
+                    inputs.noctalia-shell.homeModules.default
                     (if host.type == "laptop" then ./hosts/laptop/home.nix else ./hosts/home.nix)
-                  ];
+                  ]
+                  ++ (host.homeModules or [ ]);
                 };
               };
             }

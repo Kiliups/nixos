@@ -20,7 +20,11 @@
         nrs() {
           local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
           local host="''${2:-$(hostname)}"
-          (cd "$flake" && git add -A && sudo nixos-rebuild switch --flake "path:$PWD#$host" --impure)
+          (
+            cd "$flake"
+            local private="''${NIXOS_PRIVATE_FLAKE:-path:$PWD/private}"
+            sudo nixos-rebuild switch --flake ".#$host" --override-input nixos-private "$private"
+          )
         }
 
         nrsu() {
@@ -33,6 +37,9 @@
         bindkey '^[[1;5C' forward-word
         bindkey '^[[5D' backward-word
         bindkey '^[[5C' forward-word
+        bindkey '^H' backward-kill-word
+        bindkey '^[[127;5u' backward-kill-word
+        bindkey '^[[3;5~' kill-word
       '';
     };
 

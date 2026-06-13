@@ -1,4 +1,3 @@
-hardware-configuration.nix
 .idea
 .env
 .env.*
@@ -9,5 +8,5 @@ hardware-configuration.nix
 secrets.*
 .sops.yaml
 .claude/settings.local.json
-hosts/private.nix
+private/
 .DS_Store

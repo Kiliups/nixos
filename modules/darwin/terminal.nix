@@ -6,19 +6,23 @@
     };
     initContent = ''
       drs() {
-        local flake="''${1:-''${NIXOS_FLAKE:-$HOME/private/nixos}}"
-        local host="''${2:-$(hostname)}"
-        (cd "$flake" && git add -A && sudo darwin-rebuild switch --flake "path:$PWD#$host" --impure)
+        local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+        local host="''${2:-$(hostname -s)}"
+        (
+          cd "$flake"
+          local private="''${NIXOS_PRIVATE_FLAKE:-path:$PWD/private}"
+          sudo darwin-rebuild switch --flake ".#$host" --override-input nixos-private "$private"
+        )
       }
 
       nfu() {
-        local flake="''${1:-''${NIXOS_FLAKE:-$HOME/private/nixos}}"
+        local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
         nix flake update --flake "$flake"
       }
 
       drsu() {
-        local flake="''${1:-''${NIXOS_FLAKE:-$HOME/private/nixos}}"
-        local host="''${2:-$(hostname)}"
+        local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+        local host="''${2:-$(hostname -s)}"
         nfu "$flake" && drs "$flake" "$host"
       }
     '';

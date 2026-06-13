@@ -16,6 +16,8 @@ in
     lib.mkMerge [
       {
         languages.typescript.enable = true;
+
+        home.packages = [ pkgs.angular-language-server ];
       }
 
       (lib.mkIf config.dev.vscode.enable {
@@ -27,8 +29,8 @@ in
       (lib.mkIf config.dev.lazyvim.enable {
         home.file."${vars.nvimPluginDir}/angular.lua" = {
           text = ''
-            return   {
-                { import = "lazyvim.plugins.extras.lang.angular" },
+            return {
+              { import = "lazyvim.plugins.extras.lang.angular" },
             }
           '';
         };
