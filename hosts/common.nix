@@ -88,6 +88,40 @@
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+
+      wireplumber.extraConfig."51-audio-device-priorities" = {
+        "monitor.alsa.rules" = [
+          {
+            matches = [
+              {
+                "media.class" = "Audio/Sink";
+                "node.name" = "~alsa_output.*analog-stereo";
+              }
+              {
+                "media.class" = "Audio/Source";
+                "node.name" = "~alsa_input.*analog-stereo";
+              }
+            ];
+            actions.update-props."priority.session" = 3000;
+          }
+        ];
+
+        "monitor.bluez.rules" = [
+          {
+            matches = [
+              {
+                "media.class" = "Audio/Sink";
+                "node.name" = "~bluez_output.*";
+              }
+              {
+                "media.class" = "Audio/Source";
+                "node.name" = "~bluez_input.*";
+              }
+            ];
+            actions.update-props."priority.session" = 4000;
+          }
+        ];
+      };
     };
 
     printing.enable = true;

@@ -45,7 +45,7 @@ Create local private host data from the safe example:
 
 ```bash
 cp -r private.example private
-nixos-generate-config --show-hardware-config > private/hosts/laptop/hardware-configuration.nix
+nixos-generate-config --show-hardware-config > private/laptop/hardware-configuration.nix
 ```
 
 Enable flakes persistently on a fresh NixOS install if needed:

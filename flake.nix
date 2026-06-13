@@ -52,18 +52,6 @@
       inherit (nixpkgs) lib;
       darwinHosts = nixos-private.darwinHosts or { };
       nixosHosts = nixos-private.nixosHosts or { };
-      systems = [
-        "x86_64-linux"
-        "aarch64-darwin"
-      ];
-      forAllSystems = lib.genAttrs systems;
-
-      mkPkgs =
-        system:
-        import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
 
       nixosRoleModules = {
         laptop = ./hosts/laptop/configuration.nix;
@@ -163,7 +151,6 @@
       templates = {
         python = {
           path = ./templates/python;
-          description = "Python development environment with venv support";
         };
       };
     };

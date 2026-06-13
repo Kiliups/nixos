@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+_: {
   programs.plasma = {
     enable = true;
     # todo for fully declaritiv config overrideConfig = true;
