@@ -133,22 +133,24 @@ System theming is handled by Stylix with
 
 ## Repository Layout
 
-| Path | Description |
-| --- | --- |
-| `flake.nix` | Inputs, host builders, exported modules, and templates |
-| `private.example/` | Safe template for ignored local host data |
-| `hosts/` | Shared, Linux, laptop, workstation, and macOS host config |
+| Path                   | Description                                                |
+| ---------------------- | ---------------------------------------------------------- |
+| `flake.nix`            | Inputs, host builders, exported modules, and templates     |
+| `private.example/`     | Safe template for ignored local host data                  |
+| `hosts/`               | Shared, Linux, laptop, workstation, and macOS host config  |
 | `modules/development/` | Shell, editors, tmux, Starship, Git, agents, and languages |
-| `modules/linux/` | Linux desktop, terminal, Plasma, and tiling modules |
-| `modules/darwin/` | macOS-specific modules |
-| `modules/apps/` | Desktop application modules |
-| `config/` | Static config files, themes, wallpapers, and Neovim config |
-| `templates/` | Development shell templates |
+| `modules/linux/`       | Linux desktop, terminal, Plasma, and tiling modules        |
+| `modules/darwin/`      | macOS-specific modules                                     |
+| `modules/apps/`        | Desktop application modules                                |
+| `config/`              | Static config files, themes, wallpapers, and Neovim config |
+| `templates/`           | Development shell templates                                |
 
 ## Manual Notes
 
 - VS Code may need the Catppuccin theme extension installed manually.
 - Some KDE shortcuts may need to overwrite existing Plasma defaults after the
   first switch.
-- Eduroam helper scripts live in `config/eduroam`.
+- **eduroam**: Scripts live in `config/eduroam`. Download the `.p12` certificate
+  from <https://www.easyroam.de/home>, extract it with the helper script, and fix
+  read permissions if needed.
 - The Python shell template is available with `nix flake init -t .#python`.

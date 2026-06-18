@@ -1,10 +1,12 @@
 {
+  inputs,
   pkgs,
   lib,
   config,
   ...
 }:
 let
+  inherit (inputs) ponytail;
   grill-me = ''
     ---
     name: grill-me
@@ -121,5 +123,13 @@ in
         }
       )
     ];
+
+    xdg.configFile = lib.mkIf config.development.opencode.enable {
+      "opencode/opencode.json".text = builtins.toJSON {
+        "$schema" = "https://opencode.ai/config.json";
+        plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
+      };
+      "opencode/command".source = "${ponytail}/.opencode/command";
+    };
   };
 }

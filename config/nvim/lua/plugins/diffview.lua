@@ -1,6 +1,6 @@
 return {
   {
-    "dlyongemallo/diffview.nvim",
+    "dlyongemallo/diffview-plus.nvim",
     version = "*",
     keys = {
       {

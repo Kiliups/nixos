@@ -65,7 +65,12 @@
     };
   };
 
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+    plugins = with pkgs; [ networkmanager-openvpn ];
+  };
+
+  networking.firewall.checkReversePath = "loose";
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";

@@ -32,6 +32,10 @@
       url = "github:tmux-plugins/tpm";
       flake = false;
     };
+    ponytail = {
+      url = "github:DietrichGebert/ponytail";
+      flake = false;
+    };
     nixos-private.url = "path:./private.example";
   };
 
@@ -151,6 +155,7 @@
       templates = {
         python = {
           path = ./templates/python;
+          description = "Python development shell with uv";
         };
       };
     };
