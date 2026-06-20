@@ -127,6 +127,15 @@ in
     xdg.configFile = lib.mkIf config.development.opencode.enable {
       "opencode/opencode.json".text = builtins.toJSON {
         "$schema" = "https://opencode.ai/config.json";
+        mcp.playwright = {
+          type = "local";
+          command = [
+            "npx"
+            "-y"
+            "@playwright/mcp"
+          ];
+          enabled = true;
+        };
         plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
       };
       "opencode/command".source = "${ponytail}/.opencode/command";
