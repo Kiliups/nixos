@@ -1,21 +1,34 @@
 { host, pkgs, ... }:
 {
-  boot.loader = {
-    systemd-boot = {
-      configurationLimit = 5;
-      enable = false;
-    };
+  boot = {
+    plymouth.enable = true;
+    consoleLogLevel = 0;
+    initrd.verbose = false;
+    kernelParams = [
+      "quiet"
+      "splash"
+      "loglevel=3"
+      "rd.udev.log_level=3"
+    ];
 
-    grub = {
-      enable = true;
-      device = "nodev";
-      efiSupport = true;
-      useOSProber = false;
-      theme = ../config/catppuccin-macchiato-grub-theme;
-      splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
-    };
+    loader = {
+      systemd-boot = {
+        configurationLimit = 5;
+        enable = false;
+      };
 
-    efi.canTouchEfiVariables = true;
+      grub = {
+        enable = true;
+        device = "nodev";
+        efiSupport = true;
+        useOSProber = false;
+        theme = ../config/catppuccin-macchiato-grub-theme;
+        splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
+      };
+
+      timeout = 3;
+      efi.canTouchEfiVariables = true;
+    };
   };
 
   nixpkgs.config.allowUnfree = true;
