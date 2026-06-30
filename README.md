@@ -45,6 +45,11 @@ Create local private host data from the safe example:
 
 ```bash
 cp -r private.example private
+```
+
+On NixOS, replace the example hardware config:
+
+```bash
 nixos-generate-config --show-hardware-config > private/laptop/hardware-configuration.nix
 ```
 
@@ -62,10 +67,14 @@ Apply a NixOS host for the first time:
 sudo nixos-rebuild --option experimental-features "nix-command flakes" switch --flake .#<host> --override-input nixos-private path:$PWD/private
 ```
 
+On macOS, install [Determinate Nix](https://docs.determinate.systems/determinate-nix/)
+first. This repo leaves Nix itself to Determinate Systems; the Darwin config sets
+`nix.enable = false` so nix-darwin does not rewrite `/etc/nix/nix.conf`.
+
 Apply the macOS host for the first time:
 
 ```bash
-nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake .#<host> --override-input nixos-private path:$PWD/private
+nix run nix-darwin -- switch --flake .#<host> --override-input nixos-private path:$PWD/private
 ```
 
 ## Private Host Data

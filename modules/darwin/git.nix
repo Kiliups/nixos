@@ -15,6 +15,10 @@
     settings = {
       init.defaultBranch = "main";
       pull.rebase = true;
+      core = {
+        fsmonitor = true;
+        untrackedcache = true;
+      };
     };
   };
 

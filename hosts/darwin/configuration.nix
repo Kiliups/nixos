@@ -14,6 +14,7 @@
   };
   nixpkgs.hostPlatform = host.system;
   nixpkgs.config.allowUnfree = true;
+  nix.enable = false;
 
   networking.hostName = hostName;
   networking.computerName = hostName;

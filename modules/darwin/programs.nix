@@ -6,5 +6,6 @@
     obsidian
     orbstack
     spotify
+    code-cursor
   ];
 }
