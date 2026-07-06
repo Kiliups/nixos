@@ -34,7 +34,6 @@
     codex.enable = true;
     cursor.enable = true;
     opencode.enable = true;
-    pi.enable = false;
   };
 
   languages = {

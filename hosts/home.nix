@@ -30,7 +30,6 @@
     codex.enable = false;
     cursor.enable = false;
     opencode.enable = true;
-    pi.enable = true;
   };
 
   languages = {

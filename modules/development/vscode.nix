@@ -54,6 +54,12 @@
       };
       "editor.fontFamily" = "JetBrainsMono Nerd Font";
       "files.autoSave" = "afterDelay";
+      "terminal.integrated.fontFamily" =
+        "JetBrainsMono Nerd Font Mono, JetBrainsMono Nerd Font, Symbols Nerd Font Mono, monospace";
+      "terminal.integrated.fontLigatures.enabled" = false;
+      "terminal.integrated.gpuAcceleration" = "off";
+      "terminal.integrated.customGlyphs" = false;
+      "terminal.integrated.minimumContrastRatio" = 1;
 
       # json
       "[json]" = {

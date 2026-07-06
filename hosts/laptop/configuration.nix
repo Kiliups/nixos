@@ -7,19 +7,6 @@
 
   networking.hostName = hostName;
 
-  boot = {
-    plymouth.enable = true;
-    consoleLogLevel = 0;
-    initrd.verbose = false;
-    kernelParams = [
-      "quiet"
-      "splash"
-      "loglevel=3"
-      "rd.udev.log_level=3"
-    ];
-    loader.timeout = 0;
-  };
-
   programs.niri.enable = true;
 
   services = {

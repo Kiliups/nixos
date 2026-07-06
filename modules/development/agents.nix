@@ -77,6 +77,37 @@ let
     - Make the smallest idiomatic code change that solves the task.
     - Preserve the project's existing style, structure, and conventions.
   '';
+  ponytailSkills = [
+    "ponytail"
+    "ponytail-review"
+    "ponytail-audit"
+    "ponytail-debt"
+    "ponytail-gain"
+    "ponytail-help"
+  ];
+  ponytailSkillLinks =
+    base:
+    lib.listToAttrs (
+      map (
+        name: lib.nameValuePair "${base}/${name}" { source = "${ponytail}/skills/${name}"; }
+      ) ponytailSkills
+    );
+  anyAgentEnabled =
+    config.development.claude.enable
+    || config.development.cursor.enable
+    || config.development.codex.enable
+    || config.development.opencode.enable;
+  playwrightCommand = "npx";
+  playwrightArgs = [
+    "-y"
+    "@playwright/mcp"
+  ];
+  playwrightMcpServers = {
+    mcpServers.playwright = {
+      command = playwrightCommand;
+      args = playwrightArgs;
+    };
+  };
 
 in
 {
@@ -85,16 +116,15 @@ in
     codex.enable = lib.mkEnableOption "codex";
     cursor.enable = lib.mkEnableOption "cursor-agent";
     opencode.enable = lib.mkEnableOption "opencode";
-    pi.enable = lib.mkEnableOption "pi-coding-agent";
   };
 
   config = {
     home.packages =
-      lib.optionals config.development.claude.enable [ pkgs.claude-code ]
+      lib.optionals anyAgentEnabled [ pkgs.nodejs ]
+      ++ lib.optionals config.development.claude.enable [ pkgs.claude-code ]
       ++ lib.optionals config.development.cursor.enable [ pkgs.cursor-cli ]
       ++ lib.optionals config.development.codex.enable [ pkgs.codex ]
-      ++ lib.optionals config.development.opencode.enable [ pkgs.opencode ]
-      ++ lib.optionals config.development.pi.enable [ pkgs.pi-coding-agent ];
+      ++ lib.optionals config.development.opencode.enable [ pkgs.opencode ];
 
     programs.zsh.shellAliases = lib.mkMerge [
       (lib.mkIf config.development.claude.enable { cc = "claude"; })
@@ -104,41 +134,60 @@ in
     ];
 
     home.file = lib.mkMerge [
-      (lib.mkIf config.development.claude.enable {
-        ".claude/CLAUDE.md".text = agentInstructions;
-        ".claude/skills/grill-me/SKILL.md".text = grill-me;
-        ".claude/skills/caveman/SKILL.md".text = caveman;
+      (lib.mkIf config.development.claude.enable (
+        {
+          ".claude.json".text = builtins.toJSON playwrightMcpServers;
+          ".claude/CLAUDE.md".text = agentInstructions;
+          ".claude/skills/grill-me/SKILL.md".text = grill-me;
+          ".claude/skills/caveman/SKILL.md".text = caveman;
+        }
+        // ponytailSkillLinks ".claude/skills"
+      ))
+      (lib.mkIf config.development.cursor.enable {
+        ".cursor/mcp.json".text = builtins.toJSON playwrightMcpServers;
+      })
+      (lib.mkIf config.development.codex.enable {
+        ".codex/AGENTS.md".text = agentInstructions;
       })
       (lib.mkIf
         (
           config.development.cursor.enable
           || config.development.codex.enable
           || config.development.opencode.enable
-          || config.development.pi.enable
         )
-        {
-          ".agents/AGENTS.md".text = agentInstructions;
-          ".agents/skills/grill-me/SKILL.md".text = grill-me;
-          ".agents/skills/caveman/SKILL.md".text = caveman;
-        }
+        (
+          {
+            ".agents/AGENTS.md".text = agentInstructions;
+            ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
+            ".agents/skills/grill-me/SKILL.md".text = grill-me;
+            ".agents/skills/caveman/SKILL.md".text = caveman;
+          }
+          // ponytailSkillLinks ".agents/skills"
+        )
       )
     ];
 
-    xdg.configFile = lib.mkIf config.development.opencode.enable {
-      "opencode/opencode.json".text = builtins.toJSON {
-        "$schema" = "https://opencode.ai/config.json";
-        mcp.playwright = {
-          type = "local";
-          command = [
-            "npx"
-            "-y"
-            "@playwright/mcp"
-          ];
-          enabled = true;
+    xdg.configFile = lib.mkMerge [
+      (lib.mkIf config.development.codex.enable {
+        "codex/config.toml".text = lib.generators.toTOML { } {
+          mcp_servers.playwright = {
+            command = playwrightCommand;
+            args = playwrightArgs;
+          };
         };
-        plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
-      };
-      "opencode/command".source = "${ponytail}/.opencode/command";
-    };
+      })
+      (lib.mkIf config.development.opencode.enable {
+        "opencode/opencode.json".text = builtins.toJSON {
+          "$schema" = "https://opencode.ai/config.json";
+          mcp.playwright = {
+            type = "local";
+            command = [ playwrightCommand ] ++ playwrightArgs;
+            enabled = true;
+          };
+          plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
+        };
+        "opencode/command".source = "${ponytail}/.opencode/command";
+      })
+    ];
   };
 }
