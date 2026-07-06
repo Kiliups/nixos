@@ -36,7 +36,10 @@
       url = "github:DietrichGebert/ponytail";
       flake = false;
     };
-    nixos-private.url = "path:./private.example";
+    nixos-private = {
+      url = "path:./private.example";
+      flake = true;
+    };
   };
 
   outputs =

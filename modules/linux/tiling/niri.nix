@@ -6,43 +6,56 @@
 let
   colors = config.lib.stylix.colors.withHashtag;
 
-  kdlArgs = args: builtins.concatStringsSep " " (map builtins.toJSON args);
+  arrangeDisplaysScript = pkgs.writeShellScript "niri-arrange-displays" ''
+    jq=${pkgs.jq}/bin/jq
 
-  spawnOrFocusScript = pkgs.writeShellScript "spawn-or-focus" ''
-    app_id="$1"
-    shift
+    arrange() {
+      local outputs laptop laptop_width externals total_width max_height external_x laptop_x x width height name
+      outputs="$(niri msg -j outputs 2>/dev/null)" || return 0
+      laptop="$(printf '%s\n' "$outputs" | "$jq" -r 'first(keys[] | select(startswith("eDP-"))) // empty')"
+      [ -n "$laptop" ] || return 0
 
-    window_id="$(
-      niri msg -j windows |
-        ${pkgs.jq}/bin/jq -r --arg app_id "$app_id" 'first(.[] | select(.app_id == $app_id) | .id) // empty'
-    )"
+      laptop_width="$(printf '%s\n' "$outputs" | "$jq" -r --arg o "$laptop" '.[$o].logical.width')"
+      externals="$(printf '%s\n' "$outputs" | "$jq" -r --arg laptop "$laptop" '
+        to_entries[]
+        | select(.key != $laptop and .value.logical)
+        | [.key, .value.logical.width, .value.logical.height]
+        | @tsv
+      ')"
+      [ -n "$externals" ] || return 0
 
-    if [ -n "$window_id" ]; then
-      exec niri msg action focus-window --id "$window_id"
-    fi
+      total_width=0
+      max_height=0
+      while IFS=$'\t' read -r name width height; do
+        total_width=$((total_width + width))
+        [ "$height" -gt "$max_height" ] && max_height=$height
+      done <<< "$externals"
 
-    exec "$@"
+      if [ "$total_width" -ge "$laptop_width" ]; then
+        external_x=0
+        laptop_x=$(((total_width - laptop_width) / 2))
+      else
+        external_x=$(((laptop_width - total_width) / 2))
+        laptop_x=0
+      fi
+
+      x=$external_x
+      while IFS=$'\t' read -r name width height; do
+        niri msg output "$name" position set "$x" 0 >/dev/null
+        x=$((x + width))
+      done <<< "$externals"
+
+      niri msg output "$laptop" position set "$laptop_x" "$max_height" >/dev/null
+    }
+
+    arrange
+    niri msg -j event-stream | while read -r event; do
+      printf '%s\n' "$event" | "$jq" -e 'keys[0] | startswith("Output")' >/dev/null && arrange
+    done
   '';
-
-  spawnOrFocusCommand =
-    appId: command:
-    "spawn ${
-      kdlArgs (
-        [
-          "${spawnOrFocusScript}"
-          appId
-        ]
-        ++ command
-      )
-    };";
-
-  spawnOrFocusBind =
-    key: title: appId: command:
-    "${key} hotkey-overlay-title=${builtins.toJSON title} { ${spawnOrFocusCommand appId command} }";
 in
 {
   home.packages = with pkgs; [
-    kdePackages.kate
     xwayland-satellite
   ];
 
@@ -53,7 +66,7 @@ in
       package = pkgs.papirus-icon-theme;
     };
   };
-  
+
   # ==============================
   # noctalia-shell config
   programs.noctalia-shell = {
@@ -102,42 +115,43 @@ in
               spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
           }
           window-open {
-              duration-ms 200
+              duration-ms 120
               curve "ease-out-quad"
           }
           window-close {
-              duration-ms 200
+              duration-ms 90
               curve "ease-out-cubic"
           }
           horizontal-view-movement {
-              spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+              spring damping-ratio=1.0 stiffness=1200 epsilon=0.0001
           }
           window-movement {
-              spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+              spring damping-ratio=1.0 stiffness=1100 epsilon=0.0001
           }
           window-resize {
               spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
           }
           config-notification-open-close {
-              spring damping-ratio=0.6 stiffness=1200 epsilon=0.001
+              spring damping-ratio=0.8 stiffness=1600 epsilon=0.001
           }
           screenshot-ui-open {
-              duration-ms 300
+              duration-ms 180
               curve "ease-out-quad"
           }
           overview-open-close {
-              spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+              spring damping-ratio=1.0 stiffness=1200 epsilon=0.0001
           }
       }
     '';
 
     "niri/cfg/autostart.kdl".text = ''
       spawn-at-startup "noctalia-shell"
+      spawn-at-startup "${arrangeDisplaysScript}"
       spawn-at-startup "xwayland-satellite"
     '';
 
     "niri/cfg/display.kdl".text = ''
-      // Add output blocks here after checking names with `niri msg outputs`.
+      // Output positions are handled by niri-arrange-displays at startup.
     '';
 
     "niri/cfg/input.kdl".text = ''
@@ -190,36 +204,36 @@ in
       binds {
           Mod+Shift+Escape { show-hotkey-overlay; }
 
-          ${spawnOrFocusBind "Mod+Return" "Open Terminal: Ghostty" "ghostty" [ "ghostty" ]}
-          Mod+Space hotkey-overlay-title="Open App Launcher: Noctalia" { spawn-sh "noctalia-shell ipc call launcher toggle"; }
-          ${spawnOrFocusBind "Mod+B" "Open Browser: Zen" "zen-beta" [ "zen-beta" ]}
+          Mod+Return hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
+          Mod+Space hotkey-overlay-title="Open App Launcher: Noctalia" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+          Mod+B hotkey-overlay-title="Open Browser: Zen" { spawn "zen-beta"; }
           Mod+E hotkey-overlay-title="Open File Manager: Dolphin" { spawn "dolphin"; }
-          ${spawnOrFocusBind "Mod+Alt+E" "Open Editor: Kate" "org.kde.kate" [ "kate" ]}
-          ${spawnOrFocusBind "Mod+M" "Open Mail: Thunderbird" "thunderbird" [ "thunderbird" ]}
-          Mod+Alt+L hotkey-overlay-title="Lock Screen: Noctalia" { spawn-sh "noctalia-shell ipc call lockScreen lock"; }
-          Mod+Shift+Q hotkey-overlay-title="Session Menu: Noctalia" { spawn-sh "noctalia-shell ipc call sessionMenu toggle"; }
+          Mod+Alt+E hotkey-overlay-title="Open Editor: Kate" { spawn "kate"; }
+          Mod+M hotkey-overlay-title="Open Mail: Thunderbird" { spawn "thunderbird"; }
+          Mod+L hotkey-overlay-title="Lock Screen: Noctalia" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+          Mod+Shift+Q hotkey-overlay-title="Session Menu: Noctalia" { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
 
-          XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume increase"; }
-          XF86AudioLowerVolume allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume decrease"; }
-          XF86AudioMute allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume muteOutput"; }
-          XF86AudioMicMute allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume muteInput"; }
-          XF86AudioNext allow-when-locked=true { spawn-sh "noctalia-shell ipc call media next"; }
-          XF86AudioPrev allow-when-locked=true { spawn-sh "noctalia-shell ipc call media previous"; }
-          XF86AudioPlay allow-when-locked=true { spawn-sh "noctalia-shell ipc call media playPause"; }
-          XF86AudioPause allow-when-locked=true { spawn-sh "noctalia-shell ipc call media playPause"; }
-          XF86MonBrightnessUp allow-when-locked=true { spawn-sh "noctalia-shell ipc call brightness increase"; }
-          XF86MonBrightnessDown allow-when-locked=true { spawn-sh "noctalia-shell ipc call brightness decrease"; }
+          XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "increase"; }
+          XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "decrease"; }
+          XF86AudioMute allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "muteOutput"; }
+          XF86AudioMicMute allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "muteInput"; }
+          XF86AudioNext allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "next"; }
+          XF86AudioPrev allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "previous"; }
+          XF86AudioPlay allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "playPause"; }
+          XF86AudioPause allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "playPause"; }
+          XF86MonBrightnessUp allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "brightness" "increase"; }
+          XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "brightness" "decrease"; }
 
           Mod+Q repeat=false { close-window; }
 
           Mod+Left { focus-column-left; }
-          Mod+H { focus-column-left; }
+          Mod+Alt+H { focus-column-left; }
           Mod+Right { focus-column-right; }
-          Mod+L { focus-column-right; }
+          Mod+Alt+L { focus-column-right; }
           Mod+Up { focus-window-up; }
-          Mod+K { focus-window-up; }
+          Mod+Alt+K { focus-window-up; }
           Mod+Down { focus-window-down; }
-          Mod+J { focus-window-down; }
+          Mod+Alt+J { focus-window-down; }
 
           Mod+Ctrl+Left { move-column-left; }
           Mod+Ctrl+H { move-column-left; }
@@ -278,6 +292,7 @@ in
           Mod+Comma { consume-window-into-column; }
           Mod+Period { expel-window-from-column; }
           Mod+W { toggle-column-tabbed-display; }
+          Ctrl+Up repeat=false { toggle-overview; }
           Mod+O repeat=false { toggle-overview; }
           Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
           Mod+Shift+P { power-off-monitors; }
