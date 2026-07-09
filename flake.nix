@@ -59,6 +59,12 @@
       inherit (nixpkgs) lib;
       darwinHosts = nixos-private.darwinHosts or { };
       nixosHosts = nixos-private.nixosHosts or { };
+      isoHost = {
+        username = "kiliups";
+        name = "Kilian Mayer";
+        email = "mayer-kilian@gmx.de";
+        system = "x86_64-linux";
+      };
 
       nixosRoleModules = {
         laptop = ./hosts/laptop/configuration.nix;
@@ -153,7 +159,44 @@
 
       darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHosts;
 
-      nixosConfigurations = nixpkgs.lib.mapAttrs mkNixosHost nixosHosts;
+      nixosConfigurations = nixpkgs.lib.mapAttrs mkNixosHost nixosHosts // {
+        iso = nixpkgs.lib.nixosSystem {
+          inherit (isoHost) system;
+          specialArgs = {
+            inherit inputs;
+            host = isoHost;
+            hostName = "nixos-iso";
+          };
+          modules = [
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+            stylix.nixosModules.stylix
+            ./hosts/common.nix
+
+            { boot.loader.timeout = lib.mkForce 10; }
+
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useUserPackages = true;
+                backupFileExtension = "backup";
+                extraSpecialArgs = {
+                  inherit inputs tpm;
+                  host = isoHost;
+                };
+
+                users.${isoHost.username} = {
+                  imports = [
+                    plasma-manager.homeModules.plasma-manager
+                    zen-browser.homeModules.default
+                    inputs.noctalia-shell.homeModules.default
+                    ./hosts/home.nix
+                  ];
+                };
+              };
+            }
+          ];
+        };
+      };
 
       templates = {
         python = {
