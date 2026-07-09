@@ -36,6 +36,10 @@
       url = "github:DietrichGebert/ponytail";
       flake = false;
     };
+    matt-pocock-skills = {
+      url = "github:mattpocock/skills";
+      flake = false;
+    };
     nixos-private = {
       url = "path:./private.example";
       flake = true;

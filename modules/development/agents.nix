@@ -7,19 +7,7 @@
 }:
 let
   inherit (inputs) ponytail;
-  grill-me = ''
-    ---
-    name: grill-me
-    description: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when user wants to stress-test a plan, get grilled on their design, or mentions "grill me".
-    ---
-
-    Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
-
-    Ask the questions one at a time.
-
-    If a question can be answered by exploring the codebase, explore the codebase instead.
-
-  '';
+  mattPocockSkills = inputs.matt-pocock-skills;
   caveman = ''
     ---
     name: caveman
@@ -92,6 +80,9 @@ let
         name: lib.nameValuePair "${base}/${name}" { source = "${ponytail}/skills/${name}"; }
       ) ponytailSkills
     );
+  mattPocockSkillLinks = base: {
+    "${base}/matt-pocock".source = "${mattPocockSkills}/skills";
+  };
   anyAgentEnabled =
     config.development.claude.enable
     || config.development.cursor.enable
@@ -138,10 +129,10 @@ in
         {
           ".claude.json".text = builtins.toJSON playwrightMcpServers;
           ".claude/CLAUDE.md".text = agentInstructions;
-          ".claude/skills/grill-me/SKILL.md".text = grill-me;
           ".claude/skills/caveman/SKILL.md".text = caveman;
         }
         // ponytailSkillLinks ".claude/skills"
+        // mattPocockSkillLinks ".claude/skills"
       ))
       (lib.mkIf config.development.cursor.enable {
         ".cursor/mcp.json".text = builtins.toJSON playwrightMcpServers;
@@ -159,10 +150,10 @@ in
           {
             ".agents/AGENTS.md".text = agentInstructions;
             ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
-            ".agents/skills/grill-me/SKILL.md".text = grill-me;
             ".agents/skills/caveman/SKILL.md".text = caveman;
           }
           // ponytailSkillLinks ".agents/skills"
+          // mattPocockSkillLinks ".agents/skills"
         )
       )
     ];
@@ -186,6 +177,7 @@ in
           };
           plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
         };
+        "opencode/skill/code-review".source = "${mattPocockSkills}/skills/engineering/code-review";
         "opencode/command".source = "${ponytail}/.opencode/command";
       })
     ];
