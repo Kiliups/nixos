@@ -453,6 +453,11 @@ in
        }
 
       window-rule {
+          match app-id=r#"^(org\.freedesktop\.impl\.portal\.desktop\.kde|xdg-desktop-portal-kde)$"#
+          open-floating true
+      }
+
+      window-rule {
           match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
           default-floating-position x=10 y=10 relative-to="bottom-right"
           open-focused false

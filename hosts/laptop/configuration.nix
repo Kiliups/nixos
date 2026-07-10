@@ -15,6 +15,8 @@
 
   services.displayManager.defaultSession = "niri";
 
+  xdg.portal.config.niri."org.freedesktop.impl.portal.FileChooser" = "kde";
+
   services = {
     fprintd.enable = true;
     fwupd.enable = true;
