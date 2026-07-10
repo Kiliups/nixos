@@ -208,12 +208,5 @@ in
       };
     };
 
-    programs = {
-      zsh = {
-        shellAliases = {
-          tmlall = "tml claude codex cursor-agent";
-        };
-      };
-    };
   };
 }

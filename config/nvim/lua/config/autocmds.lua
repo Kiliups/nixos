@@ -21,3 +21,50 @@ vim.opt.autoread = true
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
   command = "checktime",
 })
+
+vim.api.nvim_create_autocmd("BufReadCmd", {
+  pattern = {
+    "*.pdf",
+    "*.PDF",
+    "*.png",
+    "*.PNG",
+    "*.jpg",
+    "*.JPG",
+    "*.jpeg",
+    "*.JPEG",
+    "*.gif",
+    "*.GIF",
+    "*.webp",
+    "*.WEBP",
+    "*.bmp",
+    "*.BMP",
+    "*.svg",
+    "*.SVG",
+    "*.mp4",
+    "*.MP4",
+    "*.mkv",
+    "*.MKV",
+    "*.webm",
+    "*.WEBM",
+    "*.mov",
+    "*.MOV",
+    "*.avi",
+    "*.AVI",
+    "*.mp3",
+    "*.MP3",
+    "*.flac",
+    "*.FLAC",
+    "*.wav",
+    "*.WAV",
+    "*.ogg",
+    "*.OGG",
+  },
+  callback = function(args)
+    vim.ui.open(vim.api.nvim_buf_get_name(args.buf))
+    vim.schedule(function()
+      if vim.api.nvim_buf_is_valid(args.buf) then
+        vim.api.nvim_buf_delete(args.buf, { force = true })
+      end
+    end)
+  end,
+})

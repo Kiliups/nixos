@@ -53,9 +53,32 @@ let
       printf '%s\n' "$event" | "$jq" -e 'keys[0] | startswith("Output")' >/dev/null && arrange
     done
   '';
+
+  screenshotCapture = pkgs.writeShellApplication {
+    name = "niri-screenshot";
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.grim
+      pkgs.slurp
+      pkgs.satty
+      pkgs.wl-clipboard
+    ];
+    text = ''
+      screenshot="$(mktemp --suffix=.png)"
+      screenshots="$HOME/Pictures/Screenshots"
+      output="$screenshots/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
+      trap 'rm -f "$screenshot"' EXIT
+
+      mkdir -p "$screenshots"
+      grim -g "$(slurp)" "$screenshot"
+      satty --filename "$screenshot" --output-filename "$output" --copy-command wl-copy --actions-on-enter save-to-file save-to-clipboard --fullscreen current-screen --app-id satty
+    '';
+  };
 in
 {
   home.packages = with pkgs; [
+    kooha
+    screenshotCapture
     xwayland-satellite
   ];
 
@@ -72,6 +95,7 @@ in
   programs.noctalia-shell = {
     enable = true;
     settings = {
+      appLauncher.enableClipboardHistory = true;
       bar.frameRadius = 8;
       general = {
         boxRadiusRatio = 0.5;
@@ -162,7 +186,7 @@ in
               }
               numlock
               repeat-delay 200
-              repeat-rate 20 
+              repeat-rate 40
           }
 
           touchpad {
@@ -204,8 +228,13 @@ in
       binds {
           Mod+Shift+Escape { show-hotkey-overlay; }
 
+          Print hotkey-overlay-title="Capture and Edit: Satty" { spawn "niri-screenshot"; }
+          Mod+Shift+S hotkey-overlay-title="Capture and Edit: Satty" { spawn "niri-screenshot"; }
+          Mod+Print hotkey-overlay-title="Record Screen: Kooha" { spawn "kooha"; }
+
           Mod+Return hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
           Mod+Space hotkey-overlay-title="Open App Launcher: Noctalia" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+          Mod+V hotkey-overlay-title="Clipboard History: Noctalia" { spawn "noctalia-shell" "ipc" "call" "launcher" "clipboard"; }
           Mod+B hotkey-overlay-title="Open Browser: Zen" { spawn "zen-beta"; }
           Mod+E hotkey-overlay-title="Open File Manager: Dolphin" { spawn "dolphin"; }
           Mod+Alt+E hotkey-overlay-title="Open Editor: Kate" { spawn "kate"; }
@@ -412,11 +441,16 @@ in
           clip-to-geometry true
       }
 
-      window-rule {
-          match app-id="steam"
-          exclude title=r#"^[Ss]team$"#
-          open-floating true
-      }
+       window-rule {
+           match app-id="steam"
+           exclude title=r#"^[Ss]team$"#
+           open-floating true
+       }
+
+       window-rule {
+           match app-id="satty"
+           open-floating true
+       }
 
       window-rule {
           match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#

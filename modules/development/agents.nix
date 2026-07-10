@@ -65,6 +65,17 @@ let
     - Make the smallest idiomatic code change that solves the task.
     - Preserve the project's existing style, structure, and conventions.
   '';
+  opencodeReviewer = ''
+    ---
+    description: Two-axis code reviewer combining Matt Pocock's code-review skill with ponytail's over-engineering lens. Use when asked to review a branch, PR, or diff since a fixed point.
+    mode: primary
+    permission:
+      edit: deny
+      bash: ask
+    ---
+  ''
+  + builtins.readFile "${mattPocockSkills}/skills/engineering/code-review/SKILL.md"
+  + builtins.readFile "${ponytail}/skills/ponytail/SKILL.md";
   ponytailSkills = [
     "ponytail"
     "ponytail-review"
@@ -177,7 +188,7 @@ in
           };
           plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
         };
-        "opencode/skill/code-review".source = "${mattPocockSkills}/skills/engineering/code-review";
+        "opencode/agent/reviewer.md".text = opencodeReviewer;
         "opencode/command".source = "${ponytail}/.opencode/command";
       })
     ];

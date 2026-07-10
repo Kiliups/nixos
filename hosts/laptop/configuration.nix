@@ -36,6 +36,5 @@
     kdePackages.kio-extras
     kdePackages.okular
     kdePackages.partitionmanager
-    kdePackages.spectacle
   ];
 }
