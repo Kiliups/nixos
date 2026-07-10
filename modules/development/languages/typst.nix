@@ -17,6 +17,7 @@ in
           typst
           tinymist
           ltex-ls-plus
+          websocat
         ];
       }
 
@@ -39,8 +40,35 @@ in
       (lib.mkIf config.development.lazyvim.enable {
         home.file."${vars.nvimPluginDir}/typst.lua" = {
           text = ''
-            return   {
-                { import = "lazyvim.plugins.extras.lang.typst" },
+            return {
+              { import = "lazyvim.plugins.extras.lang.typst" },
+              {
+                "chomosuke/typst-preview.nvim",
+                opts = {
+                  open_cmd = 'chromium --app="%s"',
+                  dependencies_bin = {
+                    -- ponytail: bypass Mason's dynamically-linked Tinymist on NixOS.
+                    tinymist = "${pkgs.tinymist}/bin/tinymist",
+                    websocat = "websocat",
+                  },
+                },
+                init = function()
+                  vim.api.nvim_create_autocmd("BufEnter", {
+                    pattern = "*.typ",
+                    command = "TypstPreview",
+                  })
+                end,
+              },
+              {
+                "neovim/nvim-lspconfig",
+                opts = {
+                  servers = {
+                    tinymist = {
+                      cmd = { "${pkgs.tinymist}/bin/tinymist" },
+                    },
+                  },
+                },
+              },
             }
           '';
         };
