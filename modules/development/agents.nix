@@ -8,6 +8,7 @@
 let
   inherit (inputs) ponytail;
   mattPocockSkills = inputs.matt-pocock-skills;
+  playwrightCli = inputs.playwright-cli;
   caveman = ''
     ---
     name: caveman
@@ -64,6 +65,7 @@ let
 
     - Make the smallest idiomatic code change that solves the task.
     - Preserve the project's existing style, structure, and conventions.
+    - For browser automation or web testing, use `playwright-cli`. See the skill at `.agents/skills/playwright-cli/SKILL.md` (or `.claude/skills/playwright-cli/SKILL.md`) for the full command reference. Run `playwright-cli show` to open the live monitoring dashboard.
   '';
   opencodeReviewer = ''
     ---
@@ -94,22 +96,17 @@ let
   mattPocockSkillLinks = base: {
     "${base}/matt-pocock".source = "${mattPocockSkills}/skills";
   };
+  playwrightCliSkillLinks = base: {
+    "${base}/playwright-cli".source = "${playwrightCli}/skills/playwright-cli";
+  };
   anyAgentEnabled =
     config.development.claude.enable
     || config.development.cursor.enable
     || config.development.codex.enable
     || config.development.opencode.enable;
-  playwrightCommand = "npx";
-  playwrightArgs = [
-    "-y"
-    "@playwright/mcp"
-  ];
-  playwrightMcpServers = {
-    mcpServers.playwright = {
-      command = playwrightCommand;
-      args = playwrightArgs;
-    };
-  };
+  playwrightCliBin = pkgs.writeShellScriptBin "playwright-cli" ''
+    exec ${pkgs.nodejs}/bin/npx --yes @playwright/cli@latest "$@"
+  '';
 
 in
 {
@@ -122,7 +119,7 @@ in
 
   config = {
     home.packages =
-      lib.optionals anyAgentEnabled [ pkgs.nodejs ]
+      lib.optionals anyAgentEnabled [ pkgs.nodejs playwrightCliBin ]
       ++ lib.optionals config.development.claude.enable [ pkgs.claude-code ]
       ++ lib.optionals config.development.cursor.enable [ pkgs.cursor-cli ]
       ++ lib.optionals config.development.codex.enable [ pkgs.codex ]
@@ -138,16 +135,13 @@ in
     home.file = lib.mkMerge [
       (lib.mkIf config.development.claude.enable (
         {
-          ".claude.json".text = builtins.toJSON playwrightMcpServers;
           ".claude/CLAUDE.md".text = agentInstructions;
           ".claude/skills/caveman/SKILL.md".text = caveman;
         }
         // ponytailSkillLinks ".claude/skills"
         // mattPocockSkillLinks ".claude/skills"
+        // playwrightCliSkillLinks ".claude/skills"
       ))
-      (lib.mkIf config.development.cursor.enable {
-        ".cursor/mcp.json".text = builtins.toJSON playwrightMcpServers;
-      })
       (lib.mkIf config.development.codex.enable {
         ".codex/AGENTS.md".text = agentInstructions;
       })
@@ -165,27 +159,15 @@ in
           }
           // ponytailSkillLinks ".agents/skills"
           // mattPocockSkillLinks ".agents/skills"
+          // playwrightCliSkillLinks ".agents/skills"
         )
       )
     ];
 
     xdg.configFile = lib.mkMerge [
-      (lib.mkIf config.development.codex.enable {
-        "codex/config.toml".text = lib.generators.toTOML { } {
-          mcp_servers.playwright = {
-            command = playwrightCommand;
-            args = playwrightArgs;
-          };
-        };
-      })
       (lib.mkIf config.development.opencode.enable {
         "opencode/opencode.json".text = builtins.toJSON {
           "$schema" = "https://opencode.ai/config.json";
-          mcp.playwright = {
-            type = "local";
-            command = [ playwrightCommand ] ++ playwrightArgs;
-            enabled = true;
-          };
           plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
         };
         "opencode/agent/reviewer.md".text = opencodeReviewer;

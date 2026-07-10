@@ -40,6 +40,10 @@
       url = "github:mattpocock/skills";
       flake = false;
     };
+    playwright-cli = {
+      url = "github:microsoft/playwright-cli";
+      flake = false;
+    };
     nixos-private = {
       url = "path:./private.example";
       flake = true;

@@ -91,7 +91,6 @@
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
-    GDK_BACKEND = "wayland,x11,*";
     QT_QPA_PLATFORM = "wayland;xcb";
     SDL_VIDEODRIVER = "wayland,x11";
     MOZ_ENABLE_WAYLAND = "1";
