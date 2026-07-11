@@ -59,19 +59,24 @@ let
     runtimeInputs = [
       pkgs.coreutils
       pkgs.grim
+      pkgs.libnotify
       pkgs.slurp
       pkgs.satty
       pkgs.wl-clipboard
     ];
     text = ''
-      screenshot="$(mktemp --suffix=.png)"
-      screenshots="$HOME/Pictures/Screenshots"
-      output="$screenshots/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
-      trap 'rm -f "$screenshot"' EXIT
+      screenshots="''${NIRI_SCREENSHOT_DIR:-''${XDG_PICTURES_DIR:-$HOME/Pictures}}"
+      output="$screenshots/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"
 
       mkdir -p "$screenshots"
-      grim -g "$(slurp)" "$screenshot"
-      satty --filename "$screenshot" --output-filename "$output" --copy-command wl-copy --actions-on-enter save-to-file save-to-clipboard --fullscreen current-screen --app-id satty
+      selection="$(slurp)" || exit 0
+      grim -g "$selection" "$output"
+      wl-copy < "$output"
+
+      action="$(notify-send "Screenshot saved to clipboard and file" "Click to edit" -t 10000 -i "$output" -A "default=edit" || true)"
+      if [ "$action" = "default" ]; then
+        satty --filename "$output" --output-filename "$output" --copy-command wl-copy --actions-on-enter save-to-clipboard --save-after-copy --app-id satty
+      fi
     '';
   };
 in

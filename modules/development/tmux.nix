@@ -6,6 +6,18 @@
   ...
 }:
 let
+  # When run outside tmux, start (or attach to) a session named after the cwd
+  # and re-run the command inside it.
+  bootstrapTmux = ''
+    if [[ -z "''${TMUX:-}" ]]; then
+      session_name="$(basename "$PWD" | tr '.:' '--')"
+      if tmux has-session -t "$session_name" 2>/dev/null; then
+        exec tmux attach-session -t "$session_name"
+      fi
+      exec tmux new-session -s "$session_name" -c "$PWD" \; send-keys "$0 $*" C-m
+    fi
+  '';
+
   # tdl = "tmux agent development layout for a single project"
   tdl = pkgs.writeShellApplication {
     name = "tdl";
@@ -20,10 +32,7 @@ let
         echo "Usage: tdl <claude(cc)|codex(cx)|cursor-agent(ccli)|opencode(opc)|other_ai> [<second_ai>]"
         exit 1
       }
-      [[ -z "''${TMUX:-}" ]] && {
-        echo "You must start tmux to use tdl."
-        exit 1
-      }
+      ${bootstrapTmux}
 
       current_dir="$PWD"
       editor_pane="$TMUX_PANE"
@@ -61,10 +70,7 @@ let
         echo "Usage: tdlm <claude(cc)|codex(cx)|cursor-agent(ccli)|opencode(opc)|other_ai> [<second_ai>]"
         exit 1
       }
-      [[ -z "''${TMUX:-}" ]] && {
-        echo "You must start tmux to use tdlm."
-        exit 1
-      }
+      ${bootstrapTmux}
 
       ai="$1"
       ai2="''${2:-}"
@@ -102,10 +108,7 @@ let
         echo "Usage: tsl <pane_count> <command>"
         exit 1
       }
-      [[ -z "''${TMUX:-}" ]] && {
-        echo "You must start tmux to use tsl."
-        exit 1
-      }
+      ${bootstrapTmux}
 
       count="$1"
       cmd="$2"
@@ -143,10 +146,7 @@ let
         echo "Usage: tml <claude(cc)|codex(cx)|cursor-agent(ccli)|opencode(opc)|other_ai> [other_ai] [other_ai] ..."
         exit 1
       }
-      [[ -z "''${TMUX:-}" ]] && {
-        echo "You must start tmux to use tml."
-        exit 1
-      }
+      ${bootstrapTmux}
       cmds=("$@")
       count="''${#cmds[@]}"
       current_dir="$PWD"
