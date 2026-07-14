@@ -49,7 +49,6 @@
       ripgrep
       eza
       fd
-      try
     ];
 
     xdg.configFile."fastfetch/config.jsonc" = {

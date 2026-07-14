@@ -1,4 +1,58 @@
 { pkgs, ... }:
+let
+  gwt = pkgs.writeShellApplication {
+    name = "gwt";
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.git
+    ];
+    text = ''
+      set -euo pipefail
+
+      [[ -z "''${1:-}" ]] && {
+        echo "Usage: gwt <ticket>"
+        exit 1
+      }
+
+      ticket="$1"
+      repo_root="$(git rev-parse --show-toplevel)"
+      common_dir="$(git rev-parse --path-format=absolute --git-common-dir)"
+      repo_dir="$(dirname "$common_dir")"
+      target="$(dirname "$repo_dir")/$(basename "$repo_dir")-$ticket"
+
+      if git -C "$repo_root" show-ref --verify --quiet "refs/heads/$ticket"; then
+        git -C "$repo_root" worktree add "$target" "$ticket"
+      else
+        git -C "$repo_root" fetch origin integration
+        git -C "$repo_root" worktree add -b "$ticket" "$target" FETCH_HEAD
+      fi
+    '';
+  };
+
+  gwtrm = pkgs.writeShellApplication {
+    name = "gwtrm";
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.git
+    ];
+    text = ''
+      set -euo pipefail
+
+      [[ -z "''${1:-}" ]] && {
+        echo "Usage: gwtrm <ticket>"
+        exit 1
+      }
+
+      ticket="$1"
+      repo_root="$(git rev-parse --show-toplevel)"
+      common_dir="$(git rev-parse --path-format=absolute --git-common-dir)"
+      repo_dir="$(dirname "$common_dir")"
+      target="$(dirname "$repo_dir")/$(basename "$repo_dir")-$ticket"
+
+      git -C "$repo_root" worktree remove "$target"
+    '';
+  };
+in
 {
   programs.zsh = {
     shellAliases = {
@@ -34,6 +88,8 @@
     };
 
     packages = with pkgs; [
+      gwt
+      gwtrm
       ghostty-bin
     ];
   };

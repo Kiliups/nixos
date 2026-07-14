@@ -9,57 +9,6 @@ let
   inherit (inputs) ponytail;
   mattPocockSkills = inputs.matt-pocock-skills;
   playwrightCli = inputs.playwright-cli;
-  caveman = ''
-    ---
-    name: caveman
-    description: >
-      Ultra-compressed communication mode. Cuts token usage ~75% by dropping
-      filler, articles, and pleasantries while keeping full technical accuracy.
-      Use when user says "caveman mode", "talk like caveman", "use caveman",
-      "less tokens", "be brief", or invokes /caveman.
-    ---
-
-    Respond terse like smart caveman. All technical substance stay. Only fluff die.
-
-    ## Persistence
-
-    ACTIVE EVERY RESPONSE once triggered. No revert after many turns. No filler drift. Still active if unsure. Off only when user says "stop caveman" or "normal mode".
-
-    ## Rules
-
-    Drop: articles (a/an/the), filler (just/really/basically/actually/simply), pleasantries (sure/certainly/of course/happy to), hedging. Fragments OK. Short synonyms (big not extensive, fix not "implement a solution for"). Abbreviate common terms (DB/auth/config/req/res/fn/impl). Strip conjunctions. Use arrows for causality (X -> Y). One word when one word enough.
-
-    Technical terms stay exact. Code blocks unchanged. Errors quoted exact.
-
-    Pattern: `[thing] [action] [reason]. [next step].`
-
-    Not: "Sure! I'd be happy to help you with that. The issue you're experiencing is likely caused by..."
-    Yes: "Bug in auth middleware. Token expiry check use `<` not `<=`. Fix:"
-
-    ### Examples
-
-    **"Why React component re-render?"**
-
-    > Inline obj prop -> new ref -> re-render. `useMemo`.
-
-    **"Explain database connection pooling."**
-
-    > Pool = reuse DB conn. Skip handshake -> fast under load.
-
-    ## Auto-Clarity Exception
-
-    Drop caveman temporarily for: security warnings, irreversible action confirmations, multi-step sequences where fragment order risks misread, user asks to clarify or repeats question. Resume caveman after clear part done.
-
-    Example -- destructive op:
-
-    > **Warning:** This will permanently delete all rows in the `users` table and cannot be undone.
-    >
-    > ```sql
-    > DROP TABLE users;
-    > ```
-    >
-    > Caveman resume. Verify backup exist first.
-  '';
   agentInstructions = ''
     # Agent Instructions
 
@@ -73,7 +22,7 @@ let
     mode: primary
     permission:
       edit: deny
-      bash: ask
+      bash: allow 
     ---
   ''
   + builtins.readFile "${mattPocockSkills}/skills/engineering/code-review/SKILL.md"
@@ -102,7 +51,8 @@ let
     base:
     lib.listToAttrs (
       map (
-        name: lib.nameValuePair "${base}/matt-pocock/${name}" { source = "${mattPocockSkills}/skills/${name}"; }
+        name:
+        lib.nameValuePair "${base}/matt-pocock/${name}" { source = "${mattPocockSkills}/skills/${name}"; }
       ) mattPocockSkillCategories
     );
   playwrightCliSkillLinks = base: {
@@ -128,7 +78,10 @@ in
 
   config = {
     home.packages =
-      lib.optionals anyAgentEnabled [ pkgs.nodejs playwrightCliBin ]
+      lib.optionals anyAgentEnabled [
+        pkgs.nodejs
+        playwrightCliBin
+      ]
       ++ lib.optionals config.development.claude.enable [ pkgs.claude-code ]
       ++ lib.optionals config.development.cursor.enable [ pkgs.cursor-cli ]
       ++ lib.optionals config.development.codex.enable [ pkgs.codex ]
@@ -145,7 +98,6 @@ in
       (lib.mkIf config.development.claude.enable (
         {
           ".claude/CLAUDE.md".text = agentInstructions;
-          ".claude/skills/caveman/SKILL.md".text = caveman;
         }
         // ponytailSkillLinks ".claude/skills"
         // mattPocockSkillLinks ".claude/skills"
@@ -164,7 +116,6 @@ in
           {
             ".agents/AGENTS.md".text = agentInstructions;
             ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
-            ".agents/skills/caveman/SKILL.md".text = caveman;
           }
           // ponytailSkillLinks ".agents/skills"
           // mattPocockSkillLinks ".agents/skills"

@@ -4,7 +4,7 @@
     ../../modules/darwin
   ];
 
-  targets.darwin.copyApps.enable = true;
+  targets.darwin.copyApps.enable = false;
 
   home = {
     inherit (host) username;
