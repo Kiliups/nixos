@@ -65,7 +65,7 @@ let
       pkgs.wl-clipboard
     ];
     text = ''
-      screenshots="''${NIRI_SCREENSHOT_DIR:-''${XDG_PICTURES_DIR:-$HOME/Pictures}}"
+      screenshots="''${NIRI_SCREENSHOT_DIR:-''${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots}"
       output="$screenshots/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"
 
       mkdir -p "$screenshots"
@@ -233,7 +233,9 @@ in
       binds {
           Mod+Shift+Escape { show-hotkey-overlay; }
 
-          Print hotkey-overlay-title="Capture and Edit: Satty" { spawn "niri-screenshot"; }
+          Print hotkey-overlay-title="Screenshot: Niri" { screenshot; }
+          Ctrl+Print hotkey-overlay-title="Screenshot Focused Display: Niri" { screenshot-screen; }
+          Alt+Print hotkey-overlay-title="Screenshot Focused Window: Niri" { screenshot-window; }
           Mod+Shift+S hotkey-overlay-title="Capture and Edit: Satty" { spawn "niri-screenshot"; }
           Mod+Print hotkey-overlay-title="Record Screen: Kooha" { spawn "kooha"; }
 
@@ -352,9 +354,6 @@ in
           Mod+Ctrl+8 { move-column-to-workspace 8; }
           Mod+Ctrl+9 { move-column-to-workspace 9; }
 
-          Ctrl+Shift+1 { screenshot; }
-          Ctrl+Shift+2 { screenshot-screen; }
-          Ctrl+Shift+3 { screenshot-window; }
       }
     '';
 
@@ -420,7 +419,7 @@ in
 
     "niri/cfg/misc.kdl".text = ''
       prefer-no-csd
-      screenshot-path null
+      screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
       environment {
           ELECTRON_OZONE_PLATFORM_HINT "auto"

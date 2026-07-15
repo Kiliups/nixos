@@ -6,15 +6,12 @@
 {
   imports = [
     ../common.nix
-    ../../modules/linux/kde.nix
+    ../../modules/linux/plasma/desktop.nix
   ];
 
   networking.hostName = hostName;
 
   programs.niri.enable = true;
-
-  services.displayManager.defaultSession = "niri";
-  services.displayManager.plasma-login-manager.settings.Greeter.PreselectedSession = "niri.desktop";
 
   xdg.portal.config.niri."org.freedesktop.impl.portal.FileChooser" = "kde";
 

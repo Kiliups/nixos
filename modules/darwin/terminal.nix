@@ -64,6 +64,7 @@ in
         local host="''${2:-$(hostname -s)}"
         (
           cd "$flake"
+          git add -A
           local private="''${NIXOS_PRIVATE_FLAKE:-path:$PWD/private}"
           sudo darwin-rebuild switch --flake ".#$host" --override-input nixos-private "$private"
         )

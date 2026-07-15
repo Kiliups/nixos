@@ -44,6 +44,7 @@
       url = "github:microsoft/playwright-cli";
       flake = false;
     };
+    try.url = "github:tobi/try";
     nixos-private = {
       url = "path:./private.example";
       flake = true;
@@ -109,6 +110,7 @@
                 users.${host.username} = {
                   imports = [
                     stylix.homeModules.stylix
+                    inputs.try.homeModules.default
                     ./hosts/darwin/home.nix
                   ]
                   ++ (host.homeModules or [ ]);
@@ -150,6 +152,7 @@
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
                     inputs.noctalia-shell.homeModules.default
+                    inputs.try.homeModules.default
                     homeRoleModule
                   ]
                   ++ (host.homeModules or [ ]);
@@ -197,6 +200,7 @@
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
                     inputs.noctalia-shell.homeModules.default
+                    inputs.try.homeModules.default
                     ./hosts/home.nix
                   ];
                 };

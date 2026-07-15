@@ -155,6 +155,7 @@
 
   services.displayManager.plasma-login-manager.enable = true;
   security.pam.services.plasmalogin.kwallet.enable = true;
+  security.pam.services.login.fprintAuth = false;
 
   hardware.bluetooth = {
     enable = true;
