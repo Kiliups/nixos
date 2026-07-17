@@ -1,7 +1,7 @@
 _: {
   programs.plasma = {
     enable = true;
-    # todo for fully declaritiv config overrideConfig = true;
+    # Keep existing GUI-managed Plasma settings while declaring shared shortcuts.
 
     shortcuts = {
       # Window Management

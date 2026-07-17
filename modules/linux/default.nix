@@ -1,6 +1,6 @@
 _: {
   imports = [
     ../development
-    ./terminal.nix
+    ./home/terminal.nix
   ];
 }

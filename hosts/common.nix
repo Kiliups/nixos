@@ -43,8 +43,6 @@
       dates = "daily";
       flake = "/home/${host.username}/.config/nixos";
       flags = [
-        "--update-input"
-        "nixpkgs"
         "--override-input"
         "nixos-private"
         "path:/home/${host.username}/.config/nixos/private"
@@ -96,7 +94,6 @@
     MOZ_ENABLE_WAYLAND = "1";
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
     OZONE_PLATFORM = "wayland";
-    XDG_SESSION_TYPE = "wayland";
   };
 
   security.rtkit.enable = true;
@@ -109,40 +106,6 @@
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-
-      wireplumber.extraConfig."51-audio-device-priorities" = {
-        "monitor.alsa.rules" = [
-          {
-            matches = [
-              {
-                "media.class" = "Audio/Sink";
-                "node.name" = "~alsa_output.*analog-stereo";
-              }
-              {
-                "media.class" = "Audio/Source";
-                "node.name" = "~alsa_input.*analog-stereo";
-              }
-            ];
-            actions.update-props."priority.session" = 3000;
-          }
-        ];
-
-        "monitor.bluez.rules" = [
-          {
-            matches = [
-              {
-                "media.class" = "Audio/Sink";
-                "node.name" = "~bluez_output.*";
-              }
-              {
-                "media.class" = "Audio/Source";
-                "node.name" = "~bluez_input.*";
-              }
-            ];
-            actions.update-props."priority.session" = 4000;
-          }
-        ];
-      };
     };
 
     printing.enable = true;
@@ -153,8 +116,6 @@
     };
   };
 
-  services.displayManager.plasma-login-manager.enable = true;
-  security.pam.services.plasmalogin.kwallet.enable = true;
   security.pam.services.login.fprintAuth = false;
 
   hardware.bluetooth = {

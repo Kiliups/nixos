@@ -51,6 +51,22 @@ in
   };
 
   config = lib.mkIf config.development.lazyvim.enable {
+    development.lazyvim.files."lua/plugins/marksman.lua".text = ''
+      return {
+        {
+          "neovim/nvim-lspconfig",
+          opts = {
+            servers = {
+              marksman = {
+                cmd = { "${lib.getExe pkgs.marksman}", "server" },
+                mason = false,
+              },
+            },
+          },
+        },
+      }
+    '';
+
     programs.neovim = {
       enable = true;
       defaultEditor = true;

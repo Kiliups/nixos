@@ -24,8 +24,8 @@ It features:
 - Flake-based NixOS and nix-darwin systems.
 - Home Manager user environments for Linux and macOS.
 - Stylix with Catppuccin Macchiato theming and a matching GRUB theme.
-- KDE Plasma 6 desktop modules, plus Niri, Fuzzel, and Noctalia modules for a
-  tiling workflow.
+- KDE Plasma 6 applications and sessions, plus Niri and DankMaterialShell for
+  a cohesive tiling desktop.
 - Zsh, tmux, Starship, Neovim, VS Code, Git, and AI coding agent tooling.
 - Language modules for Angular, Astro, Go, Java, PHP, Python, Rust, Svelte,
   TypeScript, Typst, and Vue.
@@ -64,7 +64,7 @@ Or pass the experimental features inline for one-off first-run commands.
 Apply a NixOS host for the first time:
 
 ```bash
-sudo nixos-rebuild --option experimental-features "nix-command flakes" switch --flake .#<host> --override-input nixos-private path:$PWD/private
+sudo nixos-rebuild --option experimental-features "nix-command flakes" switch --flake path:$PWD#<host> --override-input nixos-private path:$PWD/private
 ```
 
 On macOS, install [Determinate Nix](https://docs.determinate.systems/determinate-nix/)
@@ -103,10 +103,10 @@ nfu
 Rebuild the current Linux host:
 
 ```bash
-sudo nixos-rebuild switch --flake .#$(hostname) --override-input nixos-private path:$PWD/private
+sudo nixos-rebuild switch --flake path:$PWD#$(hostname) --override-input nixos-private path:$PWD/private
 ```
 
-Or use the Linux shell helper from `modules/linux/terminal.nix`:
+Or use the Linux shell helper from `modules/linux/home/terminal.nix`:
 
 ```bash
 nrs
@@ -131,7 +131,8 @@ nrsu # Linux
 drsu # macOS
 ```
 
-NixOS hosts also enable daily automatic upgrades from `~/.config/nixos`.
+NixOS hosts also enable daily automatic upgrades from the pinned lock file in
+`~/.config/nixos`. Input updates remain an explicit `nfu` operation.
 
 ## Theming
 
@@ -148,7 +149,9 @@ System theming is handled by Stylix with
 | `private.example/`     | Safe template for ignored local host data                  |
 | `hosts/`               | Shared, Linux, laptop, workstation, and macOS host config  |
 | `modules/development/` | Shell, editors, tmux, Starship, Git, agents, and languages |
-| `modules/linux/`       | Linux desktop, terminal, Plasma, and tiling modules        |
+| `modules/linux/desktop/` | System-level NixOS desktop modules                       |
+| `modules/linux/home/`  | Home Manager desktop modules                               |
+| `modules/linux/`       | Shared Linux user and terminal modules                     |
 | `modules/darwin/`      | macOS-specific modules                                     |
 | `modules/apps/`        | Desktop application modules                                |
 | `config/`              | Static config files, themes, wallpapers, and Neovim config |

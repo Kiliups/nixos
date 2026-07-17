@@ -8,6 +8,7 @@
     ./starship.nix
     ./tmux.nix
     ./vscode.nix
+    ./zed.nix
     ./languages
   ];
 
@@ -20,6 +21,7 @@
       starship.enable = lib.mkDefault true;
       lazyvim.enable = lib.mkDefault true;
       vscode.enable = lib.mkDefault true;
+      zed.enable = lib.mkDefault true;
     };
 
     languages = {

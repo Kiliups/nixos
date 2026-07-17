@@ -17,6 +17,7 @@
     targets = {
       zen-browser.profileNames = [ "Default Profile" ];
       vscode.enable = false;
+      zed.enable = false;
       qt.enable = false;
     };
   };

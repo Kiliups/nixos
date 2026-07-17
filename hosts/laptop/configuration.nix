@@ -6,19 +6,54 @@
 {
   imports = [
     ../common.nix
-    ../../modules/linux/plasma/desktop.nix
+    ../../modules/linux/desktop/niri.nix
+    ../../modules/linux/desktop/plasma.nix
   ];
 
   networking.hostName = hostName;
-
-  programs.niri.enable = true;
-
-  xdg.portal.config.niri."org.freedesktop.impl.portal.FileChooser" = "kde";
 
   services = {
     fprintd.enable = true;
     fwupd.enable = true;
     ollama.enable = true;
+
+    pipewire.wireplumber = {
+      extraScripts."switch-headset-input.lua" = ''
+        local cutils = require("common-utils")
+
+        SimpleEventHook {
+          name = "device/select-headset-input",
+          before = "device/find-best-routes",
+          interests = {
+            EventInterest {
+              Constraint { "event.type", "=", "select-routes" },
+              Constraint { "device.name", "=", "alsa_card.pci-0000_c1_00.6" },
+            },
+          },
+          execute = function(event)
+            local selected = event:get_data("selected-routes") or Properties()
+            for param in event:get_subject():iterate_params("EnumRoute") do
+              local route = cutils.parseParam(param, "EnumRoute")
+              if route and route.name == "analog-input-headset-mic" and route.available ~= "no" then
+                selected["0"] = Json.Object { index = route.index }:to_string()
+              end
+            end
+            event:set_data("selected-routes", selected)
+          end,
+        }:register()
+      '';
+
+      extraConfig."51-switch-headset-input" = {
+        "wireplumber.components" = [
+          {
+            name = "switch-headset-input.lua";
+            type = "script/lua";
+            provides = "custom.switch-headset-input";
+          }
+        ];
+        "wireplumber.profiles".main."custom.switch-headset-input" = "required";
+      };
+    };
   };
 
   # eduroam setup scripts dependencies
@@ -31,10 +66,8 @@
     kdePackages.ffmpegthumbs
     kdePackages.filelight
     kdePackages.gwenview
-    kdePackages.kate
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kio-extras
     kdePackages.okular
-    kdePackages.partitionmanager
   ];
 }

@@ -1,6 +1,6 @@
 _: {
   imports = [
     ../home.nix
-    ../../modules/linux/plasma/shortcuts.nix
+    ../../modules/linux/home/desktop/plasma.nix
   ];
 }

@@ -7,7 +7,7 @@
 {
   imports = [
     ../common.nix
-    ../../modules/linux/plasma/desktop.nix
+    ../../modules/linux/desktop/plasma.nix
   ];
 
   networking.hostName = hostName;

@@ -53,10 +53,13 @@ in
                   },
                 },
                 init = function()
-                  vim.api.nvim_create_autocmd("BufEnter", {
-                    pattern = "*.typ",
-                    command = "TypstPreview",
-                  })
+                  if vim.env.XDG_CURRENT_DESKTOP == "niri" then
+                    vim.api.nvim_create_autocmd("BufEnter", {
+                      pattern = "*.typ",
+                      once = true,
+                      command = "TypstPreview",
+                    })
+                  end
                 end,
               },
               {

@@ -1,131 +1,8 @@
-{
-  config,
-  pkgs,
-  ...
-}:
+{ config, ... }:
 let
   colors = config.lib.stylix.colors.withHashtag;
-
-  arrangeDisplaysScript = pkgs.writeShellScript "niri-arrange-displays" ''
-    jq=${pkgs.jq}/bin/jq
-
-    arrange() {
-      local outputs laptop laptop_width externals total_width max_height external_x laptop_x x width height name
-      outputs="$(niri msg -j outputs 2>/dev/null)" || return 0
-      laptop="$(printf '%s\n' "$outputs" | "$jq" -r 'first(keys[] | select(startswith("eDP-"))) // empty')"
-      [ -n "$laptop" ] || return 0
-
-      laptop_width="$(printf '%s\n' "$outputs" | "$jq" -r --arg o "$laptop" '.[$o].logical.width')"
-      externals="$(printf '%s\n' "$outputs" | "$jq" -r --arg laptop "$laptop" '
-        to_entries[]
-        | select(.key != $laptop and .value.logical)
-        | [.key, .value.logical.width, .value.logical.height]
-        | @tsv
-      ')"
-      [ -n "$externals" ] || return 0
-
-      total_width=0
-      max_height=0
-      while IFS=$'\t' read -r name width height; do
-        total_width=$((total_width + width))
-        [ "$height" -gt "$max_height" ] && max_height=$height
-      done <<< "$externals"
-
-      if [ "$total_width" -ge "$laptop_width" ]; then
-        external_x=0
-        laptop_x=$(((total_width - laptop_width) / 2))
-      else
-        external_x=$(((laptop_width - total_width) / 2))
-        laptop_x=0
-      fi
-
-      x=$external_x
-      while IFS=$'\t' read -r name width height; do
-        niri msg output "$name" position set "$x" 0 >/dev/null
-        x=$((x + width))
-      done <<< "$externals"
-
-      niri msg output "$laptop" position set "$laptop_x" "$max_height" >/dev/null
-    }
-
-    arrange
-    niri msg -j event-stream | while read -r event; do
-      printf '%s\n' "$event" | "$jq" -e 'keys[0] | startswith("Output")' >/dev/null && arrange
-    done
-  '';
-
-  screenshotCapture = pkgs.writeShellApplication {
-    name = "niri-screenshot";
-    runtimeInputs = [
-      pkgs.coreutils
-      pkgs.grim
-      pkgs.libnotify
-      pkgs.slurp
-      pkgs.satty
-      pkgs.wl-clipboard
-    ];
-    text = ''
-      screenshots="''${NIRI_SCREENSHOT_DIR:-''${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots}"
-      output="$screenshots/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"
-
-      mkdir -p "$screenshots"
-      selection="$(slurp)" || exit 0
-      grim -g "$selection" "$output"
-      wl-copy < "$output"
-
-      action="$(notify-send "Screenshot saved to clipboard and file" "Click to edit" -t 10000 -i "$output" -A "default=edit" || true)"
-      if [ "$action" = "default" ]; then
-        satty --filename "$output" --output-filename "$output" --copy-command wl-copy --actions-on-enter save-to-clipboard --save-after-copy --app-id satty
-      fi
-    '';
-  };
 in
 {
-  home.packages = with pkgs; [
-    kooha
-    screenshotCapture
-    xwayland-satellite
-  ];
-
-  gtk = {
-    enable = true;
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
-  };
-
-  # ==============================
-  # noctalia-shell config
-  programs.noctalia-shell = {
-    enable = true;
-    settings = {
-      appLauncher.enableClipboardHistory = true;
-      bar.frameRadius = 8;
-      general = {
-        boxRadiusRatio = 0.5;
-        iRadiusRatio = 0.5;
-        radiusRatio = 0.5;
-        screenRadiusRatio = 0.4;
-      };
-    };
-    plugins = {
-      sources = [
-        {
-          enabled = true;
-          name = "Noctalia Plugins";
-          url = "https://github.com/noctalia-dev/noctalia-plugins";
-        }
-      ];
-      states.polkit-agent = {
-        enabled = true;
-        sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-      };
-      version = 2;
-    };
-  };
-  # ==============================
-
   xdg.configFile = {
     "niri/config.kdl".text = ''
       include "./cfg/animation.kdl"
@@ -171,12 +48,6 @@ in
               spring damping-ratio=1.0 stiffness=1200 epsilon=0.0001
           }
       }
-    '';
-
-    "niri/cfg/autostart.kdl".text = ''
-      spawn-at-startup "noctalia-shell"
-      spawn-at-startup "${arrangeDisplaysScript}"
-      spawn-at-startup "xwayland-satellite"
     '';
 
     "niri/cfg/display.kdl".text = ''
@@ -240,25 +111,28 @@ in
           Mod+Print hotkey-overlay-title="Record Screen: Kooha" { spawn "kooha"; }
 
           Mod+Return hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
-          Mod+Space hotkey-overlay-title="Open App Launcher: Noctalia" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
-          Mod+V hotkey-overlay-title="Clipboard History: Noctalia" { spawn "noctalia-shell" "ipc" "call" "launcher" "clipboard"; }
+          Mod+Space hotkey-overlay-title="Open App Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+          Mod+V hotkey-overlay-title="Clipboard History" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
           Mod+B hotkey-overlay-title="Open Browser: Zen" { spawn "zen-beta"; }
           Mod+E hotkey-overlay-title="Open File Manager: Dolphin" { spawn "dolphin"; }
           Mod+Alt+E hotkey-overlay-title="Open Editor: Kate" { spawn "kate"; }
           Mod+M hotkey-overlay-title="Open Mail: Thunderbird" { spawn "thunderbird"; }
-          Mod+L hotkey-overlay-title="Lock Screen: Noctalia" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
-          Mod+Shift+Q hotkey-overlay-title="Session Menu: Noctalia" { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
+          Mod+L hotkey-overlay-title="Lock Screen" { spawn "dms" "ipc" "call" "lock" "lock"; }
+          Mod+Shift+Q hotkey-overlay-title="Session Menu" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+          Mod+Alt+I hotkey-overlay-title="Quick Settings" { spawn "dms" "ipc" "call" "control-center" "toggle"; }
+          Mod+Alt+N hotkey-overlay-title="Notifications" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+          Mod+Alt+Comma hotkey-overlay-title="Desktop Settings" { spawn "dms" "ipc" "call" "settings" "toggle"; }
 
-          XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "increase"; }
-          XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "decrease"; }
-          XF86AudioMute allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "muteOutput"; }
-          XF86AudioMicMute allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "muteInput"; }
-          XF86AudioNext allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "next"; }
-          XF86AudioPrev allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "previous"; }
-          XF86AudioPlay allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "playPause"; }
-          XF86AudioPause allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "playPause"; }
-          XF86MonBrightnessUp allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "brightness" "increase"; }
-          XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "brightness" "decrease"; }
+          XF86AudioRaiseVolume allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "increment" "5"; }
+          XF86AudioLowerVolume allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "decrement" "5"; }
+          XF86AudioMute allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "mute"; }
+          XF86AudioMicMute allow-when-locked=true { spawn "dms" "ipc" "call" "mic" "mute"; }
+          XF86AudioNext allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "next"; }
+          XF86AudioPrev allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "previous"; }
+          XF86AudioPlay allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
+          XF86AudioPause allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
+          XF86MonBrightnessUp allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5"; }
+          XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5"; }
 
           Mod+Q repeat=false { close-window; }
 
@@ -353,7 +227,6 @@ in
           Mod+Ctrl+7 { move-column-to-workspace 7; }
           Mod+Ctrl+8 { move-column-to-workspace 8; }
           Mod+Ctrl+9 { move-column-to-workspace 9; }
-
       }
     '';
 
@@ -423,11 +296,7 @@ in
 
       environment {
           ELECTRON_OZONE_PLATFORM_HINT "auto"
-          QT_QPA_PLATFORM "wayland"
-          QT_QPA_PLATFORMTHEME "gtk3"
-          QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
           XDG_CURRENT_DESKTOP "niri"
-          XDG_SESSION_TYPE "wayland"
       }
 
       debug {
@@ -445,16 +314,16 @@ in
           clip-to-geometry true
       }
 
-       window-rule {
-           match app-id="steam"
-           exclude title=r#"^[Ss]team$"#
-           open-floating true
-       }
+      window-rule {
+          match app-id="steam"
+          exclude title=r#"^[Ss]team$"#
+          open-floating true
+      }
 
-       window-rule {
-           match app-id="satty"
-           open-floating true
-       }
+      window-rule {
+          match app-id="satty"
+          open-floating true
+      }
 
       window-rule {
           match app-id=r#"^(org\.freedesktop\.impl\.portal\.desktop\.kde|xdg-desktop-portal-kde)$"#
@@ -468,7 +337,7 @@ in
       }
 
       layer-rule {
-          match namespace="^noctalia-wallpaper*"
+          match namespace="^dms:wallpaper"
           place-within-backdrop true
       }
     '';

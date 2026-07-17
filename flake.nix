@@ -24,10 +24,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
-    noctalia-shell = {
-      url = "github:noctalia-dev/noctalia/legacy-v4";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     tpm = {
       url = "github:tmux-plugins/tpm";
       flake = false;
@@ -44,7 +40,6 @@
       url = "github:microsoft/playwright-cli";
       flake = false;
     };
-    try.url = "github:tobi/try";
     nixos-private = {
       url = "path:./private.example";
       flake = true;
@@ -110,7 +105,6 @@
                 users.${host.username} = {
                   imports = [
                     stylix.homeModules.stylix
-                    inputs.try.homeModules.default
                     ./hosts/darwin/home.nix
                   ]
                   ++ (host.homeModules or [ ]);
@@ -151,8 +145,6 @@
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
-                    inputs.noctalia-shell.homeModules.default
-                    inputs.try.homeModules.default
                     homeRoleModule
                   ]
                   ++ (host.homeModules or [ ]);
@@ -162,6 +154,8 @@
           ]
           ++ lib.optional (host.type == "laptop") nixos-hardware.nixosModules.framework-13-7040-amd;
         };
+
+      realNixosConfigurations = nixpkgs.lib.mapAttrs mkNixosHost nixosHosts;
     in
     {
       homeModules = {
@@ -170,7 +164,7 @@
 
       darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHosts;
 
-      nixosConfigurations = nixpkgs.lib.mapAttrs mkNixosHost nixosHosts // {
+      nixosConfigurations = realNixosConfigurations // {
         iso = nixpkgs.lib.nixosSystem {
           inherit (isoHost) system;
           specialArgs = {
@@ -199,8 +193,6 @@
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
-                    inputs.noctalia-shell.homeModules.default
-                    inputs.try.homeModules.default
                     ./hosts/home.nix
                   ];
                 };

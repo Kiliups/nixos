@@ -66,7 +66,6 @@ let
   playwrightCliBin = pkgs.writeShellScriptBin "playwright-cli" ''
     exec ${pkgs.nodejs}/bin/npx --yes @playwright/cli@latest "$@"
   '';
-
 in
 {
   options.development = {
@@ -85,7 +84,10 @@ in
       ++ lib.optionals config.development.claude.enable [ pkgs.claude-code ]
       ++ lib.optionals config.development.cursor.enable [ pkgs.cursor-cli ]
       ++ lib.optionals config.development.codex.enable [ pkgs.codex ]
-      ++ lib.optionals config.development.opencode.enable [ pkgs.opencode ];
+      ++ lib.optionals config.development.opencode.enable [
+        pkgs.opencode
+        pkgs.opencode-desktop
+      ];
 
     programs.zsh.shellAliases = lib.mkMerge [
       (lib.mkIf config.development.claude.enable { cc = "claude"; })
