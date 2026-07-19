@@ -37,6 +37,13 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  zramSwap.enable = true;
+
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
   system = {
     autoUpgrade = {
       enable = true;

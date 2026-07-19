@@ -58,6 +58,7 @@ let
       updaterCheckOnStart = false;
       lockBeforeSuspend = true;
       loginctlLockIntegration = true;
+      enableFprint = true;
       lockScreenWallpaperPath = "${config.stylix.image}";
     }
   );

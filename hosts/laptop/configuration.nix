@@ -15,7 +15,6 @@
   services = {
     fprintd.enable = true;
     fwupd.enable = true;
-    ollama.enable = true;
 
     pipewire.wireplumber = {
       extraScripts."switch-headset-input.lua" = ''
@@ -54,12 +53,25 @@
         "wireplumber.profiles".main."custom.switch-headset-input" = "required";
       };
     };
+
+    ollama = {
+      enable = true;
+      package = pkgs.ollama-vulkan;
+      environmentVariables = { 
+        OLLAMA_IGPU_ENABLE = "1";
+        OLLAMA_FLASH_ATTENTION = "true";
+        OLLAMA_KV_CACHE_TYPE = "q8_0";
+        OLLAMA_NUM_PARALLEL = "1";
+        OLLAMA_CONTEXT_LENGTH = "32192";
+        RADV_PERFTEST = "transfer_queue,mall";
+      };
+    };
   };
 
-  # eduroam setup scripts dependencies
   environment.systemPackages = with pkgs; [
     iw
     openssl
+    vulkan-tools
     kdePackages.ark
     kdePackages.dolphin
     kdePackages.dolphin-plugins
