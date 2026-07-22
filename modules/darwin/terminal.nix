@@ -98,6 +98,5 @@ in
   xdg.configFile."ghostty/config.ghostty".text = ''
     font-family = "JetBrains Mono"
     theme = "Catppuccin Macchiato"
-    macos-option-as-alt = true
   '';
 }

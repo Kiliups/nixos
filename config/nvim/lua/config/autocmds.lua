@@ -7,18 +7,9 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
-vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
-  pattern = "*",
-  callback = function()
-    if vim.bo.modified and vim.fn.expand("%") ~= "" then
-      vim.cmd("silent write")
-    end
-  end,
-})
-
 vim.opt.autoread = true
 
-vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+vim.api.nvim_create_autocmd("BufEnter", {
   command = "checktime",
 })
 

@@ -87,11 +87,6 @@ in
         lazydocker
       ];
 
-      activation.installLazyNvim = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        mkdir -p "$HOME/.local/share/nvim/lazy"
-        cp -r --no-preserve=mode ${pkgs.vimPlugins.lazy-nvim} "$HOME/.local/share/nvim/lazy/lazy.nvim"
-      '';
-
       file = {
         ".config/nvim" = {
           source = config.development.lazyvim.configSource;

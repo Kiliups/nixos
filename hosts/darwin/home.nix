@@ -4,7 +4,8 @@
     ../../modules/darwin
   ];
 
-  targets.darwin.copyApps.enable = false;
+  targets.darwin.copyApps.enable = true;
+  targets.darwin.copyApps.enableChecks = false;
 
   home = {
     inherit (host) username;
@@ -22,6 +23,7 @@
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     targets.vscode.enable = false;
+    targets.zed.enable = false;
   };
 
   development = {
@@ -34,6 +36,7 @@
     codex.enable = true;
     cursor.enable = true;
     opencode.enable = true;
+    zed.enable = true;
   };
 
   languages = {

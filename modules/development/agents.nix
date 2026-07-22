@@ -42,19 +42,9 @@ let
         name: lib.nameValuePair "${base}/${name}" { source = "${ponytail}/skills/${name}"; }
       ) ponytailSkills
     );
-  mattPocockSkillCategories = [
-    "engineering"
-    "productivity"
-    "personal"
-  ];
-  mattPocockSkillLinks =
-    base:
-    lib.listToAttrs (
-      map (
-        name:
-        lib.nameValuePair "${base}/matt-pocock/${name}" { source = "${mattPocockSkills}/skills/${name}"; }
-      ) mattPocockSkillCategories
-    );
+  mattPocockSkillLinks = base: {
+    "${base}/matt-pocock/engineering".source = "${mattPocockSkills}/skills/engineering";
+  };
   playwrightCliSkillLinks = base: {
     "${base}/playwright-cli".source = "${playwrightCli}/skills/playwright-cli";
   };
