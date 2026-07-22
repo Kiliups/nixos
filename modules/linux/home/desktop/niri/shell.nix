@@ -56,6 +56,12 @@ let
       matugenTemplateNiri = false;
       updaterHideWidget = true;
       updaterCheckOnStart = false;
+      acMonitorTimeout = 1800;
+      acLockTimeout = 900;
+      acSuspendTimeout = 3600;
+      batteryMonitorTimeout = 1800;
+      batteryLockTimeout = 900;
+      batterySuspendTimeout = 3600;
       lockBeforeSuspend = true;
       loginctlLockIntegration = true;
       enableFprint = true;

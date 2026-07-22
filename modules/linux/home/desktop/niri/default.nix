@@ -84,7 +84,6 @@ in
 {
   imports = [
     ./config.nix
-    ./idle.nix
     ./shell.nix
   ];
 

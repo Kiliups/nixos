@@ -72,11 +72,13 @@
 
       nixosRoleModules = {
         laptop = ./hosts/laptop/configuration.nix;
+        server = ./hosts/server/configuration.nix;
         workstation = ./hosts/workstation/configuration.nix;
       };
 
       homeRoleModules = {
         laptop = ./hosts/laptop/home.nix;
+        server = ./hosts/server/home.nix;
         workstation = ./hosts/workstation/home.nix;
       };
 
@@ -126,10 +128,8 @@
           specialArgs = {
             inherit inputs host hostName;
           };
-          modules = [
-            stylix.nixosModules.stylix
-            roleModule
-          ]
+          modules = lib.optional (host.type != "server") stylix.nixosModules.stylix
+          ++ [ roleModule ]
           ++ (host.modules or [ ])
           ++ [
             home-manager.nixosModules.home-manager
@@ -142,11 +142,11 @@
                 };
 
                 users.${host.username} = {
-                  imports = [
+                  imports = lib.optionals (host.type != "server") [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
-                    homeRoleModule
                   ]
+                  ++ [ homeRoleModule ]
                   ++ (host.homeModules or [ ]);
                 };
               };

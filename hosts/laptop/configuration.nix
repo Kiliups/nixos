@@ -13,6 +13,8 @@
   networking.hostName = hostName;
 
   services = {
+    tailscale.enable = true;
+
     fprintd.enable = true;
     fwupd.enable = true;
 
@@ -70,6 +72,7 @@
 
   environment.systemPackages = with pkgs; [
     iw
+    mpv
     openssl
     vulkan-tools
     kdePackages.ark
