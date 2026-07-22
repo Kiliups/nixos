@@ -35,19 +35,15 @@ let
     "ponytail-gain"
     "ponytail-help"
   ];
-  ponytailSkillLinks =
-    base:
-    lib.listToAttrs (
-      map (
-        name: lib.nameValuePair "${base}/${name}" { source = "${ponytail}/skills/${name}"; }
-      ) ponytailSkills
-    );
-  mattPocockSkillLinks = base: {
-    "${base}/matt-pocock/engineering".source = "${mattPocockSkills}/skills/engineering";
-  };
-  playwrightCliSkillLinks = base: {
-    "${base}/playwright-cli".source = "${playwrightCli}/skills/playwright-cli";
-  };
+  agentSkills =
+    lib.listToAttrs (map (name: lib.nameValuePair name "${ponytail}/skills/${name}") ponytailSkills)
+    // {
+      "matt-pocock/engineering" = "${mattPocockSkills}/skills/engineering";
+      playwright-cli = "${playwrightCli}/skills/playwright-cli";
+    };
+  agentSkillLinks = lib.mapAttrs' (
+    name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
+  ) agentSkills;
   anyAgentEnabled =
     config.development.claude.enable
     || config.development.cursor.enable
@@ -71,59 +67,53 @@ in
         pkgs.nodejs
         playwrightCliBin
       ]
-      ++ lib.optionals config.development.claude.enable [ pkgs.claude-code ]
       ++ lib.optionals config.development.cursor.enable [ pkgs.cursor-cli ]
-      ++ lib.optionals config.development.codex.enable [ pkgs.codex ]
-      ++ lib.optionals config.development.opencode.enable [
-        pkgs.opencode
-        pkgs.opencode-desktop
+      ++ lib.optionals config.development.opencode.enable [ pkgs.opencode-desktop ];
+
+    programs = {
+      mcp.enable = anyAgentEnabled;
+
+      claude-code = lib.mkIf config.development.claude.enable {
+        enable = true;
+        enableMcpIntegration = true;
+        context = agentInstructions;
+        skills = agentSkills;
+      };
+
+      codex = lib.mkIf config.development.codex.enable {
+        enable = true;
+        enableMcpIntegration = true;
+        context = agentInstructions;
+        skills = agentSkills;
+      };
+
+      opencode = lib.mkIf config.development.opencode.enable {
+        enable = true;
+        enableMcpIntegration = true;
+        context = agentInstructions;
+        skills = agentSkills;
+        settings.plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
+      };
+
+      zsh.shellAliases = lib.mkMerge [
+        (lib.mkIf config.development.claude.enable { cc = "claude"; })
+        (lib.mkIf config.development.cursor.enable { ccli = "cursor-agent"; })
+        (lib.mkIf config.development.codex.enable { cx = "codex"; })
+        (lib.mkIf config.development.opencode.enable { opc = "opencode"; })
       ];
+    };
 
-    programs.zsh.shellAliases = lib.mkMerge [
-      (lib.mkIf config.development.claude.enable { cc = "claude"; })
-      (lib.mkIf config.development.cursor.enable { ccli = "cursor-agent"; })
-      (lib.mkIf config.development.codex.enable { cx = "codex"; })
-      (lib.mkIf config.development.opencode.enable { opc = "opencode"; })
-    ];
-
-    home.file = lib.mkMerge [
-      (lib.mkIf config.development.claude.enable (
-        {
-          ".claude/CLAUDE.md".text = agentInstructions;
-        }
-        // ponytailSkillLinks ".claude/skills"
-        // mattPocockSkillLinks ".claude/skills"
-        // playwrightCliSkillLinks ".claude/skills"
-      ))
-      (lib.mkIf config.development.codex.enable {
-        ".codex/AGENTS.md".text = agentInstructions;
-      })
-      (lib.mkIf
-        (
-          config.development.cursor.enable
-          || config.development.codex.enable
-          || config.development.opencode.enable
-        )
-        (
-          {
-            ".agents/AGENTS.md".text = agentInstructions;
-            ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
-          }
-          // ponytailSkillLinks ".agents/skills"
-          // mattPocockSkillLinks ".agents/skills"
-          // playwrightCliSkillLinks ".agents/skills"
-        )
-      )
-    ];
+    home.file = lib.mkIf config.development.cursor.enable (
+      {
+        ".agents/AGENTS.md".text = agentInstructions;
+        ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
+      }
+      // agentSkillLinks
+    );
 
     xdg.configFile = lib.mkMerge [
       (lib.mkIf config.development.opencode.enable {
-        "opencode/opencode.json".text = builtins.toJSON {
-          "$schema" = "https://opencode.ai/config.json";
-          plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
-        };
         "opencode/agent/reviewer.md".text = opencodeReviewer;
-        "opencode/command".source = "${ponytail}/.opencode/command";
       })
     ];
   };

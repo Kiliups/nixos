@@ -10,6 +10,7 @@
   config = lib.mkIf config.development.zed.enable {
     programs.zed-editor = {
       enable = true;
+      enableMcpIntegration = true;
       extraPackages = with pkgs; [
         nixd
         nixfmt
