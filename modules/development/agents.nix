@@ -12,9 +12,11 @@ let
   agentInstructions = ''
     # Agent Instructions
 
-    - Make the smallest idiomatic code change that solves the task.
-    - Preserve the project's existing style, structure, and conventions.
-    - For browser automation or web testing, use `playwright-cli`. See the skill at `.agents/skills/playwright-cli/SKILL.md` (or `.claude/skills/playwright-cli/SKILL.md`) for the full command reference. Run `playwright-cli show` to open the live monitoring dashboard.
+    - Always make the minimal idiomatic, clean, dry code changes that solves the task.
+    - Follow the project’s existing style, structure, and conventions.
+    - For browser automation or web testing, use `playwright-cli`. See `.agents/skills/playwright-cli/SKILL.md` or `.claude/skills/playwright-cli/SKILL.md`. Run `playwright-cli show` for live monitoring.
+    - Before committing, pushing, or opening a PR, show the proposed changes and commit message, then wait for approval.
+    - When writing german always write normal umlauts not e.g. oe.
   '';
   opencodeReviewer = ''
     ---

@@ -14,8 +14,6 @@
   };
 
   programs.home-manager.enable = true;
-  #TODO
-  programs.zsh.shellAliases.opcw = "OPENCODE_CONFIG=$HOME/.config/opencode/work.json opencode";
 
   nixpkgs.config.allowUnfree = true;
 
