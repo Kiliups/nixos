@@ -48,9 +48,13 @@
           light = "Catppuccin Latte";
         };
         icon_theme = "Catppuccin Macchiato";
+        ui_font_size = 16;
+        agent_font_size = 16;
         buffer_font_family = "JetBrainsMono Nerd Font";
+        buffer_font_size = 14;
         terminal = {
           font_family = "JetBrainsMono Nerd Font Mono";
+          font_size = 14;
           font_features = {
             calt = false;
             liga = false;
