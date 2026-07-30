@@ -3,6 +3,7 @@
   imports = [
     ./agents.nix
     ./git.nix
+    ./herdr.nix
     ./neovim.nix
     ./shell.nix
     ./starship.nix
@@ -17,6 +18,7 @@
   config = lib.mkIf config.development.full.enable {
     development = {
       shell.enable = lib.mkDefault true;
+      herdr.enable = lib.mkDefault true;
       tmux.enable = lib.mkDefault true;
       starship.enable = lib.mkDefault true;
       lazyvim.enable = lib.mkDefault true;

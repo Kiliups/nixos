@@ -4,8 +4,8 @@
     ../../modules/darwin
   ];
 
-  targets.darwin.copyApps.enable = true;
-  targets.darwin.copyApps.enableChecks = false;
+  targets.darwin.copyApps.enable = false;
+  targets.darwin.linkApps.enable = true;
 
   home = {
     inherit (host) username;
@@ -26,6 +26,7 @@
 
   development = {
     shell.enable = true;
+    herdr.enable = true;
     tmux.enable = true;
     starship.enable = true;
     lazyvim.enable = true;
