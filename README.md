@@ -64,7 +64,7 @@ Or pass the experimental features inline for one-off first-run commands.
 Apply a NixOS host for the first time:
 
 ```bash
-sudo nixos-rebuild --option experimental-features "nix-command flakes" switch --flake path:$PWD#<host> --override-input nixos-private path:$PWD/private
+sudo nixos-rebuild --option experimental-features "nix-command flakes" switch --flake .#<host> --override-input nixos-private path:$PWD/private
 ```
 
 On macOS, install [Determinate Nix](https://docs.determinate.systems/determinate-nix/)
@@ -103,7 +103,7 @@ nfu
 Rebuild the current Linux host:
 
 ```bash
-sudo nixos-rebuild switch --flake path:$PWD#$(hostname) --override-input nixos-private path:$PWD/private
+sudo nixos-rebuild switch --flake .#$(hostname) --override-input nixos-private path:$PWD/private
 ```
 
 Or use the Linux shell helper from `modules/linux/home/terminal.nix`:
@@ -131,8 +131,8 @@ nrsu # Linux
 drsu # macOS
 ```
 
-NixOS hosts also enable daily automatic upgrades from the pinned lock file in
-`~/.config/nixos`. Input updates remain an explicit `nfu` operation.
+NixOS hosts update `nixpkgs` and rebuild daily, including the latest packaged
+kernel. Other flake inputs remain pinned until `nfu` is run.
 
 ## Theming
 

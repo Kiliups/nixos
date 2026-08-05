@@ -5,6 +5,7 @@
 }:
 {
   boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
     plymouth.enable = true;
     consoleLogLevel = 0;
     initrd.verbose = false;
@@ -50,6 +51,8 @@
       dates = "daily";
       flake = "/home/${host.username}/.config/nixos";
       flags = [
+        "--update-input"
+        "nixpkgs"
         "--override-input"
         "nixos-private"
         "path:/home/${host.username}/.config/nixos/private"
@@ -84,6 +87,7 @@
     targets = {
       grub.enable = false;
       kmscon.enable = false;
+      regreet.enable = false;
     };
   };
 

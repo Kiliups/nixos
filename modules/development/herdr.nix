@@ -92,7 +92,9 @@ in
       herdr
       hdl
       hdlm
-    ];
+    ]
+    ++ lib.optionals pkgs.stdenv.isLinux [ pkgs.libnotify ]
+    ++ lib.optionals pkgs.stdenv.isDarwin [ pkgs.terminal-notifier ];
 
     xdg.configFile."herdr/config.toml".text = ''
       onboarding = false

@@ -52,6 +52,7 @@
 
     #pdf
     poppler-utils
+
     # TODO eval
     pi-coding-agent
   ];

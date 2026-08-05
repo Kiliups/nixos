@@ -159,7 +159,10 @@
     in
     {
       homeModules = {
-        development = ./modules/development;
+        development = {
+          imports = [ ./modules/development ];
+          _module.args = { inherit inputs tpm; };
+        };
       };
 
       darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHosts;

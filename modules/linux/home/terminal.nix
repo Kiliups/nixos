@@ -24,7 +24,7 @@
             cd "$flake"
             git add -A
             local private="''${NIXOS_PRIVATE_FLAKE:-path:$PWD/private}"
-            sudo nixos-rebuild switch --flake "path:$PWD#$host" --override-input nixos-private "$private"
+            sudo nixos-rebuild switch --flake ".#$host" --override-input nixos-private "$private"
           )
         }
 

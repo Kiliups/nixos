@@ -1,16 +1,18 @@
 {
   hostName,
+  lib,
   pkgs,
   ...
 }:
 {
   imports = [
     ../common.nix
-    ../../modules/linux/desktop/niri.nix
-    ../../modules/linux/desktop/plasma.nix
+    ../../modules/linux/nixos/niri.nix
+    ../../modules/linux/nixos/plasma.nix
   ];
 
   networking.hostName = hostName;
+  services.displayManager.defaultSession = lib.mkForce "niri";
 
   services = {
     tailscale.enable = true;
