@@ -43,6 +43,46 @@ let
       herdr pane run "$editor_pane" "''${EDITOR:-nvim} ."
     '';
   };
+  hdlm = pkgs.writeShellApplication {
+    name = "hdlm";
+    runtimeInputs = [
+      herdr
+      pkgs.coreutils
+      pkgs.jq
+      hdl
+    ];
+    text = ''
+      set -euo pipefail
+
+      [[ -z "''${1:-}" ]] && {
+        echo "Usage: hdlm <claude(cc)|codex(cx)|cursor-agent(ccli)|opencode(opc)|other_ai> [<second_ai>]"
+        exit 1
+      }
+      [[ -z "''${HERDR_ENV:-}" ]] && {
+        echo "hdlm must run inside Herdr"
+        exit 1
+      }
+
+      ai="$1"
+      ai2="''${2:-}"
+      base_dir="$PWD"
+      first=true
+
+      shopt -s nullglob
+      for dir in "$base_dir"/*/; do
+        dirpath="''${dir%/}"
+        if $first; then
+          herdr workspace rename "$HERDR_WORKSPACE_ID" "$(basename "$dirpath")" >/dev/null
+          herdr pane run "$HERDR_PANE_ID" "cd '$dirpath' && hdl $ai $ai2"
+          first=false
+        else
+          workspace="$(herdr workspace create --cwd "$dirpath" --label "$(basename "$dirpath")" --no-focus)"
+          pane_id="$(jq -er '.result.root_pane.pane_id' <<< "$workspace")"
+          herdr pane run "$pane_id" hdl "$ai" "$ai2"
+        fi
+      done
+    '';
+  };
 in
 {
   options.development.herdr.enable = lib.mkEnableOption "Herdr terminal multiplexer";
@@ -51,6 +91,7 @@ in
     home.packages = [
       herdr
       hdl
+      hdlm
     ];
 
     xdg.configFile."herdr/config.toml".text = ''
