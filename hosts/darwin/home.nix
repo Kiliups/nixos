@@ -36,16 +36,18 @@
     cursor.enable = true;
     opencode.enable = true;
     zed.enable = true;
-  };
 
-  languages = {
-    angular.enable = true;
-    astro.enable = true;
-    java.enable = true;
-    php.enable = true;
-    typescript = {
-      enable = true;
-      extraPackages = with pkgs; [ yarn-berry ];
+    languages = {
+      angular.enable = true;
+      astro.enable = true;
+      c.enable = true;
+      java.enable = true;
+      nix.enable = true;
+      php.enable = true;
+      typescript = {
+        enable = true;
+        packages = with pkgs; [ yarn-berry ];
+      };
     };
   };
 }

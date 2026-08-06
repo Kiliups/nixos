@@ -6,6 +6,7 @@
 }:
 let
   inherit (pkgs) herdr;
+  # hdl = "herdr agent development layout for a single project"
   hdl = pkgs.writeShellApplication {
     name = "hdl";
     runtimeInputs = [
@@ -43,6 +44,8 @@ let
       herdr pane run "$editor_pane" "''${EDITOR:-nvim} ."
     '';
   };
+
+  # hdlm = "herdr agent development layout for multiple projects in subdirectories"
   hdlm = pkgs.writeShellApplication {
     name = "hdlm";
     runtimeInputs = [
@@ -85,44 +88,56 @@ let
   };
 in
 {
-  options.development.herdr.enable = lib.mkEnableOption "Herdr terminal multiplexer";
+  options.development.herdr = {
+    enable = lib.mkEnableOption "Herdr terminal multiplexer, hdl single-project and hdlm multi-project AI/editor workspace helpers, and jq and coreutils helper dependencies";
+
+    config = lib.mkOption {
+      type = lib.types.lines;
+      description = "Complete TOML configuration installed as ~/.config/herdr/config.toml. The default disables onboarding, uses Ctrl+Space as the prefix, configures pane and tab navigation, enables pane borders and terminal toasts, and hides the single-tab bar. Setting this option replaces all default Herdr settings.";
+      default = ''
+        onboarding = false
+
+        [keys]
+        prefix = "ctrl+space"
+        detach = "prefix+d"
+        rename_tab = "prefix+comma"
+        focus_pane_left = ["prefix+h", "alt+left"]
+        focus_pane_right = ["prefix+l", "alt+right"]
+        focus_pane_up = ["prefix+k", "alt+up"]
+        focus_pane_down = ["prefix+j", "alt+down"]
+        previous_tab = ["prefix+p", "shift+left"]
+        next_tab = ["prefix+n", "shift+right"]
+        close_tab = "prefix+ampersand"
+        last_pane = "prefix+semicolon"
+        cycle_pane_next = "prefix+o"
+        split_vertical = "prefix+%"
+        split_horizontal = "prefix+\""
+
+        [ui]
+        pane_borders = true
+        pane_gaps = false
+        hide_tab_bar_when_single_tab = true
+
+        [ui.toast]
+        delivery = "terminal"
+        delay_seconds = 1
+      '';
+      example = ''
+        onboarding = false
+
+        [keys]
+        prefix = "ctrl+a"
+      '';
+    };
+  };
 
   config = lib.mkIf config.development.herdr.enable {
     home.packages = [
       herdr
       hdl
       hdlm
-    ]
-    ++ lib.optionals pkgs.stdenv.isLinux [ pkgs.libnotify ]
-    ++ lib.optionals pkgs.stdenv.isDarwin [ pkgs.terminal-notifier ];
+    ];
 
-    xdg.configFile."herdr/config.toml".text = ''
-      onboarding = false
-
-      [keys]
-      prefix = "ctrl+space"
-      detach = "prefix+d"
-      rename_tab = "prefix+comma"
-      focus_pane_left = ["prefix+h", "alt+left"]
-      focus_pane_right = ["prefix+l", "alt+right"]
-      focus_pane_up = ["prefix+k", "alt+up"]
-      focus_pane_down = ["prefix+j", "alt+down"]
-      previous_tab = ["prefix+p", "shift+left"]
-      next_tab = ["prefix+n", "shift+right"]
-      close_tab = "prefix+ampersand"
-      last_pane = "prefix+semicolon"
-      cycle_pane_next = "prefix+o"
-      split_vertical = "prefix+%"
-      split_horizontal = "prefix+\""
-
-      [ui]
-      pane_borders = true
-      pane_gaps = false
-      hide_tab_bar_when_single_tab = true
-
-      [ui.toast]
-      delivery = "system"
-      delay_seconds = 1
-    '';
+    xdg.configFile."herdr/config.toml".text = config.development.herdr.config;
   };
 }

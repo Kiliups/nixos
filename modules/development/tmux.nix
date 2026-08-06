@@ -2,12 +2,10 @@
   pkgs,
   lib,
   config,
-  tpm ? null,
+  tmuxTpm ? null,
   ...
 }:
 let
-  # When run outside tmux, start (or attach to) a session named after the cwd
-  # and re-run the command inside it.
   bootstrapTmux = ''
     if [[ -z "''${TMUX:-}" ]]; then
       session_name="$(basename "$PWD" | tr '.:' '--')"
@@ -169,20 +167,23 @@ let
 in
 {
   options.development.tmux = {
-    enable = lib.mkEnableOption "tmux setup";
+    enable = lib.mkEnableOption "tmux with mouse and extended keys, Ctrl+Space prefix, Alt-arrow pane navigation, Shift-arrow window navigation, vi copy mode, current-directory splits, TPM, tmux-sensible, tmux-yank, Catppuccin Macchiato, and four layout helpers: tdl opens an editor and up to two agents for one project, tdlm applies that layout to every subdirectory, tsl runs one command in multiple panes, and tml runs multiple commands in tiled panes";
 
-    configSource = lib.mkOption {
-      type = lib.types.path;
-      default = ../../config/tmux/tmux.conf;
-      description = "Path to the tmux configuration file.";
+    config = lib.mkOption {
+      type = lib.types.lines;
+      default = builtins.readFile ../../config/tmux/tmux.conf;
+      defaultText = lib.literalExpression "builtins.readFile <default tmux.conf>";
+      description = "Complete configuration written to ~/.tmux.conf. Setting this option replaces all default tmux keybindings, plugins, and appearance settings; tmux, TPM, tdl, tdlm, tsl, and tml remain installed.";
+      example = lib.literalExpression "builtins.readFile ./tmux.conf";
     };
+
   };
 
   config = lib.mkIf config.development.tmux.enable {
     assertions = [
       {
-        assertion = tpm != null;
-        message = "The tpm flake input must be set when development.tmux.enable is true.";
+        assertion = tmuxTpm != null;
+        message = "development.tmux requires a pinned TPM source.";
       }
     ];
 
@@ -198,11 +199,11 @@ in
 
       file = {
         ".tmux.conf" = {
-          source = config.development.tmux.configSource;
+          text = config.development.tmux.config;
         };
 
         ".tmux/plugins/tpm" = {
-          source = tpm;
+          source = tmuxTpm;
           recursive = true;
         };
       };

@@ -70,15 +70,44 @@
         system = "x86_64-linux";
       };
 
+      developmentModule = {
+        imports = [ ./modules/development ];
+
+        _module.args.agentSources = {
+          inherit (inputs) ponytail matt-pocock-skills playwright-cli;
+        };
+        _module.args.tmuxTpm = tpm;
+      };
+
+      developmentOptions =
+        pkgs:
+        pkgs.writeText "DEVELOPMENT_OPTIONS.md" (
+          import ./templates/development/modules/options.nix {
+            inherit nixpkgs home-manager;
+            development = developmentModule;
+          }
+        );
+
+      developmentOptionsPackage =
+        pkgs:
+        pkgs.runCommand "development-options" { } ''
+          mkdir -p "$out/share/doc/development"
+          cp ${developmentOptions pkgs} "$out/share/doc/development/DEVELOPMENT_OPTIONS.md"
+        '';
+
+      developmentOptionsModule =
+        { pkgs, ... }:
+        {
+          environment.systemPackages = [ (developmentOptionsPackage pkgs) ];
+        };
+
       nixosRoleModules = {
         laptop = ./hosts/laptop/configuration.nix;
-        server = ./hosts/server/configuration.nix;
         workstation = ./hosts/workstation/configuration.nix;
       };
 
       homeRoleModules = {
         laptop = ./hosts/laptop/home.nix;
-        server = ./hosts/server/home.nix;
         workstation = ./hosts/workstation/home.nix;
       };
 
@@ -92,6 +121,7 @@
           modules = [
             stylix.darwinModules.stylix
             ./hosts/darwin/configuration.nix
+            developmentOptionsModule
           ]
           ++ (host.modules or [ ])
           ++ [
@@ -101,12 +131,13 @@
                 useUserPackages = true;
                 backupFileExtension = "backup";
                 extraSpecialArgs = {
-                  inherit inputs host tpm;
+                  inherit inputs host;
                 };
 
                 users.${host.username} = {
                   imports = [
                     stylix.homeModules.stylix
+                    developmentModule
                     ./hosts/darwin/home.nix
                   ]
                   ++ (host.homeModules or [ ]);
@@ -128,8 +159,11 @@
           specialArgs = {
             inherit inputs host hostName;
           };
-          modules = lib.optional (host.type != "server") stylix.nixosModules.stylix
+          modules = [
+            stylix.nixosModules.stylix
+          ]
           ++ [ roleModule ]
+          ++ [ developmentOptionsModule ]
           ++ (host.modules or [ ])
           ++ [
             home-manager.nixosModules.home-manager
@@ -138,15 +172,18 @@
                 useUserPackages = true;
                 backupFileExtension = "backup";
                 extraSpecialArgs = {
-                  inherit inputs host tpm;
+                  inherit inputs host;
                 };
 
                 users.${host.username} = {
-                  imports = lib.optionals (host.type != "server") [
+                  imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
                   ]
-                  ++ [ homeRoleModule ]
+                  ++ [
+                    developmentModule
+                    homeRoleModule
+                  ]
                   ++ (host.homeModules or [ ]);
                 };
               };
@@ -158,11 +195,13 @@
       realNixosConfigurations = nixpkgs.lib.mapAttrs mkNixosHost nixosHosts;
     in
     {
+      packages = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
+        development-options = developmentOptions (import nixpkgs { inherit system; });
+      });
+
       homeModules = {
-        development = {
-          imports = [ ./modules/development ];
-          _module.args = { inherit inputs tpm; };
-        };
+        development = developmentModule;
+        default = developmentModule;
       };
 
       darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHosts;
@@ -179,7 +218,7 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             stylix.nixosModules.stylix
             ./hosts/common.nix
-
+            developmentOptionsModule
             { boot.loader.timeout = lib.mkForce 10; }
 
             home-manager.nixosModules.home-manager
@@ -188,7 +227,7 @@
                 useUserPackages = true;
                 backupFileExtension = "backup";
                 extraSpecialArgs = {
-                  inherit inputs tpm;
+                  inherit inputs;
                   host = isoHost;
                 };
 
@@ -196,6 +235,7 @@
                   imports = [
                     plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
+                    developmentModule
                     ./hosts/home.nix
                   ];
                 };
@@ -206,6 +246,11 @@
       };
 
       templates = {
+        development = {
+          path = ./templates/development;
+          description = "Home Manager flake built on the development module";
+        };
+
         python = {
           path = ./templates/python;
           description = "Python development shell with uv";
