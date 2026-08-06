@@ -5,7 +5,9 @@
   ...
 }:
 {
-  options.development.shell.enable = lib.mkEnableOption "shell setup";
+  options.development.shell = {
+    enable = lib.mkEnableOption "Zsh with completion, autosuggestions, syntax highlighting, fzf, direnv with nix-direnv, zoxide replacing cd, aliases for eza, fastfetch, and nix develop, plus bat, btop, fastfetch, ripgrep, eza, and fd";
+  };
 
   config = lib.mkIf config.development.shell.enable {
     programs = {
@@ -52,8 +54,8 @@
       fd
     ];
 
-    xdg.configFile."fastfetch/config.jsonc" = {
-      source = ../../config/fastfetch/config.jsonc;
+    xdg.configFile = {
+      "fastfetch/config.jsonc".source = ../../config/fastfetch/config.jsonc;
     };
   };
 }

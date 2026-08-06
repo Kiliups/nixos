@@ -71,11 +71,78 @@ On macOS, install [Determinate Nix](https://docs.determinate.systems/determinate
 first. This repo leaves Nix itself to Determinate Systems; the Darwin config sets
 `nix.enable = false` so nix-darwin does not rewrite `/etc/nix/nix.conf`.
 
+```bash
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+
 Apply the macOS host for the first time:
 
 ```bash
 nix run nix-darwin -- switch --flake .#<host> --override-input nixos-private path:$PWD/private
 ```
+
+## Using the Development Module Elsewhere
+
+The development tooling is exported as a standalone Home Manager module, so
+another flake can import it without adopting the rest of this repository. It
+needs `nixpkgs-unstable` and a recent `home-manager` for the
+`programs.claude-code`, `programs.codex`, `programs.opencode`, and `programs.mcp`
+options.
+
+A ready-made consumer flake is available as a template:
+
+```bash
+nix flake init -t github:kiliups/nixos#development
+```
+
+It boils down to importing one module:
+
+```nix
+{
+  inputs.nixos.url = "github:<owner>/nixos";
+
+  outputs = { home-manager, nixos, ... }: {
+    homeConfigurations.me = home-manager.lib.homeManagerConfiguration {
+      modules = [
+        nixos.homeModules.development
+        {
+          development = {
+            shell.enable = true;
+            lazyvim.enable = true;
+            claude.enable = true;
+
+            languages.go.enable = true;
+          };
+        }
+      ];
+    };
+  };
+}
+```
+
+`development.full.enable` turns on every editor, terminal, and built-in language
+at once, leaving the AI agents opt-in.
+
+Use `development.<tool>.enable` to select tools. Herdr, tmux, and LazyVim each
+provide a complete `config` override; VS Code and Zed expose `settings` and
+`extensions`. Disable a tool and configure its Home Manager program directly
+when the bundled setup does not fit.
+
+Languages are data rather than code, so a consumer can add one the same way the
+built-ins are defined:
+
+```nix
+development.languages.elixir = {
+  enable = true;
+  packages = [ pkgs.elixir ];
+  vscode.extensions = [ pkgs.vscode-extensions.jakebecker.elixir-ls ];
+  zed.extensions = [ "elixir" ];
+  lazyvim.extras = [ "lang.elixir" ];
+};
+```
+
+Each enabled language contributes its packages, extensions, settings, and
+LazyVim extras only to the editors that are themselves enabled.
 
 ## Private Host Data
 
@@ -149,13 +216,14 @@ System theming is handled by Stylix with
 | `private.example/`     | Safe template for ignored local host data                  |
 | `hosts/`               | Shared, Linux, laptop, workstation, and macOS host config  |
 | `modules/development/` | Shell, editors, tmux, Starship, Git, agents, and languages |
+| `modules/development/languages/builtin.nix` | Built-in language definitions, as plain data |
 | `modules/linux/desktop/` | System-level NixOS desktop modules                       |
 | `modules/linux/home/`  | Home Manager desktop modules                               |
 | `modules/linux/`       | Shared Linux user and terminal modules                     |
 | `modules/darwin/`      | macOS-specific modules                                     |
 | `modules/apps/`        | Desktop application modules                                |
 | `config/`              | Static config files, themes, wallpapers, and Neovim config |
-| `templates/`           | Development shell templates                                |
+| `templates/`           | Flake templates for consumers and development shells       |
 
 ## Manual Notes
 
@@ -165,4 +233,5 @@ System theming is handled by Stylix with
 - **eduroam**: Scripts live in `config/eduroam`. Download the `.p12` certificate
   from <https://www.easyroam.de/home>, extract it with the helper script, and fix
   read permissions if needed.
-- The Python shell template is available with `nix flake init -t .#python`.
+- Templates: `nix flake init -t .#development` for a Home Manager flake built
+  on the development module, `nix flake init -t .#python` for a Python shell.

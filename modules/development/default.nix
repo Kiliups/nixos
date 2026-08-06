@@ -13,7 +13,10 @@
     ./languages
   ];
 
-  options.development.full.enable = lib.mkEnableOption "full development environment";
+  options.development = {
+    full.enable = lib.mkEnableOption "development.git, development.shell, development.herdr, development.tmux, development.starship, development.lazyvim, development.vscode, development.zed, and every built-in language; C and Nix are enabled by default, while Claude Code, Codex, Cursor, and OpenCode remain disabled";
+
+  };
 
   config = lib.mkIf config.development.full.enable {
     development = {
@@ -24,20 +27,6 @@
       lazyvim.enable = lib.mkDefault true;
       vscode.enable = lib.mkDefault true;
       zed.enable = lib.mkDefault true;
-    };
-
-    languages = {
-      angular.enable = lib.mkDefault true;
-      astro.enable = lib.mkDefault true;
-      go.enable = lib.mkDefault true;
-      java.enable = lib.mkDefault true;
-      php.enable = lib.mkDefault true;
-      python.enable = lib.mkDefault true;
-      rust.enable = lib.mkDefault true;
-      svelte.enable = lib.mkDefault true;
-      typescript.enable = lib.mkDefault true;
-      typst.enable = lib.mkDefault true;
-      vue.enable = lib.mkDefault true;
     };
   };
 }

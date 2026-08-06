@@ -21,10 +21,12 @@
           local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
           local host="''${2:-$(hostname)}"
           (
-            cd "$flake"
-            git add -A
-            local private="''${NIXOS_PRIVATE_FLAKE:-path:$PWD/private}"
-            sudo nixos-rebuild switch --flake ".#$host" --override-input nixos-private "$private"
+          cd "$flake"
+          git add -A
+          cp "$(nix build --no-link --print-out-paths .#development-options)" templates/development/DEVELOPMENT_OPTIONS.md
+          git add templates/development/DEVELOPMENT_OPTIONS.md
+          local private="''${NIXOS_PRIVATE_FLAKE:-path:$PWD/private}"
+          sudo nixos-rebuild switch --flake ".#$host" --override-input nixos-private "$private"
           )
         }
 

@@ -24,19 +24,14 @@
 
   programs.home-manager.enable = true;
 
-  development.full.enable = true;
-
   development = {
+    full.enable = true;
     claude.enable = false;
     codex.enable = false;
     cursor.enable = false;
     opencode.enable = true;
-  };
 
-  languages = {
-    typescript = {
-      extraPackages = with pkgs; [ bun ];
-    };
+    languages.typescript.packages = with pkgs; [ bun ];
   };
 
   home.packages = with pkgs; [

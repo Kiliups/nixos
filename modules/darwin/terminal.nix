@@ -65,6 +65,8 @@ in
         (
           cd "$flake"
           git add -A
+          cp "$(nix build --no-link --print-out-paths .#development-options)" templates/development/DEVELOPMENT_OPTIONS.md
+          git add templates/development/DEVELOPMENT_OPTIONS.md
           local private="''${NIXOS_PRIVATE_FLAKE:-path:$PWD/private}"
           sudo darwin-rebuild switch --flake ".#$host" --override-input nixos-private "$private"
         )
