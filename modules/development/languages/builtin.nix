@@ -89,12 +89,13 @@ in
 
   nix = {
     enable = true;
-    description = "nixd, nixfmt, and statix; adds nix-ide with nixd and nixfmt settings to VS Code and the Nix extension with nixd and nixfmt to Zed";
+    description = "nixd, nixfmt, and statix; adds nix-ide with nixd and nixfmt settings to VS Code, the Nix extension with nixd and nixfmt to Zed, and the LazyVim Nix extra";
     packages = with pkgs; [
       nixd
       nixfmt
       statix
     ];
+    lazyvim.extras = [ "lang.nix" ];
     vscode = {
       extensions = [ vs.jnoortheen.nix-ide ];
       settings = {

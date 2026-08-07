@@ -17,10 +17,7 @@
     ];
 
     loader = {
-      systemd-boot = {
-        configurationLimit = 5;
-        enable = false;
-      };
+      systemd-boot.enable = false;
 
       grub = {
         enable = true;
@@ -157,6 +154,8 @@
   ];
 
   programs.zsh.enable = true;
+
+  programs.nix-ld.enable = true;
 
   virtualisation.docker.enable = true;
 

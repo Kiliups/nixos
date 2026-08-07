@@ -21,7 +21,9 @@ map("v", ">", ">gv", { desc = "Indent right and keep selection" })
 map("n", "qj", "@q", { desc = "Run macro q" })
 
 -- Insert line below/above without entering insert mode
-map("n", "<CR>", "o<Esc>", { desc = "Insert line below" })
+map("n", "<CR>", function()
+  return vim.bo.buftype == "" and "o<Esc>" or "<CR>"
+end, { expr = true, desc = "Insert line below" })
 map("n", "<S-CR>", "O<Esc>", { desc = "Insert line above" })
 
 -- Keep cursor centered while paging

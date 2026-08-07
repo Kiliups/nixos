@@ -36,7 +36,19 @@ _: {
         "image/webp"
       ];
     in
-    { "application/pdf" = "org.kde.okular.desktop"; }
-    // builtins.listToAttrs (map (t: { name = t; value = "mpv.desktop"; }) (audio ++ video))
-    // builtins.listToAttrs (map (t: { name = t; value = "org.kde.gwenview.desktop"; }) image);
+    {
+      "application/pdf" = "org.kde.okular.desktop";
+    }
+    // builtins.listToAttrs (
+      map (t: {
+        name = t;
+        value = "mpv.desktop";
+      }) (audio ++ video)
+    )
+    // builtins.listToAttrs (
+      map (t: {
+        name = t;
+        value = "org.kde.gwenview.desktop";
+      }) image
+    );
 }

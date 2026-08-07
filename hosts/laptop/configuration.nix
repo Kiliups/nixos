@@ -61,7 +61,7 @@
     ollama = {
       enable = true;
       package = pkgs.ollama-vulkan;
-      environmentVariables = { 
+      environmentVariables = {
         OLLAMA_IGPU_ENABLE = "1";
         OLLAMA_FLASH_ATTENTION = "true";
         OLLAMA_KV_CACHE_TYPE = "q8_0";

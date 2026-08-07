@@ -1,4 +1,9 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   colors = config.lib.stylix.colors.withHashtag;
 in
@@ -297,6 +302,11 @@ in
       environment {
           ELECTRON_OZONE_PLATFORM_HINT "auto"
           XDG_CURRENT_DESKTOP "niri"
+          XDG_MENU_PREFIX "plasma-"
+      }
+
+      xwayland-satellite {
+          path "${lib.getExe pkgs.xwayland-satellite}"
       }
 
       debug {

@@ -6,7 +6,9 @@
 }:
 let
   cfg = config.development.vscode;
-  enabledLanguages = lib.attrValues (lib.filterAttrs (_: language: language.enable) config.development.languages);
+  enabledLanguages = lib.attrValues (
+    lib.filterAttrs (_: language: language.enable) config.development.languages
+  );
   collectLanguage = attrPath: lib.concatMap (lib.attrByPath attrPath [ ]) enabledLanguages;
   languageSettings = lib.foldl' lib.recursiveUpdate { } (
     map (language: language.vscode.settings) enabledLanguages
@@ -56,7 +58,7 @@ let
 in
 {
   options.development.vscode = {
-    enable = lib.mkEnableOption "VS Code with Prettier, Remote SSH, VSCodeVim, GitLens, and Todo Tree extensions; Catppuccin Macchiato, relative line numbers, format-on-save, autosave, JSON and Markdown wrapping, and the extensions and settings contributed by the enabled languages";
+    enable = lib.mkEnableOption "VS Code with Catppuccin theme and icon, Prettier, Remote SSH, VSCodeVim, GitLens, and Todo Tree extensions; Catppuccin Macchiato, relative line numbers, format-on-save, autosave, JSON and Markdown wrapping, and the extensions and settings contributed by the enabled languages";
 
     extensions = lib.mkOption {
       type = lib.types.listOf lib.types.package;
@@ -77,13 +79,21 @@ in
     programs.vscode = {
       enable = true;
       profiles.default = {
-        extensions = (with pkgs.vscode-extensions; [
-          esbenp.prettier-vscode
-          ms-vscode-remote.remote-ssh
-          vscodevim.vim
-          eamodio.gitlens
-          gruntfuggly.todo-tree
-        ]) ++ collectLanguage [ "vscode" "extensions" ] ++ cfg.extensions;
+        extensions =
+          (with pkgs.vscode-extensions; [
+            catppuccin.catppuccin-vsc
+            catppuccin.catppuccin-vsc-icons
+            esbenp.prettier-vscode
+            ms-vscode-remote.remote-ssh
+            vscodevim.vim
+            eamodio.gitlens
+            gruntfuggly.todo-tree
+          ])
+          ++ collectLanguage [
+            "vscode"
+            "extensions"
+          ]
+          ++ cfg.extensions;
         userSettings = lib.recursiveUpdate (lib.recursiveUpdate defaultSettings languageSettings) cfg.settings;
       };
     };

@@ -90,7 +90,6 @@ in
   home.packages = with pkgs; [
     kooha
     screenshot
-    xwayland-satellite
   ];
 
   systemd.user.services = {
@@ -109,20 +108,6 @@ in
       Install.WantedBy = [ "graphical-session.target" ];
     };
 
-    niri-xwayland-satellite = {
-      Unit = {
-        Description = "XWayland support for Niri";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
-        ConditionEnvironment = "XDG_CURRENT_DESKTOP=niri";
-      };
-      Service = {
-        ExecStart = lib.getExe pkgs.xwayland-satellite;
-        Restart = "on-failure";
-      };
-      Install.WantedBy = [ "graphical-session.target" ];
-    };
-
     niri-kbuildsycoca = {
       Unit = {
         Description = "Refresh KDE application metadata for Niri";
@@ -132,6 +117,7 @@ in
       };
       Service = {
         Type = "oneshot";
+        Environment = "XDG_MENU_PREFIX=plasma-";
         ExecStart = "${lib.getExe' pkgs.kdePackages.kservice "kbuildsycoca6"} --noincremental";
       };
       Install.WantedBy = [ "graphical-session.target" ];

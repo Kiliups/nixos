@@ -5,7 +5,9 @@
 }:
 let
   cfg = config.development.zed;
-  enabledLanguages = lib.attrValues (lib.filterAttrs (_: language: language.enable) config.development.languages);
+  enabledLanguages = lib.attrValues (
+    lib.filterAttrs (_: language: language.enable) config.development.languages
+  );
   collectLanguage = attrPath: lib.concatMap (lib.attrByPath attrPath [ ]) enabledLanguages;
   languageSettings = lib.foldl' lib.recursiveUpdate { } (
     map (language: language.zed.settings) enabledLanguages
@@ -91,8 +93,16 @@ in
         "catppuccin-icons"
         "emmet"
         "todo-highlight-language-server"
-      ] ++ collectLanguage [ "zed" "extensions" ] ++ cfg.extensions;
-      extraPackages = collectLanguage [ "zed" "packages" ];
+      ]
+      ++ collectLanguage [
+        "zed"
+        "extensions"
+      ]
+      ++ cfg.extensions;
+      extraPackages = collectLanguage [
+        "zed"
+        "packages"
+      ];
       userSettings = lib.recursiveUpdate (lib.recursiveUpdate defaultSettings languageSettings) cfg.settings;
       userKeymaps = [
         {

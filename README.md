@@ -217,7 +217,7 @@ System theming is handled by Stylix with
 | `hosts/`               | Shared, Linux, laptop, workstation, and macOS host config  |
 | `modules/development/` | Shell, editors, tmux, Starship, Git, agents, and languages |
 | `modules/development/languages/builtin.nix` | Built-in language definitions, as plain data |
-| `modules/linux/desktop/` | System-level NixOS desktop modules                       |
+| `modules/linux/nixos/`  | System-level NixOS desktop modules                        |
 | `modules/linux/home/`  | Home Manager desktop modules                               |
 | `modules/linux/`       | Shared Linux user and terminal modules                     |
 | `modules/darwin/`      | macOS-specific modules                                     |
@@ -227,7 +227,6 @@ System theming is handled by Stylix with
 
 ## Manual Notes
 
-- VS Code may need the Catppuccin theme extension installed manually.
 - Some KDE shortcuts may need to overwrite existing Plasma defaults after the
   first switch.
 - **eduroam**: Scripts live in `config/eduroam`. Download the `.p12` certificate

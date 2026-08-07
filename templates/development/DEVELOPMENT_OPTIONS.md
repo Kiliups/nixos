@@ -424,7 +424,7 @@ true
 
 ## `development.vscode.enable`
 
-Whether to enable VS Code with Prettier, Remote SSH, VSCodeVim, GitLens, and Todo Tree extensions; Catppuccin Macchiato, relative line numbers, format-on-save, autosave, JSON and Markdown wrapping, and the extensions and settings contributed by the enabled languages.
+Whether to enable VS Code with Catppuccin theme and icon, Prettier, Remote SSH, VSCodeVim, GitLens, and Todo Tree extensions; Catppuccin Macchiato, relative line numbers, format-on-save, autosave, JSON and Markdown wrapping, and the extensions and settings contributed by the enabled languages.
 
 Type: `boolean`
 

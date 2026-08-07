@@ -6,7 +6,6 @@
 
   programs = {
     zsh = {
-      shellAliases = { };
       initContent = ''
         nx() {
           code "''${NIXOS_FLAKE:-$HOME/.config/nixos}"

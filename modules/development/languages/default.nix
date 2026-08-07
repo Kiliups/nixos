@@ -185,12 +185,10 @@ in
     }
 
     (lib.mkIf config.development.lazyvim.enable {
-      home.file = lib.mkDefault (
-        lib.mapAttrs' lazyvimFile (
-          lib.filterAttrs (
-            _: language: language.lazyvim.extras != [ ] || language.lazyvim.plugins != ""
-          ) enabledLanguages
-        )
+      home.file = lib.mapAttrs' lazyvimFile (
+        lib.filterAttrs (
+          _: language: language.lazyvim.extras != [ ] || language.lazyvim.plugins != ""
+        ) enabledLanguages
       );
     })
   ];

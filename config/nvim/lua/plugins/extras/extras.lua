@@ -1,5 +1,4 @@
 return {
-  { import = "lazyvim.plugins.extras.lang.nix" },
   { import = "lazyvim.plugins.extras.lang.json" },
   {
     "iamcco/markdown-preview.nvim",
