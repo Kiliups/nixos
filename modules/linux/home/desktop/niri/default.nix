@@ -84,6 +84,7 @@ in
 {
   imports = [
     ./config.nix
+    ./mime.nix
     ./shell.nix
   ];
 

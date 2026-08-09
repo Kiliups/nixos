@@ -208,13 +208,16 @@ in
   };
 
   typescript = {
-    description = "Node.js and the LazyVim TypeScript extra";
-    packages = [ pkgs.nodejs ];
+    description = "Node.js, TypeScript Language Server, and the LazyVim TypeScript extra";
+    packages = with pkgs; [
+      nodejs
+      typescript-language-server
+    ];
     lazyvim.extras = [ "lang.typescript" ];
   };
 
   typst = {
-    description = "Typst, Tinymist, LTeX LS Plus, and websocat; adds Tinymist, PDF, and LTeX Plus extensions to VS Code, the LTeX and Typst extensions to Zed, and the LazyVim Typst extra with typst-preview.nvim, Chromium app preview on niri, and Tinymist LSP configuration";
+    description = "Typst, Tinymist, LTeX LS Plus, and websocat; adds Tinymist, PDF, and LTeX Plus extensions to VS Code, the LTeX and Typst extensions to Zed, and the LazyVim Typst extra with typst-preview.nvim and Tinymist LSP configuration";
     packages = with pkgs; [
       typst
       tinymist
@@ -249,15 +252,6 @@ in
               websocat = "websocat",
             },
           },
-          init = function()
-            if vim.env.XDG_CURRENT_DESKTOP == "niri" then
-              vim.api.nvim_create_autocmd("BufEnter", {
-                pattern = "*.typ",
-                once = true,
-                command = "TypstPreview",
-              })
-            end
-          end,
         },
         {
           "neovim/nvim-lspconfig",
