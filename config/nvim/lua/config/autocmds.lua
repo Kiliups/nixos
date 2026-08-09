@@ -12,3 +12,10 @@ vim.opt.autoread = true
 vim.api.nvim_create_autocmd("BufEnter", {
   command = "checktime",
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.diagnostic.disable()
+  end,
+})

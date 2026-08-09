@@ -29,13 +29,15 @@
     herdr.enable = true;
     tmux.enable = true;
     starship.enable = true;
+
     lazyvim.enable = true;
     vscode.enable = true;
+    zed.enable = false;
+
     claude.enable = true;
     codex.enable = true;
     cursor.enable = true;
     opencode.enable = true;
-    zed.enable = true;
 
     languages = {
       angular.enable = true;

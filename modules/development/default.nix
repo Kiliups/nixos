@@ -20,6 +20,7 @@
 
   config = lib.mkIf config.development.full.enable {
     development = {
+      git.enable = lib.mkDefault true;
       shell.enable = lib.mkDefault true;
       herdr.enable = lib.mkDefault true;
       tmux.enable = lib.mkDefault true;
