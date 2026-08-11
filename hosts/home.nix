@@ -51,7 +51,7 @@
     # TODO eval
     pi-coding-agent
 
-    # TODO t3code
+    # TODO eval
     t3code
   ];
 }

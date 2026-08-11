@@ -15,8 +15,6 @@
   services.displayManager.defaultSession = lib.mkForce "niri";
 
   services = {
-    tailscale.enable = true;
-
     fprintd.enable = true;
     fwupd.enable = true;
 

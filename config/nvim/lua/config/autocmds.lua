@@ -15,7 +15,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
-  callback = function()
-    vim.diagnostic.disable()
+  callback = function(args)
+    vim.diagnostic.enable(false, { bufnr = args.buf })
   end,
 })

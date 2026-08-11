@@ -93,6 +93,8 @@
     plugins = with pkgs; [ networkmanager-openvpn ];
   };
 
+  services.tailscale.enable = true;
+
   networking.firewall.checkReversePath = "loose";
 
   environment.sessionVariables = {
