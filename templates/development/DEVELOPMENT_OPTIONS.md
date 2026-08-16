@@ -259,7 +259,7 @@ Example:
 
 ## `development.herdr.enable`
 
-Whether to enable Herdr terminal multiplexer, hdl single-project and hdlm multi-project AI/editor workspace helpers, and jq and coreutils helper dependencies. Also installs the herdr-browser plugin (a real Chromium view inside a Herdr pane, exposed to Chrome DevTools Protocol clients) with bun and chromium, and enables Herdr's experimental Kitty graphics rendering.
+Whether to enable Herdr terminal multiplexer, hdl single-project and hdlm multi-project AI/editor workspace helpers, jq and coreutils helper dependencies, and Herdr's experimental Kitty graphics rendering.
 
 Type: `boolean`
 

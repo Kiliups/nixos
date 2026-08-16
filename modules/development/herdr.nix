@@ -6,21 +6,6 @@
 }:
 let
   inherit (pkgs) herdr;
-  # launcher = herdr, but starts fresh: plain `herdr` always wipes the saved
-  herdrLaunch = pkgs.writeShellApplication {
-    name = "herdr";
-    runtimeInputs = [
-      herdr
-      pkgs.coreutils
-    ];
-    text = ''
-      set -euo pipefail
-
-      [[ $# -eq 0 ]] && rm -f "$HOME/.config/herdr/session.json"
-
-      exec "${herdr}/bin/herdr" "$@"
-    '';
-  };
   # hdl = "herdr agent development layout for a single project"
   hdl = pkgs.writeShellApplication {
     name = "hdl";
@@ -104,7 +89,7 @@ let
 in
 {
   options.development.herdr = {
-    enable = lib.mkEnableOption "Herdr terminal multiplexer, hdl single-project and hdlm multi-project AI/editor workspace helpers, and jq and coreutils helper dependencies. Also installs the herdr-browser plugin (a real Chromium view inside a Herdr pane, exposed to Chrome DevTools Protocol clients) with bun and chromium, and enables Herdr's experimental Kitty graphics rendering";
+    enable = lib.mkEnableOption "Herdr terminal multiplexer, hdl single-project and hdlm multi-project AI/editor workspace helpers, jq and coreutils helper dependencies, and Herdr's experimental Kitty graphics rendering";
 
     config = lib.mkOption {
       type = lib.types.lines;
@@ -148,22 +133,14 @@ in
 
   config = lib.mkIf config.development.herdr.enable {
     home.packages = [
-      herdrLaunch
+      pkgs.herdr
       hdl
       hdlm
-      pkgs.bun
-      pkgs.chromium
     ];
 
     xdg.configFile."herdr/config.toml".text = config.development.herdr.config + ''
       [experimental]
       kitty_graphics = true
-    '';
-
-    home.activation.herdrBrowser = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-      if ! grep -q '"plugin_id":"official.browser"' "$HOME/.config/herdr/plugins.json" 2>/dev/null; then
-        $DRY_RUN_CMD env PATH="${pkgs.git}/bin:$PATH" "${herdr}/bin/herdr" plugin install ogulcancelik/herdr-browser --yes
-      fi
     '';
   };
 }

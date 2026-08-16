@@ -136,8 +136,8 @@ in
           XF86AudioPrev allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "previous"; }
           XF86AudioPlay allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
           XF86AudioPause allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
-          XF86MonBrightnessUp allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5"; }
-          XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5"; }
+          XF86MonBrightnessUp allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5" "backlight:amdgpu_bl1"; }
+          XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5" "backlight:amdgpu_bl1"; }
 
           Mod+Q repeat=false { close-window; }
 

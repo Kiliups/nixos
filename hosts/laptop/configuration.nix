@@ -8,7 +8,6 @@
   imports = [
     ../common.nix
     ../../modules/linux/nixos/niri.nix
-    ../../modules/linux/nixos/plasma.nix
   ];
 
   networking.hostName = hostName;

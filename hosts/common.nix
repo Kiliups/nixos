@@ -4,6 +4,11 @@
   ...
 }:
 {
+  imports = [
+    ../modules/linux/nixos/displaymanager.nix
+    ../modules/linux/nixos/plasma.nix
+  ];
+
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
     plymouth.enable = true;
@@ -84,7 +89,7 @@
     targets = {
       grub.enable = false;
       kmscon.enable = false;
-      regreet.enable = false;
+      regreet.enable = true;
     };
   };
 
