@@ -112,7 +112,7 @@ in
           Print hotkey-overlay-title="Screenshot: Niri" { screenshot; }
           Ctrl+Print hotkey-overlay-title="Screenshot Focused Display: Niri" { screenshot-screen; }
           Alt+Print hotkey-overlay-title="Screenshot Focused Window: Niri" { screenshot-window; }
-          Mod+Shift+S hotkey-overlay-title="Capture and Edit: Satty" { spawn "niri-screenshot"; }
+          Mod+Shift+S hotkey-overlay-title="Capture and Edit: DMS" { spawn "dms" "ipc" "call" "niri" "screenshot"; }
           Mod+Print hotkey-overlay-title="Record Screen: Kooha" { spawn "kooha"; }
 
           Mod+Return hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
@@ -199,6 +199,7 @@ in
           Mod+Ctrl+C { center-visible-columns; }
           Mod+Minus { set-column-width "-10%"; }
           Mod+Plus { set-column-width "+10%"; }
+          Mod+H hotkey-overlay-title="Half Screen Width" { set-column-width "50%"; }
           Mod+Shift+Minus { set-window-height "-10%"; }
           Mod+Shift+Plus { set-window-height "+10%"; }
 
@@ -240,6 +241,8 @@ in
           gaps 8
           center-focused-column "never"
           background-color "transparent"
+
+          default-column-width { proportion 0.5; }
 
           preset-column-widths {
               proportion 0.33333

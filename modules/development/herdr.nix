@@ -121,6 +121,8 @@ in
         [ui.toast]
         delivery = "terminal"
         delay_seconds = 1
+        [experimental]
+        kitty_graphics = true
       '';
       example = ''
         onboarding = false
@@ -138,9 +140,6 @@ in
       hdlm
     ];
 
-    xdg.configFile."herdr/config.toml".text = config.development.herdr.config + ''
-      [experimental]
-      kitty_graphics = true
-    '';
+    xdg.configFile."herdr/config.toml".text = config.development.herdr.config;
   };
 }

@@ -36,8 +36,8 @@
       url = "github:mattpocock/skills";
       flake = false;
     };
-    playwright-cli = {
-      url = "github:microsoft/playwright-cli";
+    cursor-plugins = {
+      url = "github:cursor/plugins";
       flake = false;
     };
     nixos-private = {
@@ -57,6 +57,7 @@
       plasma-manager,
       nixos-private,
       tpm,
+      cursor-plugins,
       ...
     }:
     let
@@ -74,7 +75,7 @@
         imports = [ ./modules/development ];
 
         _module.args.agentSources = {
-          inherit (inputs) ponytail matt-pocock-skills playwright-cli;
+          inherit (inputs) ponytail matt-pocock-skills cursor-plugins;
         };
         _module.args.tmuxTpm = tpm;
       };

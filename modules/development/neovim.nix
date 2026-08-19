@@ -32,6 +32,8 @@
         tree-sitter
         lazygit
         lazydocker
+        imagemagick
+        ghostscript
       ];
 
       file = {

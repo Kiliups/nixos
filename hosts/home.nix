@@ -42,7 +42,6 @@
     wireguard-tools
 
     # image and video
-    imagemagick
     ffmpeg-full
 
     #pdf

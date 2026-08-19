@@ -62,6 +62,7 @@ let
       batteryMonitorTimeout = 1800;
       batteryLockTimeout = 900;
       batterySuspendTimeout = 3600;
+      batteryNotifyLow = true;
       lockBeforeSuspend = true;
       loginctlLockIntegration = true;
       enableFprint = true;

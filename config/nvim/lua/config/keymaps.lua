@@ -35,4 +35,14 @@ map("x", "<leader>p", [['_dP]], { desc = "Paste without yanking replaced text" }
 
 -- Delete without yanking
 map({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete to black hole register" })
+
+-- Preview the current document in Okular: PDF directly
+map("n", "<leader>cp", function()
+  local file = vim.fn.expand("%:p")
+  local pdf = file:match("%.pdf$") and file or file:gsub("%.[^.]+$", "") .. ".pdf"
+  if vim.fn.filereadable(pdf) == 1 and vim.fn.executable("okular") == 1 then
+    vim.fn.jobstart({ "okular", pdf }, { detach = true })
+    return
+  end
+end, { desc = "Preview document" })
 -- TODO: :echo expand('%:p')

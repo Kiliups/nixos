@@ -68,5 +68,7 @@
     theme = "Catppuccin Macchiato"
     confirm-close-surface = false
     keybind = ctrl+backspace=text:\x17
+    clipboard-write = allow
+    clipboard-read = allow
   '';
 }

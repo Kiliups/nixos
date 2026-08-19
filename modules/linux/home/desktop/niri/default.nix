@@ -55,31 +55,6 @@ let
     '';
   };
 
-  screenshot = pkgs.writeShellApplication {
-    name = "niri-screenshot";
-    runtimeInputs = with pkgs; [
-      coreutils
-      grim
-      libnotify
-      satty
-      slurp
-      wl-clipboard
-    ];
-    text = ''
-      screenshots="''${NIRI_SCREENSHOT_DIR:-''${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots}"
-      output="$screenshots/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"
-
-      mkdir -p "$screenshots"
-      selection="$(slurp)" || exit 0
-      grim -g "$selection" "$output"
-      wl-copy < "$output"
-
-      action="$(notify-send "Screenshot saved to clipboard and file" "Click to edit" -t 10000 -i "$output" -A "default=edit" || true)"
-      if [ "$action" = "default" ]; then
-        satty --filename "$output" --output-filename "$output" --copy-command wl-copy --actions-on-enter save-to-clipboard --save-after-copy --app-id satty
-      fi
-    '';
-  };
 in
 {
   imports = [
@@ -90,7 +65,7 @@ in
 
   home.packages = with pkgs; [
     kooha
-    screenshot
+    satty
   ];
 
   systemd.user.services = {

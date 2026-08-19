@@ -2,6 +2,7 @@ return {
   {
     "folke/snacks.nvim",
     opts = {
+      image = { enabled = true },
       picker = {
         matcher = {
           fuzzy = true,
