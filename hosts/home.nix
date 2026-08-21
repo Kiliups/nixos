@@ -27,7 +27,7 @@
   development = {
     full.enable = true;
     claude.enable = false;
-    codex.enable = false;
+    codex.enable = true;
     cursor.enable = false;
     opencode.enable = true;
 
