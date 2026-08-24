@@ -12,6 +12,7 @@
 
   networking.hostName = hostName;
   services.displayManager.defaultSession = lib.mkForce "niri";
+  services.logind.settings.Login.HandleLidSwitchDocked = "ignore";
 
   services = {
     fprintd.enable = true;

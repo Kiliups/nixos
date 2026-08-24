@@ -323,6 +323,11 @@ in
 
     "niri/cfg/rules.kdl".text = ''
       window-rule {
+          match is-active=false
+          opacity 0.95
+      }
+
+      window-rule {
           geometry-corner-radius 8
           clip-to-geometry true
       }

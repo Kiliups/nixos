@@ -8,13 +8,4 @@ return {
       },
     },
   },
-  {
-    "3rd/image.nvim",
-    opts = {
-      backend = "kitty",
-      integrations = {
-        markdown = { only_render_image_at_cursor = true },
-      },
-    },
-  },
 }
