@@ -22,6 +22,7 @@ let
   shouldInstallPackage =
     name: if name == "opencode-desktop" then config.development.opencode.enable else anyAgentEnabled;
   enabledPackages = lib.filter shouldInstallPackage cfg.packages;
+  rtkEnabled = hasPackage "rtk" cfg.packages;
 
   agentInstructions = ''
     # Agent Instructions
@@ -36,23 +37,6 @@ let
     - Avoid unecessary code, after making changes check if old parts can be cleaned up.
     - If you absolutly need packages for the task at hand use nix shell to install and execute commands.
   '';
-  opencodeReviewer = ''
-    ---
-    description: Two-axis code reviewer combining Matt Pocock's code-review skill with ponytail's over-engineering lens. Use when asked to review a branch, PR, or diff since a fixed point.
-    mode: primary
-    model: openai/gpt-5.6-luna
-    variant: high
-    permission:
-      "*": allow
-      edit: deny
-    ---
-  ''
-  + lib.optionalString (hasSource mattPocockSkills) (
-    builtins.readFile "${mattPocockSkills}/skills/engineering/code-review/SKILL.md"
-  )
-  + lib.optionalString (hasSource ponytail) (
-    builtins.readFile "${ponytail}/skills/ponytail/SKILL.md"
-  );
   ponytailSkills = [
     "ponytail"
     "ponytail-review"
@@ -91,11 +75,19 @@ let
     // lib.optionalAttrs (hasSource cursorPlugins) {
       unslop = "${cursorPlugins}/pstack/skills/unslop";
     };
+  opencodeSkills = builtins.removeAttrs config.development.agents.skills (
+    lib.optionals (hasSource ponytail) ponytailSkills
+  );
   agentSkillLinks = lib.mapAttrs' (
     name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
   ) config.development.agents.skills;
   packageByName = {
-    inherit (pkgs) nodejs agent-browser opencode-desktop;
+    inherit (pkgs)
+      nodejs
+      agent-browser
+      opencode-desktop
+      rtk
+      ;
   };
 in
 {
@@ -107,14 +99,16 @@ in
             "nodejs"
             "agent-browser"
             "opencode-desktop"
+            "rtk"
           ]
         );
         default = [
           "nodejs"
           "agent-browser"
           "opencode-desktop"
+          "rtk"
         ];
-        description = "Packages installed for enabled AI agents. opencode-desktop is installed only when development.opencode.enable is also enabled. Removing agent-browser also removes its default skill and instruction.";
+        description = "Packages installed for enabled AI agents. opencode-desktop is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output for the enabled agents via activation-time `rtk init`. Removing agent-browser also removes its default skill and instruction.";
         example = [
           "agent-browser"
         ];
@@ -173,14 +167,14 @@ in
       claude-code = lib.mkIf config.development.claude.enable {
         enable = true;
         enableMcpIntegration = true;
-        context = config.development.agents.instructions;
+        context = config.development.agents.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
         skills = config.development.agents.skills;
       };
 
       codex = lib.mkIf config.development.codex.enable {
         enable = true;
         enableMcpIntegration = true;
-        context = config.development.agents.instructions;
+        context = config.development.agents.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
         skills = config.development.agents.skills;
       };
 
@@ -188,7 +182,7 @@ in
         enable = true;
         enableMcpIntegration = true;
         context = config.development.agents.instructions;
-        skills = config.development.agents.skills;
+        skills = opencodeSkills;
         settings.plugin = lib.optional (hasSource ponytail) "${ponytail}/.opencode/plugins/ponytail.mjs";
       };
 
@@ -202,12 +196,19 @@ in
 
     home.file = lib.mkIf config.development.cursor.enable (
       {
-        ".agents/AGENTS.md".text = config.development.agents.instructions;
+        ".agents/AGENTS.md".text = config.development.agents.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
       }
       // lib.optionalAttrs (hasSource ponytail) {
         ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
       }
       // agentSkillLinks
+    );
+
+    home.activation.rtkInit = lib.mkIf (rtkEnabled && anyAgentEnabled) (
+      lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+        export RTK_TELEMETRY_DISABLED=1
+        ${lib.optionalString config.development.opencode.enable "${pkgs.rtk}/bin/rtk init -g --opencode || true"}
+      ''
     );
   };
 }

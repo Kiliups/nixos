@@ -41,7 +41,7 @@
             home = {
               inherit username;
               homeDirectory = "/home/${username}";
-              stateVersion = "26.05";
+              stateVersion = "26.11";
             };
           }
         ];
@@ -63,7 +63,7 @@
               home = {
                 inherit username;
                 homeDirectory = "/Users/${username}";
-                stateVersion = "26.05";
+                stateVersion = "26.11";
               };
             };
           }

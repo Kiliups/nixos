@@ -62,7 +62,7 @@
       environmentVariables = {
         OLLAMA_IGPU_ENABLE = "1";
         OLLAMA_FLASH_ATTENTION = "true";
-        OLLAMA_KV_CACHE_TYPE = "q8_0";
+        OLLAMA_KV_CACHE_TYPE = "q4_0";
         OLLAMA_NUM_PARALLEL = "1";
         OLLAMA_CONTEXT_LENGTH = "32192";
         RADV_PERFTEST = "transfer_queue,mall";

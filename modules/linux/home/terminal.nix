@@ -1,23 +1,24 @@
-{ host, pkgs, ... }:
+{ config, host, pkgs, ... }:
 {
   home.sessionVariables = {
     TERMINAL = "ghostty";
+    NIXOS_FLAKE = "${config.home.homeDirectory}/.config/nixos";
   };
 
   programs = {
     zsh = {
       initContent = ''
         nx() {
-          code "''${NIXOS_FLAKE:-$HOME/.config/nixos}"
+          code "$NIXOS_FLAKE"
         }
 
         nfu() {
-          local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+          local flake="''${1:-$NIXOS_FLAKE}"
           nix flake update --flake "$flake"
         }
 
         nrs() {
-          local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+          local flake="''${1:-$NIXOS_FLAKE}"
           local host="''${2:-$(hostname)}"
           (
           cd "$flake"
@@ -30,7 +31,7 @@
         }
 
         nrsu() {
-          local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+          local flake="''${1:-$NIXOS_FLAKE}"
           local host="''${2:-$(hostname)}"
           nfu "$flake" && nrs "$flake" "$host"
         }

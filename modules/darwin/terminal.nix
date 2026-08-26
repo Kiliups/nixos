@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   gwt = pkgs.writeShellApplication {
     name = "gwt";
@@ -60,7 +60,7 @@ in
     };
     initContent = ''
       drs() {
-        local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+        local flake="''${1:-$NIXOS_FLAKE}"
         local host="''${2:-$(hostname -s)}"
         (
           cd "$flake"
@@ -73,12 +73,12 @@ in
       }
 
       nfu() {
-        local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+        local flake="''${1:-$NIXOS_FLAKE}"
         nix flake update --flake "$flake"
       }
 
       drsu() {
-        local flake="''${1:-''${NIXOS_FLAKE:-$HOME/.config/nixos}}"
+        local flake="''${1:-$NIXOS_FLAKE}"
         local host="''${2:-$(hostname -s)}"
         nfu "$flake" && drs "$flake" "$host"
       }
@@ -88,6 +88,7 @@ in
   home = {
     sessionVariables = {
       TERMINAL = "ghostty";
+      NIXOS_FLAKE = "${config.home.homeDirectory}/.config/nixos";
     };
 
     packages = with pkgs; [

@@ -6,7 +6,6 @@
   ];
 
   home = {
-    stateVersion = "26.05";
     inherit (host) username;
     homeDirectory = "/home/${host.username}";
   };

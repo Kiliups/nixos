@@ -47,6 +47,7 @@ Default:
   - When writing german always write normal umlauts not e.g. oe.
   - Avoid unecessary complexity, over-engineering, and premature optimization. Favor simplicity, clarity, and maintainability.
   - Avoid unecessary code, after making changes check if old parts can be cleaned up.
+  - If you absolutly need packages for the task at hand use nix shell to install and execute commands.
 ''
 ```
 
@@ -62,9 +63,9 @@ Example:
 
 ## `development.agents.packages`
 
-Packages installed for enabled AI agents. opencode-desktop is installed only when development.opencode.enable is also enabled. Removing agent-browser also removes its default skill and instruction.
+Packages installed for enabled AI agents. opencode-desktop is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output for the enabled agents via activation-time `rtk init`. Removing agent-browser also removes its default skill and instruction.
 
-Type: `list of (one of "nodejs", "agent-browser", "opencode-desktop")`
+Type: `list of (one of "nodejs", "agent-browser", "opencode-desktop", "rtk")`
 
 Default:
 
@@ -73,6 +74,7 @@ Default:
   "nodejs"
   "agent-browser"
   "opencode-desktop"
+  "rtk"
 ]
 ```
 

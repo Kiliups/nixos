@@ -1,8 +1,13 @@
 {
+  config,
   host,
   pkgs,
   ...
 }:
+let
+  flakeDir = "${config.users.users.${host.username}.home}/.config/nixos";
+  stateVersion = "26.11";
+in
 {
   imports = [
     ../modules/linux/nixos/displaymanager.nix
@@ -51,19 +56,21 @@
     autoUpgrade = {
       enable = true;
       dates = "daily";
-      flake = "/home/${host.username}/.config/nixos";
+      flake = flakeDir;
       flags = [
         "--update-input"
         "nixpkgs"
         "--override-input"
         "nixos-private"
-        "path:/home/${host.username}/.config/nixos/private"
+        "path:${flakeDir}/private"
       ];
       allowReboot = false;
     };
 
-    stateVersion = "25.11";
+    stateVersion = stateVersion;
   };
+
+  home-manager.users.${host.username}.home.stateVersion = stateVersion;
 
   nix = {
     settings = {
