@@ -34,6 +34,7 @@ let
     - When writing german always write normal umlauts not e.g. oe.
     - Avoid unecessary complexity, over-engineering, and premature optimization. Favor simplicity, clarity, and maintainability.
     - Avoid unecessary code, after making changes check if old parts can be cleaned up.
+    - If you absolutly need packages for the task at hand use nix shell to install and execute commands.
   '';
   opencodeReviewer = ''
     ---
