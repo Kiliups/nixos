@@ -7,5 +7,6 @@
     spotify
     code-cursor
     t3code
+    keepassxc
   ];
 }

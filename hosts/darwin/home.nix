@@ -25,6 +25,7 @@
   };
 
   development = {
+    git.enable = true;
     shell.enable = true;
     herdr.enable = true;
     tmux.enable = true;
