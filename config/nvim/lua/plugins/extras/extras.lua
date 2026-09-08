@@ -1,4 +1,4 @@
-return {
+local plugins = {
   { import = "lazyvim.plugins.extras.lang.nix" },
   {
     "neovim/nvim-lspconfig",
@@ -16,5 +16,10 @@ return {
   { import = "lazyvim.plugins.extras.lang.tailwind" },
   { import = "lazyvim.plugins.extras.linting.eslint" },
   { import = "lazyvim.plugins.extras.formatting.prettier" },
-  { import = "lazyvim.plugins.extras.ai.copilot" },
 }
+
+if vim.fn.has("mac") == 0 then
+  table.insert(plugins, { import = "lazyvim.plugins.extras.ai.copilot" })
+end
+
+return plugins

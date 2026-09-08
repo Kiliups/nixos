@@ -15,10 +15,13 @@ let
       }
 
       ticket="$1"
+      target_ticket="''${ticket//\//-}"
       repo_root="$(git rev-parse --show-toplevel)"
-      common_dir="$(git rev-parse --path-format=absolute --git-common-dir)"
-      repo_dir="$(dirname "$common_dir")"
-      target="$(dirname "$repo_dir")/$(basename "$repo_dir")-$ticket"
+      project="$(basename "$repo_root")"
+      tree_dir="$(dirname "$repo_root")/tree"
+      target="$tree_dir/$project-$target_ticket"
+
+      mkdir -p "$tree_dir"
 
       if git -C "$repo_root" show-ref --verify --quiet "refs/heads/$ticket"; then
         git -C "$repo_root" worktree add "$target" "$ticket"
@@ -44,12 +47,13 @@ let
       }
 
       ticket="$1"
+      target_ticket="''${ticket//\//-}"
       repo_root="$(git rev-parse --show-toplevel)"
-      common_dir="$(git rev-parse --path-format=absolute --git-common-dir)"
-      repo_dir="$(dirname "$common_dir")"
-      target="$(dirname "$repo_dir")/$(basename "$repo_dir")-$ticket"
+      project="$(basename "$repo_root")"
+      target="$(dirname "$repo_root")/tree/$project-$target_ticket"
 
-      git -C "$repo_root" worktree remove "$target"
+      git -C "$repo_root" worktree remove --force "$target" 2>/dev/null || true
+      rm -rf -- "$target"
     '';
   };
 in

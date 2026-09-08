@@ -1,7 +1,7 @@
 { config, lib, ... }:
 {
   imports = [
-    ./agents.nix
+    ./agents
     ./git.nix
     ./herdr.nix
     ./neovim.nix
