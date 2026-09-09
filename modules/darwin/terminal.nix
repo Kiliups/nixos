@@ -14,21 +14,45 @@ let
         exit 1
       }
 
+      cd "$(git rev-parse --show-toplevel)"
       ticket="$1"
-      target_ticket="''${ticket//\//-}"
-      repo_root="$(git rev-parse --show-toplevel)"
-      project="$(basename "$repo_root")"
-      tree_dir="$(dirname "$repo_root")/tree"
-      target="$tree_dir/$project-$target_ticket"
+      target="../tree/$(basename "$PWD")-$ticket"
+      mkdir -p "$(dirname "$target")"
 
-      mkdir -p "$tree_dir"
-
-      if git -C "$repo_root" show-ref --verify --quiet "refs/heads/$ticket"; then
-        git -C "$repo_root" worktree add "$target" "$ticket"
+      if git show-ref --verify --quiet "refs/heads/$ticket"; then
+        git worktree add "$target" "$ticket"
       else
-        git -C "$repo_root" fetch origin integration
-        git -C "$repo_root" worktree add -b "$ticket" "$target" FETCH_HEAD
+        git fetch origin integration
+        git worktree add -b "$ticket" "$target" FETCH_HEAD
       fi
+    '';
+  };
+
+  gwth = pkgs.writeShellApplication {
+    name = "gwth";
+    runtimeInputs = [
+      gwt
+      pkgs.coreutils
+      pkgs.git
+      pkgs.herdr
+      pkgs.jq
+    ];
+    text = ''
+      set -euo pipefail
+
+      [[ -z "''${1:-}" || -z "''${2:-}" ]] && {
+        echo "Usage: gwth <branch> <agent>"
+        exit 1
+      }
+
+      branch="$1"
+      agent="$2"
+      gwt "$branch"
+
+      repo_root="$(git rev-parse --show-toplevel)"
+      target="$repo_root/../tree/$(basename "$repo_root")-$branch"
+      pane_id="$(herdr workspace create --cwd "$target" --label "$(basename "$target")" --focus | jq -er '.result.root_pane.pane_id')"
+      herdr pane run "$pane_id" hdl "$agent"
     '';
   };
 
@@ -46,13 +70,10 @@ let
         exit 1
       }
 
-      ticket="$1"
-      target_ticket="''${ticket//\//-}"
-      repo_root="$(git rev-parse --show-toplevel)"
-      project="$(basename "$repo_root")"
-      target="$(dirname "$repo_root")/tree/$project-$target_ticket"
+      cd "$(git rev-parse --show-toplevel)"
+      target="../tree/$(basename "$PWD")-$1"
 
-      git -C "$repo_root" worktree remove --force "$target" 2>/dev/null || true
+      git worktree remove --force "$target" 2>/dev/null || true
       rm -rf -- "$target"
     '';
   };
@@ -97,6 +118,7 @@ in
 
     packages = with pkgs; [
       gwt
+      gwth
       gwtrm
       ghostty-bin
     ];

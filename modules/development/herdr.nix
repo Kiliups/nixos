@@ -140,6 +140,12 @@ in
       hdlm
     ];
 
+    programs.zsh.initContent = lib.mkAfter ''
+      if [[ -n "''${HERDR_PANE_ID:-}" ]]; then
+        ${pkgs.herdr}/bin/herdr pane input --current --right-click pane >/dev/null 2>&1 || true
+      fi
+    '';
+
     xdg.configFile."herdr/config.toml".text = config.development.herdr.config;
   };
 }

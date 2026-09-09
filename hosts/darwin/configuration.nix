@@ -21,6 +21,7 @@
 
   security.pam.services.sudo_local.touchIdAuth = true;
   security.pam.services.sudo_local.reattach = true;
+  system.defaults.CustomUserPreferences."com.apple.security.authorization".ignoreArd = true;
 
   homebrew = {
     enable = true;
