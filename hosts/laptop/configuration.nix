@@ -1,17 +1,14 @@
 {
   hostName,
-  lib,
   pkgs,
   ...
 }:
 {
   imports = [
     ../common.nix
-    ../../modules/linux/nixos/niri.nix
   ];
 
   networking.hostName = hostName;
-  services.displayManager.defaultSession = lib.mkForce "niri";
   services.logind.settings.Login.HandleLidSwitchDocked = "ignore";
 
   powerManagement.resumeCommands = "${pkgs.systemd}/bin/systemctl try-restart fprintd.service || true";

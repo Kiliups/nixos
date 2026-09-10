@@ -11,8 +11,10 @@ in
 {
   imports = [
     ../modules/linux/nixos/displaymanager.nix
-    ../modules/linux/nixos/plasma.nix
+    ../modules/linux/nixos/niri.nix
   ];
+
+  services.displayManager.defaultSession = "niri";
 
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;

@@ -3,6 +3,7 @@
   imports = [
     ../modules/apps
     ../modules/linux
+    ../modules/linux/home/desktop/niri
   ];
 
   home = {

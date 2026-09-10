@@ -19,11 +19,6 @@
         home-manager.follows = "home-manager";
       };
     };
-    plasma-manager = {
-      url = "github:nix-community/plasma-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
     tpm = {
       url = "github:tmux-plugins/tpm";
       flake = false;
@@ -54,7 +49,6 @@
       nix-darwin,
       stylix,
       zen-browser,
-      plasma-manager,
       nixos-private,
       tpm,
       cursor-plugins,
@@ -178,7 +172,6 @@
 
                 users.${host.username} = {
                   imports = [
-                    plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
                   ]
                   ++ [
@@ -234,7 +227,6 @@
 
                 users.${isoHost.username} = {
                   imports = [
-                    plasma-manager.homeModules.plasma-manager
                     zen-browser.homeModules.default
                     developmentModule
                     ./hosts/home.nix
