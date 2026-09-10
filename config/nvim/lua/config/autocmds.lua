@@ -13,6 +13,10 @@ vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained" }, {
   command = "checktime",
 })
 
+vim.fn.timer_start(250, function()
+  vim.cmd("silent! checktime")
+end, { ["repeat"] = -1 })
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function(args)
@@ -30,7 +34,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
     local pages = vim.fn.executable("pdfinfo") == 1
         and tonumber(vim.fn.system({ "pdfinfo", file }):match("Pages:%s+(%d+)"))
-      or nil
+        or nil
     vim.b[args.buf].pdf_page = 1
 
     local change_page = function(delta)
