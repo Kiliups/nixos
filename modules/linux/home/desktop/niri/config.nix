@@ -6,6 +6,15 @@
 }:
 let
   colors = config.lib.stylix.colors.withHashtag;
+  webappShortcuts = {
+    github = "Mod+Shift+G";
+  };
+  escapeKdlString = value: builtins.replaceStrings [ "\\" "\"" ] [ "\\\\" "\\\"" ] value;
+  kdlQuote = lib.concatMapStringsSep " " (arg: ''"${arg}"'');
+  webappBinds = map (
+    app:
+    ''${webappShortcuts.${app.id}} hotkey-overlay-title="Open ${escapeKdlString app.name}" { spawn ${kdlQuote app.argv}; }''
+  ) (lib.filter (app: webappShortcuts ? ${app.id}) (lib.catAttrs "webapp" config.home.packages));
 in
 {
   xdg.configFile = {
@@ -119,6 +128,7 @@ in
           Mod+Space hotkey-overlay-title="Open App Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
           Mod+V hotkey-overlay-title="Clipboard History" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
           Mod+B hotkey-overlay-title="Open Browser: Zen" { spawn "zen-beta"; }
+          ${lib.concatStringsSep "\n" webappBinds}
           Mod+E hotkey-overlay-title="Open File Manager: Dolphin" { spawn "dolphin"; }
           Mod+Alt+E hotkey-overlay-title="Open Editor: Kate" { spawn "kate"; }
           Mod+M hotkey-overlay-title="Open Mail: Thunderbird" { spawn "thunderbird"; }
