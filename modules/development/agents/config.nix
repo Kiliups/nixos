@@ -16,6 +16,7 @@ let
   opencodeSkills = lib.filterAttrs (
     _: source: ponytail == null || !lib.hasPrefix "${ponytail}/skills/" (toString source)
   ) cfg.skills;
+  codexSkills = lib.removeAttrs cfg.skills [ "agent-browser" ];
 in
 {
   options.development = {
@@ -52,16 +53,22 @@ in
           - Avoid unnecessary complexity, over-engineering, and premature optimization.
           - Remove code made obsolete by your changes.
           - If a task requires an unavailable package, use `nix shell` to run it.
-        ''
-        + lib.optionalString (builtins.elem "agent-browser" cfg.packages) ''
-          - For browser automation and web testing, prefer a capable harness-native browser tool. Otherwise use `agent-browser` and keep `agent-browser dashboard start` running so the session stays visible at http://localhost:4848.
         '';
-        description = "Complete instructions shared by Claude Code, Codex, Cursor, and OpenCode. Setting this option replaces all default instructions.";
+        description = "Base instructions shared by Claude Code, Codex, Cursor, and OpenCode. Setting this option replaces the default base instructions.";
         example = ''
           # Project instructions
 
           - Run the test suite before committing.
         '';
+      };
+
+      agentBrowserInstructions = lib.mkOption {
+        type = lib.types.lines;
+        default = lib.optionalString (builtins.elem "agent-browser" cfg.packages) ''
+          - For browser automation and web testing, prefer a capable harness-native browser tool. Otherwise use `agent-browser` and keep `agent-browser dashboard start` running so the session stays visible at http://localhost:4848.
+        '';
+        defaultText = lib.literalExpression ''optionalString (elem "agent-browser" development.agents.packages) "<agent-browser instructions>"'';
+        description = "Browser automation instructions appended to the agents that keep the agent-browser skill. Empty unless agent-browser is selected in development.agents.packages. Codex never receives them because its harness provides its own browser tooling.";
       };
     };
 
@@ -77,7 +84,7 @@ in
     claude-code = lib.mkIf config.development.claude.enable {
       enable = true;
       enableMcpIntegration = true;
-      context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
+      context = cfg.instructions + cfg.agentBrowserInstructions + lib.optionalString rtkEnabled "\n@RTK.md";
       skills = cfg.skills;
     };
 
@@ -85,13 +92,13 @@ in
       enable = true;
       enableMcpIntegration = true;
       context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
-      skills = cfg.skills;
+      skills = codexSkills;
     };
 
     opencode = lib.mkIf config.development.opencode.enable {
       enable = true;
       enableMcpIntegration = true;
-      context = cfg.instructions;
+      context = cfg.instructions + cfg.agentBrowserInstructions;
       skills = opencodeSkills;
       settings.plugin = lib.optional (ponytail != null) "${ponytail}/.opencode/plugins/ponytail.mjs";
     };

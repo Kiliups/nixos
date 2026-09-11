@@ -27,9 +27,21 @@ Define servers once under `programs.mcp.servers`; Claude Code, Codex, and
 OpenCode receive them automatically. Zed also receives them when
 `development.zed.enable` is enabled. Cursor CLI is not currently connected
 to the shared registry and requires its own MCP configuration.
+## `development.agents.agentBrowserInstructions`
+
+Browser automation instructions appended to the agents that keep the agent-browser skill. Empty unless agent-browser is selected in development.agents.packages. Codex never receives them because its harness provides its own browser tooling.
+
+Type: `strings concatenated with "\n"`
+
+Default:
+
+```nix
+optionalString (elem "agent-browser" development.agents.packages) "<agent-browser instructions>"
+```
+
 ## `development.agents.instructions`
 
-Complete instructions shared by Claude Code, Codex, Cursor, and OpenCode. Setting this option replaces all default instructions.
+Base instructions shared by Claude Code, Codex, Cursor, and OpenCode. Setting this option replaces the default base instructions.
 
 Type: `strings concatenated with "\n"`
 
@@ -47,7 +59,6 @@ Default:
   - Avoid unnecessary complexity, over-engineering, and premature optimization.
   - Remove code made obsolete by your changes.
   - If a task requires an unavailable package, use `nix shell` to run it.
-  - For browser automation and web testing, prefer a capable harness-native browser tool. Otherwise use `agent-browser` and keep `agent-browser dashboard start` running so the session stays visible at http://localhost:4848.
 ''
 ```
 

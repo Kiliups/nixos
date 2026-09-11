@@ -128,7 +128,7 @@ in
 
     home.file = lib.mkIf config.development.cursor.enable (
       {
-        ".agents/AGENTS.md".text = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
+        ".agents/AGENTS.md".text = cfg.instructions + cfg.agentBrowserInstructions + lib.optionalString rtkEnabled "\n@RTK.md";
       }
       // lib.optionalAttrs (hasSource ponytail) {
         ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
