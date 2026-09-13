@@ -8,7 +8,6 @@
   programs.dms-shell = {
     enable = true;
     systemd.enable = true;
-    enableSystemMonitoring = true;
     enableVPN = true;
     enableDynamicTheming = false;
     enableAudioWavelength = false;

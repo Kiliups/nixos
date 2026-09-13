@@ -214,13 +214,14 @@ System theming is handled by Stylix with
 | ---------------------- | ---------------------------------------------------------- |
 | `flake.nix`            | Inputs, host builders, exported modules, and templates     |
 | `private.example/`     | Safe template for ignored local host data                  |
-| `hosts/`               | Shared, Linux, laptop, workstation, and macOS host config  |
 | `modules/development/` | Shell, editors, tmux, Starship, Git, agents, and languages |
 | `modules/development/languages/builtin.nix` | Built-in language definitions, as plain data |
+| `modules/linux/hosts/`  | Linux host config (shared, laptop, workstation)            |
+| `modules/linux/`       | Shared Linux user and terminal modules                     |
 | `modules/linux/nixos/`  | System-level NixOS desktop modules                        |
 | `modules/linux/home/`  | Home Manager desktop modules                               |
-| `modules/linux/`       | Shared Linux user and terminal modules                     |
 | `modules/darwin/`      | macOS-specific modules                                     |
+| `modules/darwin/host/`   | macOS host config                                         |
 | `modules/apps/`        | Desktop application modules                                |
 | `config/`              | Static config files, themes, wallpapers, and Neovim config |
 | `templates/`           | Flake templates for consumers and development shells       |

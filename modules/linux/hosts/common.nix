@@ -10,8 +10,8 @@ let
 in
 {
   imports = [
-    ../modules/linux/nixos/displaymanager.nix
-    ../modules/linux/nixos/niri.nix
+    ../nixos/displaymanager.nix
+    ../nixos/niri.nix
   ];
 
   services.displayManager.defaultSession = "niri";
@@ -36,8 +36,8 @@ in
         device = "nodev";
         efiSupport = true;
         useOSProber = false;
-        theme = ../config/catppuccin-macchiato-grub-theme;
-        splashImage = ../config/catppuccin-macchiato-grub-theme/background.png;
+        theme = ../../../config/catppuccin-macchiato-grub-theme;
+        splashImage = ../../../config/catppuccin-macchiato-grub-theme/background.png;
       };
 
       timeout = 3;
@@ -93,7 +93,7 @@ in
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
-    image = ../config/wallpaper.png;
+    image = ../../../config/wallpaper.png;
     polarity = "dark";
     targets = {
       grub.enable = false;

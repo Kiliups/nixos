@@ -99,7 +99,7 @@ Example:
 
 ## `development.agents.skills`
 
-Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, agent-browser when selected in development.agents.packages, and unslop. Setting this option replaces all default skills.
+Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, agent-browser when selected in development.agents.packages, unslop, and Anthropic's frontend-design. Setting this option replaces all default skills.
 
 Type: `attribute set of absolute path`
 
@@ -115,6 +115,7 @@ Default:
   ponytail-help = "<ponytail>/skills/ponytail-help";
   agent-browser = "<agent-browser>/skills/agent-browser";
   unslop = "<cursor-plugins>/pstack/skills/unslop";
+  frontend-design = "<anthropic-skills>/skills/frontend-design";
 }
 
 ```

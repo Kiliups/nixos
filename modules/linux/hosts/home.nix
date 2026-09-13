@@ -1,9 +1,9 @@
 { pkgs, host, ... }:
 {
   imports = [
-    ../modules/apps
-    ../modules/linux
-    ../modules/linux/home/desktop/niri
+    ../../apps
+    ../home/terminal.nix
+    ../home/desktop
   ];
 
   home = {

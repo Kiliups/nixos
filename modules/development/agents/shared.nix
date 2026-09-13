@@ -9,6 +9,7 @@ let
   cfg = config.development.agents;
   ponytail = agentSources.ponytail or null;
   cursorPlugins = agentSources.cursor-plugins or null;
+  anthropicSkills = agentSources."anthropic-skills" or null;
   hasSource = source: source != null;
 
   anyAgentEnabled =
@@ -35,6 +36,9 @@ let
     }
     // lib.optionalAttrs (hasSource cursorPlugins) {
       unslop = "${cursorPlugins}/pstack/skills/unslop";
+    }
+    // lib.optionalAttrs (hasSource anthropicSkills) {
+      frontend-design = "${anthropicSkills}/skills/frontend-design";
     };
   sharedSkillLinks = lib.mapAttrs' (
     name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
@@ -84,9 +88,10 @@ in
         ponytail-help = "<ponytail>/skills/ponytail-help";
         agent-browser = "<agent-browser>/skills/agent-browser";
         unslop = "<cursor-plugins>/pstack/skills/unslop";
+        frontend-design = "<anthropic-skills>/skills/frontend-design";
       }
     '';
-    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, agent-browser when selected in development.agents.packages, and unslop. Setting this option replaces all default skills.";
+    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, agent-browser when selected in development.agents.packages, unslop, and Anthropic's frontend-design. Setting this option replaces all default skills.";
     example = lib.literalExpression ''
       {
         project = ./skills/project;

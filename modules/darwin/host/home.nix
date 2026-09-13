@@ -1,7 +1,7 @@
 { pkgs, host, ... }:
 {
   imports = [
-    ../../modules/darwin
+    ../default.nix
   ];
 
   targets.darwin.copyApps.enable = false;

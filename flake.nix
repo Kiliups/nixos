@@ -1,36 +1,40 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixos-hardware.url = "github:NixOS/nixos-hardware";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-darwin.url = "github:nix-darwin/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    stylix = {
-      url = "github:nix-community/stylix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
+      nixos-hardware.url = "github:NixOS/nixos-hardware";
+      home-manager = {
+        url = "github:nix-community/home-manager";
+        inputs.nixpkgs.follows = "nixpkgs";
       };
-    };
-    tpm = {
-      url = "github:tmux-plugins/tpm";
-      flake = false;
-    };
-    ponytail = {
-      url = "github:DietrichGebert/ponytail";
-      flake = false;
-    };
-    cursor-plugins = {
-      url = "github:cursor/plugins";
-      flake = false;
-    };
+      nix-darwin.url = "github:nix-darwin/nix-darwin";
+      nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+      stylix = {
+        url = "github:nix-community/stylix";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+      zen-browser = {
+        url = "github:0xc000022070/zen-browser-flake";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          home-manager.follows = "home-manager";
+        };
+      };
+      tpm = {
+        url = "github:tmux-plugins/tpm";
+        flake = false;
+      };
+      ponytail = {
+        url = "github:DietrichGebert/ponytail";
+        flake = false;
+      };
+      cursor-plugins = {
+        url = "github:cursor/plugins";
+        flake = false;
+      };
+      anthropic-skills = {
+        url = "github:anthropics/skills";
+        flake = false;
+      };
     nixos-private = {
       url = "path:./private.example";
       flake = true;
@@ -48,6 +52,7 @@
       nixos-private,
       tpm,
       cursor-plugins,
+      anthropic-skills,
       ...
     }:
     let
@@ -65,7 +70,7 @@
         imports = [ ./modules/development ];
 
         _module.args.agentSources = {
-          inherit (inputs) ponytail cursor-plugins;
+          inherit (inputs) ponytail cursor-plugins anthropic-skills;
         };
         _module.args.tmuxTpm = tpm;
       };
@@ -93,13 +98,13 @@
         };
 
       nixosRoleModules = {
-        laptop = ./hosts/laptop/configuration.nix;
-        workstation = ./hosts/workstation/configuration.nix;
+        laptop = ./modules/linux/hosts/laptop/configuration.nix;
+        workstation = ./modules/linux/hosts/workstation/configuration.nix;
       };
 
       homeRoleModules = {
-        laptop = ./hosts/laptop/home.nix;
-        workstation = ./hosts/workstation/home.nix;
+        laptop = ./modules/linux/hosts/laptop/home.nix;
+        workstation = ./modules/linux/hosts/workstation/home.nix;
       };
 
       mkDarwinHost =
@@ -111,7 +116,7 @@
           };
           modules = [
             stylix.darwinModules.stylix
-            ./hosts/darwin/configuration.nix
+            ./modules/darwin/host/configuration.nix
             developmentOptionsModule
           ]
           ++ (host.modules or [ ])
@@ -129,7 +134,7 @@
                   imports = [
                     stylix.homeModules.stylix
                     developmentModule
-                    ./hosts/darwin/home.nix
+                    ./modules/darwin/host/home.nix
                   ]
                   ++ (host.homeModules or [ ]);
                 };
@@ -207,7 +212,7 @@
           modules = [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             stylix.nixosModules.stylix
-            ./hosts/common.nix
+            ./modules/linux/hosts/common.nix
             developmentOptionsModule
             { boot.loader.timeout = lib.mkForce 10; }
 
@@ -225,7 +230,7 @@
                   imports = [
                     zen-browser.homeModules.default
                     developmentModule
-                    ./hosts/home.nix
+                    ./modules/linux/hosts/home.nix
                   ];
                 };
               };
