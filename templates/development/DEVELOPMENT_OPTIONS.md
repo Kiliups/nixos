@@ -99,7 +99,7 @@ Example:
 
 ## `development.agents.skills`
 
-Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains ponytail, ponytail-review, ponytail-audit, ponytail-debt, ponytail-gain, ponytail-help, every Matt Pocock skill as matt-pocock/<category>/<skill>, agent-browser when selected in development.agents.packages, and unslop. Setting this option replaces all default skills.
+Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, agent-browser when selected in development.agents.packages, and unslop. Setting this option replaces all default skills.
 
 Type: `attribute set of absolute path`
 
@@ -113,7 +113,6 @@ Default:
   ponytail-debt = "<ponytail>/skills/ponytail-debt";
   ponytail-gain = "<ponytail>/skills/ponytail-gain";
   ponytail-help = "<ponytail>/skills/ponytail-help";
-  "matt-pocock/<category>/<skill>" = "<matt-pocock-skills>/skills/<category>/<skill>";
   agent-browser = "<agent-browser>/skills/agent-browser";
   unslop = "<cursor-plugins>/pstack/skills/unslop";
 }

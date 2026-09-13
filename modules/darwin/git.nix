@@ -40,7 +40,11 @@
         [user]
           name = ${host.privateName}
           email = ${host.privateEmail}
+        [core]
+          hooksPath = ~/.config/git/hooks/private
       '';
+
+      ".config/git/hooks/private/.keep".text = "";
 
       ".config/git/hooks/work/prepare-commit-msg" = {
         executable = true;

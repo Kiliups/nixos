@@ -27,10 +27,6 @@
       url = "github:DietrichGebert/ponytail";
       flake = false;
     };
-    matt-pocock-skills = {
-      url = "github:mattpocock/skills";
-      flake = false;
-    };
     cursor-plugins = {
       url = "github:cursor/plugins";
       flake = false;
@@ -69,7 +65,7 @@
         imports = [ ./modules/development ];
 
         _module.args.agentSources = {
-          inherit (inputs) ponytail matt-pocock-skills cursor-plugins;
+          inherit (inputs) ponytail cursor-plugins;
         };
         _module.args.tmuxTpm = tpm;
       };

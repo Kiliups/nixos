@@ -71,11 +71,11 @@
     "cursor-plugins": {
       "flake": false,
       "locked": {
-        "lastModified": 1789089423,
-        "narHash": "sha256-rP4nj+DjPypCwLk7K9JU5qV13b4kkSG2r7uHEOq1pfs=",
+        "lastModified": 1789270739,
+        "narHash": "sha256-+6DzILL46FWQYrPpVkPzKF2AUPasRKQB8OrLogv9Bec=",
         "owner": "cursor",
         "repo": "plugins",
-        "rev": "f5bdd6826fd0a0d9cbc4347134c3a74a200b9d9d",
+        "rev": "5bf2b1544db739998121a306340631963c2ff3de",
         "type": "github"
       },
       "original": {
@@ -163,32 +163,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1789150619,
-        "narHash": "sha256-Vsgv5atXkGWOOdLOL8oQLnZSGt1h140synPfFdwbyjU=",
+        "lastModified": 1789273010,
+        "narHash": "sha256-E7dWx+utzZPpqQsBUd5sMimKTWMEEbTKFD+ya99Shps=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "e4345d5ae8aa1def34378d2a60ac5e6e4c8fd7c1",
+        "rev": "fdc36b12804b0179b24a5ffd282e4c95c37072e2",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "matt-pocock-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1788511407,
-        "narHash": "sha256-dF5i37jHnqfcXD1IRSVzSSm/pfCYSUmOsEhhs5Zx340=",
-        "owner": "mattpocock",
-        "repo": "skills",
-        "rev": "3cca18b368ae95cdbdebbff572ccafa662551015",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mattpocock",
-        "repo": "skills",
         "type": "github"
       }
     },
@@ -256,11 +240,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1789006805,
-        "narHash": "sha256-xB8mKMOx1IA9vTDNLmJZ6n4wCMq/cuWBBOzGCRnqxrU=",
+        "lastModified": 1789149629,
+        "narHash": "sha256-H6GwaZzZf+4npqv0tph94w9tZddSjFjmQrVsW0z78uk=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8ce4ef6cb6f871616146b9fe26d2a5ae594e94fe",
+        "rev": "eaad089433ca2bb662274377d33df3d0e51ef28b",
         "type": "github"
       },
       "original": {
@@ -315,7 +299,6 @@
       "inputs": {
         "cursor-plugins": "cursor-plugins",
         "home-manager": "home-manager",
-        "matt-pocock-skills": "matt-pocock-skills",
         "nix-darwin": "nix-darwin",
         "nixos-hardware": "nixos-hardware",
         "nixos-private": "nixos-private",
@@ -465,11 +448,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789133576,
-        "narHash": "sha256-wJJGLMs78PDdbdXd0f50vq7s+xpKOuAUMZPsyDgXyew=",
+        "lastModified": 1789239533,
+        "narHash": "sha256-x6LDRbyl+trEnwrFth2SAdDf8x4SM7DWcjmR2JUxtAg=",
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
-        "rev": "975870eb40a0cb6dc1baf6d63a704f9cfd5d4f27",
+        "rev": "b66d03970382d5185e040110b24ecb7a39df0e80",
         "type": "github"
       },
       "original": {

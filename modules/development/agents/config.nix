@@ -84,7 +84,8 @@ in
     claude-code = lib.mkIf config.development.claude.enable {
       enable = true;
       enableMcpIntegration = true;
-      context = cfg.instructions + cfg.agentBrowserInstructions + lib.optionalString rtkEnabled "\n@RTK.md";
+      context =
+        cfg.instructions + cfg.agentBrowserInstructions + lib.optionalString rtkEnabled "\n@RTK.md";
       skills = cfg.skills;
     };
 
@@ -104,10 +105,15 @@ in
     };
 
     zsh.shellAliases = lib.mkMerge [
+
       (lib.mkIf config.development.claude.enable { cc = "claude"; })
       (lib.mkIf config.development.cursor.enable { ccli = "cursor-agent"; })
       (lib.mkIf config.development.codex.enable { cx = "codex"; })
       (lib.mkIf config.development.opencode.enable { opc = "opencode"; })
     ];
+  };
+
+  config.home.sessionVariables = lib.mkIf config.development.opencode.enable {
+    OPENCODE_DISABLE_EXTERNAL_SKILLS = "1";
   };
 }

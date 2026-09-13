@@ -8,7 +8,6 @@
 let
   cfg = config.development.agents;
   ponytail = agentSources.ponytail or null;
-  mattPocockSkills = agentSources.matt-pocock-skills or null;
   cursorPlugins = agentSources.cursor-plugins or null;
   hasSource = source: source != null;
 
@@ -27,31 +26,9 @@ let
     "ponytail-gain"
     "ponytail-help"
   ];
-  collectSkills =
-    prefix: root:
-    let
-      entries = builtins.readDir root;
-      dirs = builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
-      skillName = directory: if prefix == "" then directory else "${prefix}/${directory}";
-      here = builtins.filter (directory: builtins.pathExists "${root}/${directory}/SKILL.md") dirs;
-      nested = builtins.concatMap (
-        directory: collectSkills (skillName directory) "${root}/${directory}"
-      ) dirs;
-    in
-    (map skillName here) ++ nested;
-  mattPocockSkillNames = lib.optionals (hasSource mattPocockSkills) (
-    collectSkills "" "${mattPocockSkills}/skills"
-  );
   defaultSkills =
     lib.optionalAttrs (hasSource ponytail) (
       lib.listToAttrs (map (name: lib.nameValuePair name "${ponytail}/skills/${name}") ponytailSkills)
-    )
-    // lib.optionalAttrs (hasSource mattPocockSkills) (
-      lib.listToAttrs (
-        map (
-          name: lib.nameValuePair "matt-pocock/${name}" "${mattPocockSkills}/skills/${name}"
-        ) mattPocockSkillNames
-      )
     )
     // lib.optionalAttrs (builtins.elem "agent-browser" cfg.packages) {
       agent-browser = "${pkgs.agent-browser}/skills/agent-browser";
@@ -105,12 +82,11 @@ in
         ponytail-debt = "<ponytail>/skills/ponytail-debt";
         ponytail-gain = "<ponytail>/skills/ponytail-gain";
         ponytail-help = "<ponytail>/skills/ponytail-help";
-        "matt-pocock/<category>/<skill>" = "<matt-pocock-skills>/skills/<category>/<skill>";
         agent-browser = "<agent-browser>/skills/agent-browser";
         unslop = "<cursor-plugins>/pstack/skills/unslop";
       }
     '';
-    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains ponytail, ponytail-review, ponytail-audit, ponytail-debt, ponytail-gain, ponytail-help, every Matt Pocock skill as matt-pocock/<category>/<skill>, agent-browser when selected in development.agents.packages, and unslop. Setting this option replaces all default skills.";
+    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, agent-browser when selected in development.agents.packages, and unslop. Setting this option replaces all default skills.";
     example = lib.literalExpression ''
       {
         project = ./skills/project;
