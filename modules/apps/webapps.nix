@@ -20,7 +20,12 @@ pkgs.makeDesktopItem {
   desktopName = name;
   exec = lib.concatStringsSep " " (map (arg: ''"${arg}"'') argv);
   comment = "${name} web app";
-  inherit icon categories;
+  icon =
+    if icon != null then
+      icon
+    else
+      "${pkgs.numix-icon-theme-circle}/share/icons/Numix-Circle/48@2x/apps/${id}.svg";
+  inherit categories;
   terminal = false;
   startupNotify = true;
 }
