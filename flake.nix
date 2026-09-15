@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-opencode.url = "github:NixOS/nixpkgs/1043b385fdb6d0959825aed31437ff411d6a7978";
       nixos-hardware.url = "github:NixOS/nixos-hardware";
       home-manager = {
         url = "github:nix-community/home-manager";

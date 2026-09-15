@@ -1,4 +1,4 @@
-{ pkgs, host, ... }:
+{ pkgs, inputs, host, ... }:
 {
   imports = [
     ../default.nix
@@ -15,13 +15,19 @@
 
   programs.home-manager.enable = true;
 
+  # TODO remove pin once the opencode 1.18.30 prompt regression is fixed (anomalyco/opencode#48645)
+  programs.opencode.package = inputs.nixpkgs-opencode.legacyPackages.${pkgs.system}.opencode;
+
   nixpkgs.config.allowUnfree = true;
 
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
-    targets.vscode.enable = false;
-    targets.zed.enable = false;
+    targets = {
+      neovim.enable = false;
+      vscode.enable = false;
+      zed.enable = false;
+    };
   };
 
   development = {

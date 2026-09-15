@@ -14,8 +14,6 @@ in
     ../nixos/niri.nix
   ];
 
-  services.displayManager.defaultSession = "niri";
-
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
     plymouth.enable = true;
@@ -69,7 +67,7 @@ in
       allowReboot = false;
     };
 
-    stateVersion = stateVersion;
+    inherit stateVersion;
   };
 
   home-manager.users.${host.username}.home.stateVersion = stateVersion;
@@ -107,8 +105,6 @@ in
     plugins = with pkgs; [ networkmanager-openvpn ];
   };
 
-  services.tailscale.enable = true;
-
   networking.firewall.checkReversePath = "loose";
 
   environment.sessionVariables = {
@@ -123,6 +119,8 @@ in
   security.rtkit.enable = true;
 
   services = {
+    displayManager.defaultSession = "niri";
+    tailscale.enable = true;
     pulseaudio.enable = false;
 
     pipewire = {

@@ -63,6 +63,9 @@ let
   managedAgentConfigFiles = lib.filter (file: file.enable && isInAgentConfig file.target) (
     builtins.attrValues config.home.file
   );
+  materializeAgentConfigFiles = lib.filter (
+    file: !(lib.hasInfix "/skills/" file.target)
+  ) managedAgentConfigFiles;
   removeManagedAgentConfigs = lib.concatMapStrings (file: ''
     rm -rf "$HOME"/${lib.escapeShellArg file.target}
   '') managedAgentConfigFiles;
@@ -72,7 +75,7 @@ let
     rm -rf "$target"
     cp -RL ${lib.escapeShellArg (toString file.source)} "$target"
     chmod -R u+w "$target"
-  '') managedAgentConfigFiles;
+  '') materializeAgentConfigFiles;
 in
 {
   options.development.agents.skills = lib.mkOption {
@@ -100,36 +103,38 @@ in
   };
 
   config = {
-    home.packages = lib.optionals anyAgentEnabled (
-      map (name: pkgs.${name}) (
-        lib.filter (name: name != "opencode-desktop" || config.development.opencode.enable) cfg.packages
-      )
-      ++ lib.optionals config.development.cursor.enable [ pkgs.cursor-cli ]
-    );
+    home = {
+      packages = lib.optionals anyAgentEnabled (
+        map (name: pkgs.${name}) (
+          lib.filter (name: name != "opencode-desktop" || config.development.opencode.enable) cfg.packages
+        )
+        ++ lib.optionals config.development.cursor.enable [ pkgs.cursor-cli ]
+      );
 
-    home.file = lib.mkIf config.development.cursor.enable (
-      {
-        ".agents/AGENTS.md".text = cfg.instructions + cfg.agentBrowserInstructions + lib.optionalString rtkEnabled "\n@RTK.md";
-      }
-      // lib.optionalAttrs (hasSource ponytail) {
-        ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
-      }
-      // sharedSkillLinks
-    );
+      file = lib.mkIf config.development.cursor.enable (
+        {
+          ".agents/AGENTS.md".text = cfg.instructions + cfg.agentBrowserInstructions + lib.optionalString rtkEnabled "\n@RTK.md";
+        }
+        // lib.optionalAttrs (hasSource ponytail) {
+          ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
+        }
+        // sharedSkillLinks
+      );
 
-    # Agents update their configuration interactively, so managed entries cannot remain store symlinks.
-    home.activation.prepareWritableAgentConfigs = lib.mkIf anyAgentEnabled (
-      lib.hm.dag.entryBefore [ "checkLinkTargets" ] removeManagedAgentConfigs
-    );
-    home.activation.materializeWritableAgentConfigs = lib.mkIf anyAgentEnabled (
-      lib.hm.dag.entryAfter [ "linkGeneration" ] materializeManagedAgentConfigs
-    );
-
-    home.activation.rtkInit = lib.mkIf (rtkEnabled && anyAgentEnabled) (
-      lib.hm.dag.entryAfter [ "materializeWritableAgentConfigs" ] ''
-        export RTK_TELEMETRY_DISABLED=1
-        ${lib.optionalString config.development.opencode.enable "${pkgs.rtk}/bin/rtk init -g --opencode || true"}
-      ''
-    );
+      activation = {
+        prepareWritableAgentConfigs = lib.mkIf anyAgentEnabled (
+          lib.hm.dag.entryBefore [ "checkLinkTargets" ] removeManagedAgentConfigs
+        );
+        materializeWritableAgentConfigs = lib.mkIf anyAgentEnabled (
+          lib.hm.dag.entryAfter [ "linkGeneration" ] materializeManagedAgentConfigs
+        );
+        rtkInit = lib.mkIf (rtkEnabled && anyAgentEnabled) (
+          lib.hm.dag.entryAfter [ "materializeWritableAgentConfigs" ] ''
+            export RTK_TELEMETRY_DISABLED=1
+            ${lib.optionalString config.development.opencode.enable "${pkgs.rtk}/bin/rtk init -g --opencode || true"}
+          ''
+        );
+      };
+    };
   };
 }
