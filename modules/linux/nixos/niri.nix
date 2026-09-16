@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   programs.niri = {
     enable = true;
@@ -17,6 +17,7 @@
   services.upower.enable = true;
 
   xdg.portal.config.niri."org.freedesktop.impl.portal.FileChooser" = lib.mkForce "kde";
+  xdg.portal.extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
 
   systemd.user.services.dms = {
     environment.DMS_DISABLE_POLKIT = "1";

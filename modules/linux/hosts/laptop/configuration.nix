@@ -11,8 +11,6 @@
   networking.hostName = hostName;
   services.logind.settings.Login.HandleLidSwitchDocked = "ignore";
 
-  powerManagement.resumeCommands = "${pkgs.systemd}/bin/systemctl try-restart fprintd.service || true";
-
   services = {
     fprintd.enable = true;
     fwupd.enable = true;

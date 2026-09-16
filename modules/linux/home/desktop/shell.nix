@@ -69,19 +69,22 @@ let
       lockScreenWallpaperPath = "${config.stylix.image}";
     }
   );
+  session = pkgs.writeText "dms-session.json" (
+    builtins.toJSON {
+      isLightMode = false;
+      wallpaperPath = "${config.stylix.image}";
+      perMonitorWallpaper = false;
+      wallpaperCyclingEnabled = false;
+    }
+  );
 in
 {
   home.activation.dmsSettings = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     $DRY_RUN_CMD rm -f "$HOME/.config/DankMaterialShell/settings.json"
     $DRY_RUN_CMD install -Dm644 ${settings} "$HOME/.config/DankMaterialShell/settings.json"
+    $DRY_RUN_CMD rm -f "$HOME/.local/state/DankMaterialShell/session.json"
+    $DRY_RUN_CMD install -Dm644 ${session} "$HOME/.local/state/DankMaterialShell/session.json"
   '';
-
-  xdg.stateFile."DankMaterialShell/session.json".text = builtins.toJSON {
-    isLightMode = false;
-    wallpaperPath = "${config.stylix.image}";
-    perMonitorWallpaper = false;
-    wallpaperCyclingEnabled = false;
-  };
 
   systemd.user.services.polkit-kde-authentication-agent-1 = {
     Unit = {

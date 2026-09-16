@@ -65,7 +65,17 @@ in
     '';
 
     "niri/cfg/display.kdl".text = ''
-      // Output positions are handled by niri-arrange-displays at startup.
+      output "DP-2" {
+          mode "3440x1440@59.973"
+          scale 1
+          position x=0 y=0
+      }
+
+      output "eDP-1" {
+          mode "2256x1504@59.999"
+          scale 1.5
+          position x=968 y=1440
+      }
     '';
 
     "niri/cfg/input.kdl".text = ''
