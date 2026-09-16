@@ -1,4 +1,9 @@
-{ pkgs, host, ... }:
+{
+  pkgs,
+  host,
+  inputs,
+  ...
+}:
 {
   imports = [
     ../../apps
@@ -23,6 +28,9 @@
   };
 
   programs.home-manager.enable = true;
+
+  # TODO remove pin once the opencode 1.18.30 prompt regression is fixed (anomalyco/opencode#48645)
+  programs.opencode.package = inputs.nixpkgs-opencode.legacyPackages.${pkgs.system}.opencode;
 
   development = {
     full.enable = true;
