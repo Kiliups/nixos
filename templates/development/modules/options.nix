@@ -102,8 +102,8 @@ lib.removeSuffix "\n" (
     Enabling any AI agent also enables Home Manager's shared MCP registry.
     Define servers once under `programs.mcp.servers`; Claude Code, Codex, and
     OpenCode receive them automatically. Zed also receives them when
-    `development.zed.enable` is enabled. Cursor CLI is not currently connected
-    to the shared registry and requires its own MCP configuration.
+    `development.zed.enable` is enabled. Cursor receives the same servers in
+    `~/.cursor/mcp.json` and the shared skills through `~/.agents/skills`.
   ''
   + lib.concatMapStrings render options
 )

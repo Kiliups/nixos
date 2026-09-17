@@ -7,11 +7,12 @@
 let
   cfg = config.development.agents;
   ponytail = agentSources.ponytail or null;
+  claudeEnabled = config.development.claude.enable;
+  codexEnabled = config.development.codex.enable;
+  cursorEnabled = config.development.cursor.enable;
+  opencodeEnabled = config.development.opencode.enable;
   anyAgentEnabled =
-    config.development.claude.enable
-    || config.development.cursor.enable
-    || config.development.codex.enable
-    || config.development.opencode.enable;
+    claudeEnabled || cursorEnabled || codexEnabled || opencodeEnabled;
   rtkEnabled = builtins.elem "rtk" cfg.packages;
   opencodeSkills = lib.filterAttrs (
     _: source: ponytail == null || !lib.hasPrefix "${ponytail}/skills/" (toString source)
@@ -74,14 +75,14 @@ in
 
     claude.enable = lib.mkEnableOption "Claude Code with shared instructions and skills, programs.mcp.servers integration, and the cc shell alias";
     codex.enable = lib.mkEnableOption "Codex with shared instructions and skills, programs.mcp.servers integration, and the cx shell alias";
-    cursor.enable = lib.mkEnableOption "Cursor CLI with shared AGENTS.md instructions, .agents/skills links, the Ponytail rule, and the ccli shell alias";
+    cursor.enable = lib.mkEnableOption "Cursor CLI with shared instructions, skills, MCP servers, Ponytail, and the ccli shell alias";
     opencode.enable = lib.mkEnableOption "OpenCode with shared instructions and skills, programs.mcp.servers integration, the Ponytail plugin, and the opc shell alias";
   };
 
   config.programs = {
     mcp.enable = anyAgentEnabled;
 
-    claude-code = lib.mkIf config.development.claude.enable {
+    claude-code = lib.mkIf claudeEnabled {
       enable = true;
       enableMcpIntegration = true;
       context =
@@ -89,14 +90,14 @@ in
       inherit (cfg) skills;
     };
 
-    codex = lib.mkIf config.development.codex.enable {
+    codex = lib.mkIf codexEnabled {
       enable = true;
       enableMcpIntegration = true;
       context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
       skills = codexSkills;
     };
 
-    opencode = lib.mkIf config.development.opencode.enable {
+    opencode = lib.mkIf opencodeEnabled {
       enable = true;
       enableMcpIntegration = true;
       context = cfg.instructions + cfg.agentBrowserInstructions;
@@ -105,14 +106,13 @@ in
     };
 
     zsh.shellAliases = lib.mkMerge [
-
-      (lib.mkIf config.development.claude.enable { cc = "claude"; })
-      (lib.mkIf config.development.cursor.enable { ccli = "cursor-agent"; })
-      (lib.mkIf config.development.codex.enable { cx = "codex"; })
-      (lib.mkIf config.development.opencode.enable { opc = "opencode"; })
+      (lib.mkIf claudeEnabled { cc = "claude"; })
+      (lib.mkIf cursorEnabled { ccli = "cursor-agent"; })
+      (lib.mkIf codexEnabled { cx = "codex"; })
+      (lib.mkIf opencodeEnabled { opc = "opencode"; })
     ];
 
-    zsh.initContent = lib.mkIf config.development.opencode.enable ''
+    zsh.initContent = lib.mkIf opencodeEnabled ''
       export OPENCODE_DISABLE_EXTERNAL_SKILLS=1
     '';
   };

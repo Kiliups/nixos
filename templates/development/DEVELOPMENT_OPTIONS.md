@@ -25,8 +25,8 @@ Set options in your Home Manager configuration:
 Enabling any AI agent also enables Home Manager's shared MCP registry.
 Define servers once under `programs.mcp.servers`; Claude Code, Codex, and
 OpenCode receive them automatically. Zed also receives them when
-`development.zed.enable` is enabled. Cursor CLI is not currently connected
-to the shared registry and requires its own MCP configuration.
+`development.zed.enable` is enabled. Cursor receives the same servers in
+`~/.cursor/mcp.json` and the shared skills through `~/.agents/skills`.
 ## `development.agents.agentBrowserInstructions`
 
 Browser automation instructions appended to the agents that keep the agent-browser skill. Empty unless agent-browser is selected in development.agents.packages. Codex never receives them because its harness provides its own browser tooling.
@@ -167,7 +167,7 @@ true
 
 ## `development.cursor.enable`
 
-Whether to enable Cursor CLI with shared AGENTS.md instructions, .agents/skills links, the Ponytail rule, and the ccli shell alias.
+Whether to enable Cursor CLI with shared instructions, skills, MCP servers, Ponytail, and the ccli shell alias.
 
 Type: `boolean`
 

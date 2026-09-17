@@ -1,4 +1,9 @@
-{ pkgs, inputs, host, ... }:
+{
+  pkgs,
+  inputs,
+  host,
+  ...
+}:
 {
   imports = [
     ../default.nix
@@ -39,7 +44,7 @@
 
     lazyvim.enable = true;
     vscode.enable = true;
-    zed.enable = false;
+    zed.enable = true;
 
     claude.enable = true;
     codex.enable = true;

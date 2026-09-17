@@ -11,12 +11,12 @@ let
   cursorPlugins = agentSources.cursor-plugins or null;
   anthropicSkills = agentSources."anthropic-skills" or null;
   hasSource = source: source != null;
+  claudeEnabled = config.development.claude.enable;
+  codexEnabled = config.development.codex.enable;
+  cursorEnabled = config.development.cursor.enable;
+  opencodeEnabled = config.development.opencode.enable;
 
-  anyAgentEnabled =
-    config.development.claude.enable
-    || config.development.cursor.enable
-    || config.development.codex.enable
-    || config.development.opencode.enable;
+  anyAgentEnabled = claudeEnabled || cursorEnabled || codexEnabled || opencodeEnabled;
   rtkEnabled = builtins.elem "rtk" cfg.packages;
 
   ponytailSkills = [
@@ -29,7 +29,7 @@ let
   ];
   defaultSkills =
     lib.optionalAttrs (hasSource ponytail) (
-      lib.listToAttrs (map (name: lib.nameValuePair name "${ponytail}/skills/${name}") ponytailSkills)
+      lib.genAttrs ponytailSkills (name: "${ponytail}/skills/${name}")
     )
     // lib.optionalAttrs (builtins.elem "agent-browser" cfg.packages) {
       agent-browser = "${pkgs.agent-browser}/skills/agent-browser";
@@ -40,9 +40,14 @@ let
     // lib.optionalAttrs (hasSource anthropicSkills) {
       frontend-design = "${anthropicSkills}/skills/frontend-design";
     };
-  sharedSkillLinks = lib.mapAttrs' (
+  cursorSkillLinks = lib.mapAttrs' (
     name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
   ) cfg.skills;
+  cursorMcpLink = lib.optionalAttrs (
+    config.programs.mcp.enable && config.programs.mcp.servers != { }
+  ) {
+    ".cursor/mcp.json".source = config.xdg.configFile."mcp/mcp.json".source;
+  };
 
   relativeToHome = lib.removePrefix "${config.home.homeDirectory}/";
   agentConfigDirectories = map relativeToHome [
@@ -76,11 +81,23 @@ let
     cp -RL ${lib.escapeShellArg (toString file.source)} "$target"
     chmod -R u+w "$target"
   '') materializeAgentConfigFiles;
+  cursorFiles =
+    {
+      ".agents/AGENTS.md".text =
+        cfg.instructions
+        + cfg.agentBrowserInstructions
+        + lib.optionalString rtkEnabled "\n@RTK.md";
+    }
+    // lib.optionalAttrs (hasSource ponytail) {
+      ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
+    }
+    // cursorSkillLinks
+    // cursorMcpLink;
 in
 {
   options.development.agents.skills = lib.mkOption {
     type = lib.types.attrsOf lib.types.path;
-    default = defaultSkills;
+    default = { };
     defaultText = lib.literalExpression ''
       {
         ponytail = "<ponytail>/skills/ponytail";
@@ -103,23 +120,17 @@ in
   };
 
   config = {
+    development.agents.skills = lib.mkDefault defaultSkills;
+
     home = {
       packages = lib.optionals anyAgentEnabled (
         map (name: pkgs.${name}) (
-          lib.filter (name: name != "opencode-desktop" || config.development.opencode.enable) cfg.packages
+          lib.filter (name: name != "opencode-desktop" || opencodeEnabled) cfg.packages
         )
-        ++ lib.optionals config.development.cursor.enable [ pkgs.cursor-cli ]
+        ++ lib.optionals cursorEnabled [ pkgs.cursor-cli ]
       );
 
-      file = lib.mkIf config.development.cursor.enable (
-        {
-          ".agents/AGENTS.md".text = cfg.instructions + cfg.agentBrowserInstructions + lib.optionalString rtkEnabled "\n@RTK.md";
-        }
-        // lib.optionalAttrs (hasSource ponytail) {
-          ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
-        }
-        // sharedSkillLinks
-      );
+      file = lib.mkIf cursorEnabled cursorFiles;
 
       activation = {
         prepareWritableAgentConfigs = lib.mkIf anyAgentEnabled (
@@ -131,7 +142,7 @@ in
         rtkInit = lib.mkIf (rtkEnabled && anyAgentEnabled) (
           lib.hm.dag.entryAfter [ "materializeWritableAgentConfigs" ] ''
             export RTK_TELEMETRY_DISABLED=1
-            ${lib.optionalString config.development.opencode.enable "${pkgs.rtk}/bin/rtk init -g --opencode || true"}
+            ${lib.optionalString opencodeEnabled "${pkgs.rtk}/bin/rtk init -g --opencode || true"}
           ''
         );
       };
