@@ -8,6 +8,7 @@ let
     format = lib.concatStrings [
       "$nix_shell"
       "$username"
+      "$hostname"
       "$directory"
       "$git_branch"
       "$character"
@@ -21,12 +22,17 @@ let
 
     username = {
       show_always = true;
-      format = "[$user]($style) in ";
+      format = "[$user]($style)";
       style_user = "bold blue";
     };
 
+    hostname = {
+      format = "[@$hostname]($style)";
+      style = "bold yellow";
+    };
+
     directory = {
-      format = "[$path]($style)";
+      format = " in [$path]($style)";
       style = "bold green";
       truncation_length = 3;
       truncate_to_repo = false;
@@ -45,7 +51,7 @@ let
 in
 {
   options.development.starship = {
-    enable = lib.mkEnableOption "Starship with a one-line prompt showing the Nix shell indicator, username, three-segment directory path, Git branch, and red or green command-status character";
+    enable = lib.mkEnableOption "Starship with a one-line prompt showing the Nix shell indicator, username (plus @hostname over SSH), three-segment directory path, Git branch, and red or green command-status character";
   };
 
   config = lib.mkIf config.development.starship.enable {

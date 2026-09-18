@@ -384,7 +384,7 @@ true
 
 ## `development.starship.enable`
 
-Whether to enable Starship with a one-line prompt showing the Nix shell indicator, username, three-segment directory path, Git branch, and red or green command-status character.
+Whether to enable Starship with a one-line prompt showing the Nix shell indicator, username (plus @hostname over SSH), three-segment directory path, Git branch, and red or green command-status character.
 
 Type: `boolean`
 
