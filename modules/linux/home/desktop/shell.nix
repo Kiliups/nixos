@@ -94,7 +94,11 @@ in
       ConditionEnvironment = "XDG_CURRENT_DESKTOP=niri";
     };
     Service = {
-      ExecStart = lib.getExe' pkgs.kdePackages.polkit-kde-agent-1 "polkit-kde-authentication-agent-1";
+      ExecStart = "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1";
+      Environment = [
+        "QT_STYLE_OVERRIDE="
+        "QT_QUICK_CONTROLS_STYLE=Fusion"
+      ];
       Restart = "on-failure";
     };
     Install.WantedBy = [ "graphical-session.target" ];

@@ -6,6 +6,7 @@
 }:
 let
   colors = config.lib.stylix.colors.withHashtag;
+  cursor = config.stylix.cursor;
   webappShortcuts = {
     github = "Mod+Shift+G";
   };
@@ -321,6 +322,11 @@ in
     "niri/cfg/misc.kdl".text = ''
       prefer-no-csd
       screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+      cursor {
+          xcursor-theme "${cursor.name}"
+          xcursor-size ${toString cursor.size}
+      }
 
       environment {
           ELECTRON_OZONE_PLATFORM_HINT "auto"

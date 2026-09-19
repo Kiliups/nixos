@@ -1,6 +1,5 @@
 {
   hostName,
-  pkgs,
   ...
 }:
 {
@@ -53,33 +52,5 @@
       };
     };
 
-    ollama = {
-      enable = true;
-      package = pkgs.ollama-vulkan;
-      environmentVariables = {
-        OLLAMA_IGPU_ENABLE = "1";
-        OLLAMA_FLASH_ATTENTION = "true";
-        OLLAMA_KV_CACHE_TYPE = "q4_0";
-        OLLAMA_NUM_PARALLEL = "1";
-        OLLAMA_CONTEXT_LENGTH = "32192";
-        RADV_PERFTEST = "transfer_queue,mall";
-      };
-    };
   };
-
-  environment.systemPackages = with pkgs; [
-    iw
-    mpv
-    openssl
-    vulkan-tools
-    kdePackages.ark
-    kdePackages.dolphin
-    kdePackages.dolphin-plugins
-    kdePackages.ffmpegthumbs
-    kdePackages.filelight
-    kdePackages.gwenview
-    kdePackages.kdegraphics-thumbnailers
-    kdePackages.kio-extras
-    kdePackages.okular
-  ];
 }

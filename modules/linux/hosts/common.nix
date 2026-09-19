@@ -93,6 +93,11 @@ in
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     image = ../../../config/wallpaper.png;
     polarity = "dark";
+    cursor = {
+      package = pkgs.adwaita-icon-theme;
+      name = "Adwaita";
+      size = 24;
+    };
     targets = {
       grub.enable = false;
       kmscon.enable = false;
@@ -106,6 +111,23 @@ in
   };
 
   networking.firewall.checkReversePath = "loose";
+
+  environment.systemPackages = with pkgs; [
+    iw
+    mpv
+    openssl
+    vulkan-tools
+    kdePackages.ark
+    kdePackages.dolphin
+    kdePackages.dolphin-plugins
+    kdePackages.ffmpegthumbs
+    kdePackages.filelight
+    kdePackages.gwenview
+    kdePackages.kdegraphics-thumbnailers
+    kdePackages.kio-extras
+    kdePackages.okular
+    kdePackages.partitionmanager
+  ];
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
