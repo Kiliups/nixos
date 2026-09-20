@@ -20,9 +20,6 @@
 
   programs.home-manager.enable = true;
 
-  # TODO remove pin once the opencode 1.18.30 prompt regression is fixed (anomalyco/opencode#48645)
-  programs.opencode.package = inputs.nixpkgs-opencode.legacyPackages.${pkgs.system}.opencode;
-
   nixpkgs.config.allowUnfree = true;
 
   stylix = {

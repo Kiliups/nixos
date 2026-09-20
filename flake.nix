@@ -1,41 +1,40 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-opencode.url = "github:NixOS/nixpkgs/1043b385fdb6d0959825aed31437ff411d6a7978";
-      nixos-hardware.url = "github:NixOS/nixos-hardware";
-      home-manager = {
-        url = "github:nix-community/home-manager";
-        inputs.nixpkgs.follows = "nixpkgs";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-darwin.url = "github:nix-darwin/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
       };
-      nix-darwin.url = "github:nix-darwin/nix-darwin";
-      nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-      stylix = {
-        url = "github:nix-community/stylix";
-        inputs.nixpkgs.follows = "nixpkgs";
-      };
-      zen-browser = {
-        url = "github:0xc000022070/zen-browser-flake";
-        inputs = {
-          nixpkgs.follows = "nixpkgs";
-          home-manager.follows = "home-manager";
-        };
-      };
-      tpm = {
-        url = "github:tmux-plugins/tpm";
-        flake = false;
-      };
-      ponytail = {
-        url = "github:DietrichGebert/ponytail";
-        flake = false;
-      };
-      cursor-plugins = {
-        url = "github:cursor/plugins";
-        flake = false;
-      };
-      anthropic-skills = {
-        url = "github:anthropics/skills";
-        flake = false;
-      };
+    };
+    tpm = {
+      url = "github:tmux-plugins/tpm";
+      flake = false;
+    };
+    ponytail = {
+      url = "github:DietrichGebert/ponytail";
+      flake = false;
+    };
+    cursor-plugins = {
+      url = "github:cursor/plugins";
+      flake = false;
+    };
+    anthropic-skills = {
+      url = "github:anthropics/skills";
+      flake = false;
+    };
     nixos-private = {
       url = "path:./private.example";
       flake = true;

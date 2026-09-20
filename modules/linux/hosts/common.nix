@@ -101,6 +101,7 @@ in
     targets = {
       grub.enable = false;
       kmscon.enable = false;
+      plymouth.logoAnimated = false;
       regreet.enable = true;
     };
   };

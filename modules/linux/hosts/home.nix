@@ -20,6 +20,7 @@
 
   stylix = {
     targets = {
+      rofi.enable = false;
       zen-browser.profileNames = [ "Default Profile" ];
       vscode.enable = false;
       zed.enable = false;
@@ -27,9 +28,6 @@
   };
 
   programs.home-manager.enable = true;
-
-  # TODO remove pin once the opencode 1.18.30 prompt regression is fixed (anomalyco/opencode#48645)
-  programs.opencode.package = inputs.nixpkgs-opencode.legacyPackages.${pkgs.system}.opencode;
 
   development = {
     full.enable = true;
