@@ -130,7 +130,13 @@ in
         ++ lib.optionals cursorEnabled [ pkgs.cursor-cli ]
       );
 
-      file = lib.mkIf cursorEnabled cursorFiles;
+      file = lib.mkMerge [
+        (lib.mkIf cursorEnabled cursorFiles)
+        (lib.mkIf (rtkEnabled && opencodeEnabled) {
+          # TODO: temporary, drop once rtk installs a v2-compatible OpenCode plugin itself
+          ".config/opencode/plugins/rtk.ts".source = ./opencode-rtk.ts;
+        })
+      ];
 
       activation = {
         prepareWritableAgentConfigs = lib.mkIf anyAgentEnabled (
@@ -142,7 +148,7 @@ in
         rtkInit = lib.mkIf (rtkEnabled && anyAgentEnabled) (
           lib.hm.dag.entryAfter [ "materializeWritableAgentConfigs" ] ''
             export RTK_TELEMETRY_DISABLED=1
-            ${lib.optionalString opencodeEnabled "${pkgs.rtk}/bin/rtk init -g --opencode || true"}
+            ${lib.optionalString opencodeEnabled "${pkgs.rtk}/bin/rtk init -g || true"}
           ''
         );
       };

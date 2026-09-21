@@ -1,18 +1,20 @@
 {
   config,
   lib,
+  pkgs,
   agentSources ? { },
   ...
 }:
 let
   cfg = config.development.agents;
   ponytail = agentSources.ponytail or null;
+  # TODO: temporary, switch back to pkgs.opencode once OpenCode 2 replaces OpenCode
+  opencodePackage = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode2;
   claudeEnabled = config.development.claude.enable;
   codexEnabled = config.development.codex.enable;
   cursorEnabled = config.development.cursor.enable;
   opencodeEnabled = config.development.opencode.enable;
-  anyAgentEnabled =
-    claudeEnabled || cursorEnabled || codexEnabled || opencodeEnabled;
+  anyAgentEnabled = claudeEnabled || cursorEnabled || codexEnabled || opencodeEnabled;
   rtkEnabled = builtins.elem "rtk" cfg.packages;
   opencodeSkills = lib.filterAttrs (
     _: source: ponytail == null || !lib.hasPrefix "${ponytail}/skills/" (toString source)
@@ -99,6 +101,7 @@ in
 
     opencode = lib.mkIf opencodeEnabled {
       enable = true;
+      package = opencodePackage;
       enableMcpIntegration = true;
       context = cfg.instructions + cfg.agentBrowserInstructions;
       skills = opencodeSkills;
@@ -109,7 +112,10 @@ in
       (lib.mkIf claudeEnabled { cc = "claude"; })
       (lib.mkIf cursorEnabled { ccli = "cursor-agent"; })
       (lib.mkIf codexEnabled { cx = "codex"; })
-      (lib.mkIf opencodeEnabled { opc = "opencode"; })
+      (lib.mkIf opencodeEnabled {
+        opc = "opencode2";
+        opencode = "opencode2";
+      })
     ];
 
     zsh.initContent = lib.mkIf opencodeEnabled ''

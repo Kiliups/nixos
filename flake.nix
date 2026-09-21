@@ -35,6 +35,10 @@
       url = "github:anthropics/skills";
       flake = false;
     };
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixos-private = {
       url = "path:./private.example";
       flake = true;
@@ -70,7 +74,7 @@
         imports = [ ./modules/development ];
 
         _module.args.agentSources = {
-          inherit (inputs) ponytail cursor-plugins anthropic-skills;
+          inherit (inputs) ponytail cursor-plugins anthropic-skills llm-agents;
         };
         _module.args.tmuxTpm = tpm;
       };
