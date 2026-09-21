@@ -97,6 +97,7 @@ in
   programs.zsh = {
     shellAliases = {
       gac = "git add -A && git commit";
+      tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
     };
     initContent = ''
       drs() {

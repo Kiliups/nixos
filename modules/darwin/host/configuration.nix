@@ -33,6 +33,7 @@
     casks = [
       "libsk-libfido2-install"
       "vorssaint"
+      "tailscale-app"
     ];
   };
 
