@@ -11,6 +11,7 @@ let
   cursorPlugins = agentSources.cursor-plugins or null;
   anthropicSkills = agentSources."anthropic-skills" or null;
   agentPackages = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  opencodeDesktop = import ./opencode-desktop.nix { inherit pkgs; };
   hasSource = source: source != null;
   claudeEnabled = config.development.claude.enable;
   codexEnabled = config.development.codex.enable;
@@ -125,7 +126,7 @@ in
 
     home = {
       packages = lib.optionals anyAgentEnabled (
-        map (name: if name == "nodejs" then pkgs.nodejs else if name == "opencode-desktop" then pkgs.opencode-desktop else agentPackages.${name}) (
+        map (name: if name == "nodejs" then pkgs.nodejs else if name == "opencode-desktop" then opencodeDesktop else agentPackages.${name}) (
           lib.filter (name: name != "opencode-desktop" || opencodeEnabled) cfg.packages
         )
         ++ lib.optionals cursorEnabled [ agentPackages.cursor-agent ]
