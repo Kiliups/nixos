@@ -76,7 +76,7 @@ Example:
 
 Packages installed for enabled AI agents. opencode-desktop is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output for the enabled agents via activation-time `rtk init`. Removing agent-browser also removes its default skill and instruction.
 
-Type: `list of (one of "nodejs", "agent-browser", "opencode-desktop", "rtk")`
+Type: `list of (one of "nodejs", "agent-browser", "opencode-desktop", "rtk", "chatgpt", "t3code", "t3code-desktop")`
 
 Default:
 
@@ -86,6 +86,9 @@ Default:
   "agent-browser"
   "opencode-desktop"
   "rtk"
+  "chatgpt"
+  "t3code"
+  "t3code-desktop"
 ]
 ```
 
@@ -235,10 +238,10 @@ Default:
   prefix = "ctrl+space"
   detach = "prefix+d"
   rename_tab = "prefix+comma"
-  focus_pane_left = ["prefix+h", "alt+left"]
-  focus_pane_right = ["prefix+l", "alt+right"]
-  focus_pane_up = ["prefix+k", "alt+up"]
-  focus_pane_down = ["prefix+j", "alt+down"]
+  focus_pane_left = ["prefix+h"]
+  focus_pane_right = ["prefix+l"]
+  focus_pane_up = ["prefix+k"]
+  focus_pane_down = ["prefix+j"]
   previous_tab = ["prefix+p", "shift+left"]
   next_tab = ["prefix+n", "shift+right"]
   close_tab = "prefix+ampersand"
@@ -420,7 +423,7 @@ builtins.readFile ./tmux.conf
 
 ## `development.tmux.enable`
 
-Whether to enable tmux with mouse and extended keys, Ctrl+Space prefix, Alt-arrow pane navigation, Shift-arrow window navigation, vi copy mode, current-directory splits, TPM, tmux-sensible, tmux-yank, Catppuccin Macchiato, and four layout helpers: tdl opens an editor and up to two agents for one project, tdlm applies that layout to every subdirectory, tsl runs one command in multiple panes, and tml runs multiple commands in tiled panes.
+Whether to enable tmux with mouse and extended keys, Ctrl+Space prefix, prefix-arrow pane navigation, Shift-arrow window navigation, vi copy mode, current-directory splits, TPM, tmux-sensible, tmux-yank, Catppuccin Macchiato, and four layout helpers: tdl opens an editor and up to two agents for one project, tdlm applies that layout to every subdirectory, tsl runs one command in multiple panes, and tml runs multiple commands in tiled panes.
 
 Type: `boolean`
 

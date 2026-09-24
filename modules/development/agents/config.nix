@@ -8,8 +8,7 @@
 let
   cfg = config.development.agents;
   ponytail = agentSources.ponytail or null;
-  # TODO: temporary, switch back to pkgs.opencode once OpenCode 2 replaces OpenCode
-  opencodePackage = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode2;
+  agentPackages = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   claudeEnabled = config.development.claude.enable;
   codexEnabled = config.development.codex.enable;
   cursorEnabled = config.development.cursor.enable;
@@ -31,6 +30,9 @@ in
             "agent-browser"
             "opencode-desktop"
             "rtk"
+            "chatgpt"
+            "t3code"
+            "t3code-desktop"
           ]
         );
         default = [
@@ -38,6 +40,9 @@ in
           "agent-browser"
           "opencode-desktop"
           "rtk"
+          "chatgpt"
+          "t3code"
+          "t3code-desktop"
         ];
         description = "Packages installed for enabled AI agents. opencode-desktop is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output for the enabled agents via activation-time `rtk init`. Removing agent-browser also removes its default skill and instruction.";
         example = [ "agent-browser" ];
@@ -86,6 +91,7 @@ in
 
     claude-code = lib.mkIf claudeEnabled {
       enable = true;
+      package = agentPackages.claude-code;
       enableMcpIntegration = true;
       context =
         cfg.instructions + cfg.agentBrowserInstructions + lib.optionalString rtkEnabled "\n@RTK.md";
@@ -94,6 +100,7 @@ in
 
     codex = lib.mkIf codexEnabled {
       enable = true;
+      package = agentPackages.codex;
       enableMcpIntegration = true;
       context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
       skills = codexSkills;
@@ -101,7 +108,7 @@ in
 
     opencode = lib.mkIf opencodeEnabled {
       enable = true;
-      package = opencodePackage;
+      package = agentPackages.opencode2;
       enableMcpIntegration = true;
       context = cfg.instructions + cfg.agentBrowserInstructions;
       skills = opencodeSkills;

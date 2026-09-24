@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   imports = [
     ./agents
@@ -18,8 +23,13 @@
 
   };
 
-  config = lib.mkIf config.development.full.enable {
-    development = {
+  config = {
+    # Generate the user nix.conf even when nix-darwin leaves Nix to Determinate.
+    nix.enable = lib.mkForce true;
+    nix.package = lib.mkDefault pkgs.nix;
+    nix.settings = (import ./cache.nix).settings;
+
+    development = lib.mkIf config.development.full.enable {
       git.enable = lib.mkDefault true;
       shell.enable = lib.mkDefault true;
       herdr.enable = lib.mkDefault true;

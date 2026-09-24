@@ -78,6 +78,7 @@
         };
         _module.args.tmuxTpm = tpm;
       };
+      developmentCache = import ./modules/development/cache.nix;
 
       developmentOptions =
         pkgs:
@@ -120,6 +121,7 @@
           };
           modules = [
             stylix.darwinModules.stylix
+            developmentCache.darwin
             ./modules/darwin/host/configuration.nix
             developmentOptionsModule
           ]
@@ -161,6 +163,7 @@
           };
           modules = [
             stylix.nixosModules.stylix
+            developmentCache.nixos
           ]
           ++ [ roleModule ]
           ++ [ developmentOptionsModule ]
@@ -203,6 +206,9 @@
         default = developmentModule;
       };
 
+      nixosModules.developmentCache = developmentCache.nixos;
+      darwinModules.developmentCache = developmentCache.darwin;
+
       darwinConfigurations = nixpkgs.lib.mapAttrs mkDarwinHost darwinHosts;
 
       nixosConfigurations = realNixosConfigurations // {
@@ -216,6 +222,7 @@
           modules = [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             stylix.nixosModules.stylix
+            developmentCache.nixos
             ./modules/linux/hosts/common.nix
             developmentOptionsModule
             { boot.loader.timeout = lib.mkForce 10; }

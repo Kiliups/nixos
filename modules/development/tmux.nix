@@ -167,7 +167,7 @@ let
 in
 {
   options.development.tmux = {
-    enable = lib.mkEnableOption "tmux with mouse and extended keys, Ctrl+Space prefix, Alt-arrow pane navigation, Shift-arrow window navigation, vi copy mode, current-directory splits, TPM, tmux-sensible, tmux-yank, Catppuccin Macchiato, and four layout helpers: tdl opens an editor and up to two agents for one project, tdlm applies that layout to every subdirectory, tsl runs one command in multiple panes, and tml runs multiple commands in tiled panes";
+    enable = lib.mkEnableOption "tmux with mouse and extended keys, Ctrl+Space prefix, prefix-arrow pane navigation, Shift-arrow window navigation, vi copy mode, current-directory splits, TPM, tmux-sensible, tmux-yank, Catppuccin Macchiato, and four layout helpers: tdl opens an editor and up to two agents for one project, tdlm applies that layout to every subdirectory, tsl runs one command in multiple panes, and tml runs multiple commands in tiled panes";
 
     config = lib.mkOption {
       type = lib.types.lines;

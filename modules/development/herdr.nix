@@ -101,10 +101,10 @@ in
         prefix = "ctrl+space"
         detach = "prefix+d"
         rename_tab = "prefix+comma"
-        focus_pane_left = ["prefix+h", "alt+left"]
-        focus_pane_right = ["prefix+l", "alt+right"]
-        focus_pane_up = ["prefix+k", "alt+up"]
-        focus_pane_down = ["prefix+j", "alt+down"]
+        focus_pane_left = ["prefix+h"]
+        focus_pane_right = ["prefix+l"]
+        focus_pane_up = ["prefix+k"]
+        focus_pane_down = ["prefix+j"]
         previous_tab = ["prefix+p", "shift+left"]
         next_tab = ["prefix+n", "shift+right"]
         close_tab = "prefix+ampersand"

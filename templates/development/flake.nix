@@ -52,6 +52,7 @@
         specialArgs = { inherit username darwinSystem; };
         modules = [
           ./darwin/configuration.nix
+          nixos.darwinModules.developmentCache
           home-manager.darwinModules.home-manager
           {
             home-manager.users.${username} = {

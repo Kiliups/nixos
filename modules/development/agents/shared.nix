@@ -10,6 +10,7 @@ let
   ponytail = agentSources.ponytail or null;
   cursorPlugins = agentSources.cursor-plugins or null;
   anthropicSkills = agentSources."anthropic-skills" or null;
+  agentPackages = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   hasSource = source: source != null;
   claudeEnabled = config.development.claude.enable;
   codexEnabled = config.development.codex.enable;
@@ -32,7 +33,7 @@ let
       lib.genAttrs ponytailSkills (name: "${ponytail}/skills/${name}")
     )
     // lib.optionalAttrs (builtins.elem "agent-browser" cfg.packages) {
-      agent-browser = "${pkgs.agent-browser}/skills/agent-browser";
+      agent-browser = "${agentPackages.agent-browser}/share/agent-browser/skills/agent-browser";
     }
     // lib.optionalAttrs (hasSource cursorPlugins) {
       unslop = "${cursorPlugins}/pstack/skills/unslop";
@@ -44,7 +45,7 @@ let
     name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
   ) cfg.skills;
   cursorMcpLink = lib.optionalAttrs (
-    config.programs.mcp.enable && config.programs.mcp.servers != { }
+    cursorEnabled && config.programs.mcp.enable && config.programs.mcp.servers != { }
   ) {
     ".cursor/mcp.json".source = config.xdg.configFile."mcp/mcp.json".source;
   };
@@ -124,10 +125,10 @@ in
 
     home = {
       packages = lib.optionals anyAgentEnabled (
-        map (name: pkgs.${name}) (
+        map (name: if name == "nodejs" then pkgs.nodejs else if name == "opencode-desktop" then pkgs.opencode-desktop else agentPackages.${name}) (
           lib.filter (name: name != "opencode-desktop" || opencodeEnabled) cfg.packages
         )
-        ++ lib.optionals cursorEnabled [ pkgs.cursor-cli ]
+        ++ lib.optionals cursorEnabled [ agentPackages.cursor-agent ]
       );
 
       file = lib.mkMerge [
@@ -148,7 +149,7 @@ in
         rtkInit = lib.mkIf (rtkEnabled && anyAgentEnabled) (
           lib.hm.dag.entryAfter [ "materializeWritableAgentConfigs" ] ''
             export RTK_TELEMETRY_DISABLED=1
-            ${lib.optionalString opencodeEnabled "${pkgs.rtk}/bin/rtk init -g || true"}
+            ${lib.optionalString opencodeEnabled "${agentPackages.rtk}/bin/rtk init -g || true"}
           ''
         );
       };

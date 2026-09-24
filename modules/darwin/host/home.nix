@@ -27,6 +27,7 @@
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     targets = {
       neovim.enable = false;
+      rofi.enable = false;
       vscode.enable = false;
       zed.enable = false;
     };
@@ -45,7 +46,7 @@
 
     claude.enable = true;
     codex.enable = true;
-    cursor.enable = true;
+    cursor.enable = false;
     opencode.enable = true;
 
     languages = {

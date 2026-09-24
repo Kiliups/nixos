@@ -51,11 +51,5 @@
 
     #pdf
     poppler-utils
-
-    # TODO eval
-    pi-coding-agent
-
-    # TODO eval
-    t3code
   ];
 }
