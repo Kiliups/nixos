@@ -102,7 +102,7 @@ Example:
 
 ## `development.agents.skills`
 
-Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, agent-browser when selected in development.agents.packages, unslop, and Anthropic's frontend-design. Setting this option replaces all default skills.
+Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, agent-browser when selected in development.agents.packages, unslop, and Anthropic's frontend-design. Setting this option replaces all default skills.
 
 Type: `attribute set of absolute path`
 
@@ -116,6 +116,7 @@ Default:
   ponytail-debt = "<ponytail>/skills/ponytail-debt";
   ponytail-gain = "<ponytail>/skills/ponytail-gain";
   ponytail-help = "<ponytail>/skills/ponytail-help";
+  "matt-pocock/<category>/<skill>" = "<matt-pocock-skills>/skills/<category>/<skill>";
   agent-browser = "<agent-browser>/skills/agent-browser";
   unslop = "<cursor-plugins>/pstack/skills/unslop";
   frontend-design = "<anthropic-skills>/skills/frontend-design";
@@ -497,7 +498,7 @@ Example:
 
 ## `development.zed.enable`
 
-Whether to enable Zed with programs.mcp.servers integration; Catppuccin, Catppuccin Icons, Emmet, and TODO Highlight extensions; Vim mode, relative lines, autosave, format-on-save, inlay hints, Catppuccin themes, inline Git blame, JSON and Markdown wrapping, pane-navigation keybindings, and the extensions and settings contributed by the enabled languages.
+Whether to enable Zed with programs.mcp.servers integration; Catppuccin, Catppuccin Icons, Emmet, and TODO Highlight extensions; Vim mode, relative lines, autosave, format-on-save, inlay hints, Catppuccin themes, inline Git blame, JSON and Markdown wrapping, an hdl-like layout with the agent panel and terminal docked right next to a left project panel, threads-sidebar multi-project and worktree keybindings with worktrees under ../tree, pane-navigation keybindings, herdr-style Ctrl+Space split, zoom, and agent-launch keybindings with one center-pane task per enabled CLI agent, a LazyVim-compatible leader keymap with find, search, git, LSP, diagnostics, and UI toggles, and the extensions and settings contributed by the enabled languages.
 
 Type: `boolean`
 

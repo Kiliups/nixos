@@ -8,6 +8,7 @@
 let
   cfg = config.development.agents;
   ponytail = agentSources.ponytail or null;
+  mattPocockSkills = agentSources.matt-pocock-skills or null;
   cursorPlugins = agentSources.cursor-plugins or null;
   anthropicSkills = agentSources."anthropic-skills" or null;
   agentPackages = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
@@ -29,9 +30,31 @@ let
     "ponytail-gain"
     "ponytail-help"
   ];
+  collectSkills =
+    prefix: root:
+    let
+      entries = builtins.readDir root;
+      dirs = builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
+      skillName = directory: if prefix == "" then directory else "${prefix}/${directory}";
+      here = builtins.filter (directory: builtins.pathExists "${root}/${directory}/SKILL.md") dirs;
+      nested = builtins.concatMap (
+        directory: collectSkills (skillName directory) "${root}/${directory}"
+      ) dirs;
+    in
+    (map skillName here) ++ nested;
+  mattPocockSkillNames = lib.optionals (hasSource mattPocockSkills) (
+    collectSkills "" "${mattPocockSkills}/skills"
+  );
   defaultSkills =
     lib.optionalAttrs (hasSource ponytail) (
       lib.genAttrs ponytailSkills (name: "${ponytail}/skills/${name}")
+    )
+    // lib.optionalAttrs (hasSource mattPocockSkills) (
+      lib.listToAttrs (
+        map (
+          name: lib.nameValuePair "matt-pocock/${name}" "${mattPocockSkills}/skills/${name}"
+        ) mattPocockSkillNames
+      )
     )
     // lib.optionalAttrs (builtins.elem "agent-browser" cfg.packages) {
       agent-browser = "${agentPackages.agent-browser}/share/agent-browser/skills/agent-browser";
@@ -108,12 +131,13 @@ in
         ponytail-debt = "<ponytail>/skills/ponytail-debt";
         ponytail-gain = "<ponytail>/skills/ponytail-gain";
         ponytail-help = "<ponytail>/skills/ponytail-help";
+        "matt-pocock/<category>/<skill>" = "<matt-pocock-skills>/skills/<category>/<skill>";
         agent-browser = "<agent-browser>/skills/agent-browser";
         unslop = "<cursor-plugins>/pstack/skills/unslop";
         frontend-design = "<anthropic-skills>/skills/frontend-design";
       }
     '';
-    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, agent-browser when selected in development.agents.packages, unslop, and Anthropic's frontend-design. Setting this option replaces all default skills.";
+    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, agent-browser when selected in development.agents.packages, unslop, and Anthropic's frontend-design. Setting this option replaces all default skills.";
     example = lib.literalExpression ''
       {
         project = ./skills/project;

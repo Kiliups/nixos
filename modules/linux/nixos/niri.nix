@@ -8,10 +8,6 @@
   programs.dms-shell = {
     enable = true;
     systemd.enable = true;
-    enableVPN = true;
-    enableDynamicTheming = false;
-    enableAudioWavelength = false;
-    enableCalendarEvents = false;
   };
 
   services.upower.enable = true;
