@@ -18,6 +18,11 @@ vim.fn.timer_start(250, function()
 end, { ["repeat"] = -1 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  pattern = "yaml",
+  command = "let b:autoformat = v:false",
+})
+
+vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function(args)
     vim.diagnostic.enable(false, { bufnr = args.buf })

@@ -18,7 +18,6 @@ let
   opencodeSkills = lib.filterAttrs (
     _: source: ponytail == null || !lib.hasPrefix "${ponytail}/skills/" (toString source)
   ) cfg.skills;
-  codexSkills = lib.removeAttrs cfg.skills [ "agent-browser" ];
 in
 {
   options.development = {
@@ -27,7 +26,6 @@ in
         type = lib.types.listOf (
           lib.types.enum [
             "nodejs"
-            "agent-browser"
             "opencode-desktop"
             "rtk"
             "chatgpt"
@@ -37,15 +35,13 @@ in
         );
         default = [
           "nodejs"
-          "agent-browser"
           "opencode-desktop"
           "rtk"
           "chatgpt"
           "t3code"
           "t3code-desktop"
         ];
-        description = "Packages installed for enabled AI agents. opencode-desktop is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output for the enabled agents via activation-time `rtk init`. Removing agent-browser also removes its default skill and instruction.";
-        example = [ "agent-browser" ];
+        description = "Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output for the enabled agents via activation-time `rtk init`.";
       };
 
       instructions = lib.mkOption {
@@ -69,15 +65,6 @@ in
           - Run the test suite before committing.
         '';
       };
-
-      agentBrowserInstructions = lib.mkOption {
-        type = lib.types.lines;
-        default = lib.optionalString (builtins.elem "agent-browser" cfg.packages) ''
-          - For browser automation and web testing, prefer a capable harness-native browser tool. Otherwise use `agent-browser` and keep `agent-browser dashboard start` running so the session stays visible at http://localhost:4848.
-        '';
-        defaultText = lib.literalExpression ''optionalString (elem "agent-browser" development.agents.packages) "<agent-browser instructions>"'';
-        description = "Browser automation instructions appended to the agents that keep the agent-browser skill. Empty unless agent-browser is selected in development.agents.packages. Codex never receives them because its harness provides its own browser tooling.";
-      };
     };
 
     claude.enable = lib.mkEnableOption "Claude Code with shared instructions and skills, programs.mcp.servers integration, and the cc shell alias";
@@ -93,8 +80,7 @@ in
       enable = true;
       package = agentPackages.claude-code;
       enableMcpIntegration = true;
-      context =
-        cfg.instructions + cfg.agentBrowserInstructions + lib.optionalString rtkEnabled "\n@RTK.md";
+      context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
       inherit (cfg) skills;
     };
 
@@ -103,14 +89,14 @@ in
       package = agentPackages.codex;
       enableMcpIntegration = true;
       context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
-      skills = codexSkills;
+      inherit (cfg) skills;
     };
 
     opencode = lib.mkIf opencodeEnabled {
       enable = true;
       package = agentPackages.opencode2;
       enableMcpIntegration = true;
-      context = cfg.instructions + cfg.agentBrowserInstructions;
+      context = cfg.instructions;
       skills = opencodeSkills;
       settings.plugin = lib.optional (ponytail != null) "${ponytail}/.opencode/plugins/ponytail.mjs";
     };

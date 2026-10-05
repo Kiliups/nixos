@@ -89,7 +89,7 @@ lib.removeSuffix "\n" (
       development.herdr.config = builtins.readFile ./herdr.toml;
       development.tmux.config = builtins.readFile ./tmux.conf;
       development.lazyvim.config = ./nvim;
-      development.agents.packages = [ "agent-browser" ];
+      development.agents.packages = [ "opencode-desktop" ];
       development.agents.skills = {
         project = ./skills/project;
       };

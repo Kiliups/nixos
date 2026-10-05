@@ -37,11 +37,9 @@
     git.enable = true;
     shell.enable = true;
     herdr.enable = true;
-    tmux.enable = true;
     starship.enable = true;
 
     lazyvim.enable = true;
-    vscode.enable = true;
     zed.enable = true;
 
     claude.enable = true;
@@ -58,7 +56,10 @@
       php.enable = true;
       typescript = {
         enable = true;
-        packages = with pkgs; [ yarn-berry ];
+        packages = with pkgs; [
+          yarn-berry
+          bun
+        ];
       };
     };
   };

@@ -55,9 +55,6 @@ let
         ) mattPocockSkillNames
       )
     )
-    // lib.optionalAttrs (builtins.elem "agent-browser" cfg.packages) {
-      agent-browser = "${agentPackages.agent-browser}/share/agent-browser/skills/agent-browser";
-    }
     // lib.optionalAttrs (hasSource cursorPlugins) {
       unslop = "${cursorPlugins}/pstack/skills/unslop";
     }
@@ -102,14 +99,13 @@ let
     target="$HOME"/${lib.escapeShellArg file.target}
     mkdir -p "$(dirname "$target")"
     rm -rf "$target"
-    cp -RL ${lib.escapeShellArg (toString file.source)} "$target"
+    cp -RL ${lib.escapeShellArg "${file.source}"} "$target"
     chmod -R u+w "$target"
   '') materializeAgentConfigFiles;
   cursorFiles =
     {
       ".agents/AGENTS.md".text =
         cfg.instructions
-        + cfg.agentBrowserInstructions
         + lib.optionalString rtkEnabled "\n@RTK.md";
     }
     // lib.optionalAttrs (hasSource ponytail) {
@@ -131,12 +127,11 @@ in
         ponytail-gain = "<ponytail>/skills/ponytail-gain";
         ponytail-help = "<ponytail>/skills/ponytail-help";
         "matt-pocock/<category>/<skill>" = "<matt-pocock-skills>/skills/<category>/<skill>";
-        agent-browser = "<agent-browser>/skills/agent-browser";
         unslop = "<cursor-plugins>/pstack/skills/unslop";
         frontend-design = "<anthropic-skills>/skills/frontend-design";
       }
     '';
-    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, agent-browser when selected in development.agents.packages, unslop, and Anthropic's frontend-design. Setting this option replaces all default skills.";
+    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, unslop, and Anthropic's frontend-design. Setting this option replaces all default skills.";
     example = lib.literalExpression ''
       {
         project = ./skills/project;

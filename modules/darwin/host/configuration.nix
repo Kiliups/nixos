@@ -11,6 +11,12 @@
   system = {
     stateVersion = 6;
     primaryUser = host.username;
+    activationScripts.postActivation.text = ''
+      /nix/var/nix/profiles/default/bin/nix-env \
+        --profile /nix/var/nix/profiles/system \
+        --delete-generations +5
+      /nix/var/nix/profiles/default/bin/nix-collect-garbage
+    '';
   };
   nixpkgs.hostPlatform = host.system;
   nixpkgs.config.allowUnfree = true;
