@@ -2,46 +2,35 @@
   config,
   lib,
   pkgs,
-  agentSources ? { },
+  agentSources,
   ...
 }:
 let
   cfg = config.development.agents;
-  ponytail = agentSources.ponytail or null;
+  inherit (agentSources) ponytail;
   agentPackages = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  packageNames = [
+    "nodejs"
+    "opencode-desktop"
+    "rtk"
+    "chatgpt"
+    "t3code"
+    "t3code-desktop"
+  ];
   claudeEnabled = config.development.claude.enable;
   codexEnabled = config.development.codex.enable;
   cursorEnabled = config.development.cursor.enable;
   opencodeEnabled = config.development.opencode.enable;
   anyAgentEnabled = claudeEnabled || cursorEnabled || codexEnabled || opencodeEnabled;
-  rtkEnabled = builtins.elem "rtk" cfg.packages;
-  opencodeSkills = lib.filterAttrs (
-    _: source: ponytail == null || !lib.hasPrefix "${ponytail}/skills/" (toString source)
-  ) cfg.skills;
+  rtkEnabled = lib.elem "rtk" cfg.packages;
 in
 {
   options.development = {
     agents = {
       packages = lib.mkOption {
-        type = lib.types.listOf (
-          lib.types.enum [
-            "nodejs"
-            "opencode-desktop"
-            "rtk"
-            "chatgpt"
-            "t3code"
-            "t3code-desktop"
-          ]
-        );
-        default = [
-          "nodejs"
-          "opencode-desktop"
-          "rtk"
-          "chatgpt"
-          "t3code"
-          "t3code-desktop"
-        ];
-        description = "Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output for the enabled agents via activation-time `rtk init`.";
+        type = lib.types.listOf (lib.types.enum packageNames);
+        default = packageNames;
+        description = "Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output: when enabled, Claude Code runs commands through its Bash hook and OpenCode loads its plugin.";
       };
 
       instructions = lib.mkOption {
@@ -73,46 +62,69 @@ in
     opencode.enable = lib.mkEnableOption "OpenCode with shared instructions and skills, programs.mcp.servers integration, the Ponytail plugin, and the opc shell alias";
   };
 
-  config.programs = {
-    mcp.enable = anyAgentEnabled;
+  config = {
+    programs = {
+      mcp.enable = anyAgentEnabled;
 
-    claude-code = lib.mkIf claudeEnabled {
-      enable = true;
-      package = agentPackages.claude-code;
-      enableMcpIntegration = true;
-      context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
-      inherit (cfg) skills;
+      claude-code = lib.mkIf claudeEnabled {
+        enable = true;
+        package = agentPackages.claude-code;
+        enableMcpIntegration = true;
+        mutableSettings = true;
+        context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
+        inherit (cfg) skills;
+        settings = lib.optionalAttrs rtkEnabled {
+          hooks.PreToolUse = [
+            {
+              matcher = "Bash";
+              hooks = [
+                {
+                  type = "command";
+                  command = "rtk hook claude";
+                }
+              ];
+            }
+          ];
+        };
+      };
+
+      codex = lib.mkIf codexEnabled {
+        enable = true;
+        package = agentPackages.codex;
+        enableMcpIntegration = true;
+        mutableSettings = true;
+        context = cfg.instructions;
+        inherit (cfg) skills;
+      };
+
+      opencode = lib.mkIf opencodeEnabled {
+        enable = true;
+        package = agentPackages.opencode2;
+        enableMcpIntegration = true;
+        context = cfg.instructions;
+        skills = lib.filterAttrs (
+          _: source: !lib.hasPrefix "${ponytail}/skills/" (toString source)
+        ) cfg.skills;
+        settings.plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
+      };
+
+      zsh.shellAliases =
+        lib.optionalAttrs claudeEnabled { cc = "claude"; }
+        // lib.optionalAttrs cursorEnabled { ccli = "cursor-agent"; }
+        // lib.optionalAttrs codexEnabled { cx = "codex"; }
+        // lib.optionalAttrs opencodeEnabled {
+          opc = "opencode2";
+          opencode = "opencode2";
+        };
     };
 
-    codex = lib.mkIf codexEnabled {
-      enable = true;
-      package = agentPackages.codex;
-      enableMcpIntegration = true;
-      context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
-      inherit (cfg) skills;
+    home.file = lib.optionalAttrs (claudeEnabled && rtkEnabled) {
+      ".claude/RTK.md".source = "${agentPackages.rtk.src}/hooks/rtk-awareness.md";
     };
 
-    opencode = lib.mkIf opencodeEnabled {
-      enable = true;
-      package = agentPackages.opencode2;
-      enableMcpIntegration = true;
-      context = cfg.instructions;
-      skills = opencodeSkills;
-      settings.plugin = lib.optional (ponytail != null) "${ponytail}/.opencode/plugins/ponytail.mjs";
+    xdg.configFile = lib.optionalAttrs (opencodeEnabled && rtkEnabled) {
+      # TODO: temporary, drop once rtk installs a v2-compatible OpenCode plugin itself
+      "opencode/plugins/rtk.ts".source = ./opencode-rtk.ts;
     };
-
-    zsh.shellAliases = lib.mkMerge [
-      (lib.mkIf claudeEnabled { cc = "claude"; })
-      (lib.mkIf cursorEnabled { ccli = "cursor-agent"; })
-      (lib.mkIf codexEnabled { cx = "codex"; })
-      (lib.mkIf opencodeEnabled {
-        opc = "opencode2";
-        opencode = "opencode2";
-      })
-    ];
-
-    zsh.initContent = lib.mkIf opencodeEnabled ''
-      export OPENCODE_DISABLE_EXTERNAL_SKILLS=1
-    '';
   };
 }

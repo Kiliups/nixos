@@ -1,25 +1,26 @@
 {
-  pkgs,
-  lib,
   config,
-  agentSources ? { },
+  lib,
+  pkgs,
+  agentSources,
   ...
 }:
 let
   cfg = config.development.agents;
-  ponytail = agentSources.ponytail or null;
-  mattPocockSkills = agentSources.matt-pocock-skills or null;
-  cursorPlugins = agentSources.cursor-plugins or null;
-  anthropicSkills = agentSources."anthropic-skills" or null;
+  inherit (agentSources)
+    ponytail
+    matt-pocock-skills
+    cursor-plugins
+    anthropic-skills
+    ;
   agentPackages = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
-  hasSource = source: source != null;
-  claudeEnabled = config.development.claude.enable;
-  codexEnabled = config.development.codex.enable;
   cursorEnabled = config.development.cursor.enable;
   opencodeEnabled = config.development.opencode.enable;
-
-  anyAgentEnabled = claudeEnabled || cursorEnabled || codexEnabled || opencodeEnabled;
-  rtkEnabled = builtins.elem "rtk" cfg.packages;
+  anyAgentEnabled =
+    config.development.claude.enable
+    || cursorEnabled
+    || config.development.codex.enable
+    || opencodeEnabled;
 
   ponytailSkills = [
     "ponytail"
@@ -33,86 +34,30 @@ let
     prefix: root:
     let
       entries = builtins.readDir root;
-      dirs = builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
+      directories = builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
       skillName = directory: if prefix == "" then directory else "${prefix}/${directory}";
-      here = builtins.filter (directory: builtins.pathExists "${root}/${directory}/SKILL.md") dirs;
+      here = builtins.filter (directory: builtins.pathExists "${root}/${directory}/SKILL.md") directories;
       nested = builtins.concatMap (
         directory: collectSkills (skillName directory) "${root}/${directory}"
-      ) dirs;
+      ) directories;
     in
-    (map skillName here) ++ nested;
-  mattPocockSkillNames = lib.optionals (hasSource mattPocockSkills) (
-    collectSkills "" "${mattPocockSkills}/skills"
-  );
+    map skillName here ++ nested;
   defaultSkills =
-    lib.optionalAttrs (hasSource ponytail) (
-      lib.genAttrs ponytailSkills (name: "${ponytail}/skills/${name}")
-    )
-    // lib.optionalAttrs (hasSource mattPocockSkills) (
-      lib.listToAttrs (
-        map (
-          name: lib.nameValuePair "matt-pocock/${name}" "${mattPocockSkills}/skills/${name}"
-        ) mattPocockSkillNames
+    lib.genAttrs ponytailSkills (name: "${ponytail}/skills/${name}")
+    // lib.listToAttrs (
+      map (name: lib.nameValuePair "matt-pocock/${name}" "${matt-pocock-skills}/skills/${name}") (
+        collectSkills "" "${matt-pocock-skills}/skills"
       )
     )
-    // lib.optionalAttrs (hasSource cursorPlugins) {
-      unslop = "${cursorPlugins}/pstack/skills/unslop";
-    }
-    // lib.optionalAttrs (hasSource anthropicSkills) {
-      frontend-design = "${anthropicSkills}/skills/frontend-design";
+    // {
+      unslop = "${cursor-plugins}/pstack/skills/unslop";
+      frontend-design = "${anthropic-skills}/skills/frontend-design";
     };
-  cursorSkillLinks = lib.mapAttrs' (
-    name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
-  ) cfg.skills;
-  cursorMcpLink = lib.optionalAttrs (
-    cursorEnabled && config.programs.mcp.enable && config.programs.mcp.servers != { }
-  ) {
-    ".cursor/mcp.json".source = config.xdg.configFile."mcp/mcp.json".source;
-  };
 
-  relativeToHome = lib.removePrefix "${config.home.homeDirectory}/";
-  agentConfigDirectories = map relativeToHome [
-    "${config.home.homeDirectory}/.agents"
-    "${config.home.homeDirectory}/.codex"
-    config.programs.claude-code.configDir
-    "${config.xdg.configHome}/codex"
-    "${config.xdg.configHome}/opencode"
-  ];
-  isInAgentConfig =
-    target:
-    let
-      relativeTarget = lib.removePrefix "./" target;
-    in
-    builtins.any (
-      directory: relativeTarget == directory || lib.hasPrefix "${directory}/" relativeTarget
-    ) agentConfigDirectories;
-  managedAgentConfigFiles = lib.filter (file: file.enable && isInAgentConfig file.target) (
-    builtins.attrValues config.home.file
-  );
-  materializeAgentConfigFiles = lib.filter (
-    file: !(lib.hasInfix "/skills/" file.target)
-  ) managedAgentConfigFiles;
-  removeManagedAgentConfigs = lib.concatMapStrings (file: ''
-    rm -rf "$HOME"/${lib.escapeShellArg file.target}
-  '') managedAgentConfigFiles;
-  materializeManagedAgentConfigs = lib.concatMapStrings (file: ''
-    target="$HOME"/${lib.escapeShellArg file.target}
-    mkdir -p "$(dirname "$target")"
-    rm -rf "$target"
-    cp -RL ${lib.escapeShellArg "${file.source}"} "$target"
-    chmod -R u+w "$target"
-  '') materializeAgentConfigFiles;
-  cursorFiles =
-    {
-      ".agents/AGENTS.md".text =
-        cfg.instructions
-        + lib.optionalString rtkEnabled "\n@RTK.md";
-    }
-    // lib.optionalAttrs (hasSource ponytail) {
-      ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
-    }
-    // cursorSkillLinks
-    // cursorMcpLink;
+  packageByName = {
+    inherit (pkgs) nodejs;
+    opencode-desktop = agentPackages.opencode2-desktop;
+  };
 in
 {
   options.development.agents.skills = lib.mkOption {
@@ -131,7 +76,7 @@ in
         frontend-design = "<anthropic-skills>/skills/frontend-design";
       }
     '';
-    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, unslop, and Anthropic's frontend-design. Setting this option replaces all default skills.";
+    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, unslop, and Anthropic's frontend-design. Skills set here are merged into the default set, so a single entry only adds one skill. Use `lib.mkForce` to replace the default set entirely.";
     example = lib.literalExpression ''
       {
         project = ./skills/project;
@@ -140,38 +85,28 @@ in
   };
 
   config = {
-    development.agents.skills = lib.mkDefault defaultSkills;
+    development.agents.skills = defaultSkills;
 
     home = {
       packages = lib.optionals anyAgentEnabled (
-        map (name: if name == "nodejs" then pkgs.nodejs else if name == "opencode-desktop" then agentPackages.opencode2-desktop else agentPackages.${name}) (
+        map (name: packageByName.${name} or agentPackages.${name}) (
           lib.filter (name: name != "opencode-desktop" || opencodeEnabled) cfg.packages
         )
-        ++ lib.optionals cursorEnabled [ agentPackages.cursor-agent ]
+        ++ lib.optional cursorEnabled agentPackages.cursor-agent
       );
 
-      file = lib.mkMerge [
-        (lib.mkIf cursorEnabled cursorFiles)
-        (lib.mkIf (rtkEnabled && opencodeEnabled) {
-          # TODO: temporary, drop once rtk installs a v2-compatible OpenCode plugin itself
-          ".config/opencode/plugins/rtk.ts".source = ./opencode-rtk.ts;
-        })
-      ];
-
-      activation = {
-        prepareWritableAgentConfigs = lib.mkIf anyAgentEnabled (
-          lib.hm.dag.entryBefore [ "checkLinkTargets" ] removeManagedAgentConfigs
-        );
-        materializeWritableAgentConfigs = lib.mkIf anyAgentEnabled (
-          lib.hm.dag.entryAfter [ "linkGeneration" ] materializeManagedAgentConfigs
-        );
-        rtkInit = lib.mkIf (rtkEnabled && anyAgentEnabled) (
-          lib.hm.dag.entryAfter [ "materializeWritableAgentConfigs" ] ''
-            export RTK_TELEMETRY_DISABLED=1
-            ${lib.optionalString opencodeEnabled "${agentPackages.rtk}/bin/rtk init -g || true"}
-          ''
-        );
-      };
+      file = lib.mkIf cursorEnabled (
+        {
+          ".agents/AGENTS.md".text = cfg.instructions;
+          ".agents/rules/ponytail.md".source = "${ponytail}/.agents/rules/ponytail.md";
+        }
+        // lib.mapAttrs' (
+          name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
+        ) cfg.skills
+        // lib.optionalAttrs (config.programs.mcp.enable && config.programs.mcp.servers != { }) {
+          ".cursor/mcp.json".source = config.xdg.configFile."mcp/mcp.json".source;
+        }
+      );
     };
   };
 }

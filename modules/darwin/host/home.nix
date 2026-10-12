@@ -19,6 +19,7 @@
   };
 
   programs.home-manager.enable = true;
+  home.packages = [ pkgs.llama-cpp ];
 
   nixpkgs.config.allowUnfree = true;
 
