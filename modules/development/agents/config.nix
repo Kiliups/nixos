@@ -30,7 +30,7 @@ in
       packages = lib.mkOption {
         type = lib.types.listOf (lib.types.enum packageNames);
         default = packageNames;
-        description = "Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output: when enabled, Claude Code runs commands through its Bash hook, Codex through its PreToolUse hook, Cursor through its preToolUse hook, and OpenCode loads its plugin.";
+        description = "Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk from Numtide token-compacts CLI output: when enabled, Claude Code runs commands through its Bash hook, Codex through its PreToolUse hook, and Cursor through its preToolUse hook.";
       };
 
       instructions = lib.mkOption {
@@ -155,10 +155,5 @@ in
           ];
         };
       };
-
-    xdg.configFile = lib.optionalAttrs (opencodeEnabled && rtkEnabled) {
-      # TODO: temporary, drop once rtk installs a v2-compatible OpenCode plugin itself
-      "opencode/plugins/rtk.ts".source = ./opencode-rtk.ts;
-    };
   };
 }

@@ -40,7 +40,20 @@ let
         liga = false;
       };
       minimum_contrast = 1;
+      dock = "bottom";
+      default_height = 220;
     };
+
+    agent = {
+      dock = "right";
+      flexible = false;
+      default_width = 300;
+      sidebar_side = "right";
+    };
+    project_panel.dock = "left";
+    git_panel.dock = "left";
+    outline_panel.dock = "left";
+    bottom_dock_layout = "full";
 
     git.inline_blame = {
       enabled = true;
