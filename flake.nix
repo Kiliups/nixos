@@ -39,6 +39,10 @@
       url = "github:anthropics/skills";
       flake = false;
     };
+    rea = {
+      url = "github:morluto/rea";
+      flake = false;
+    };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -78,7 +82,14 @@
         imports = [ ./modules/development ];
 
         _module.args.agentSources = {
-          inherit (inputs) ponytail matt-pocock-skills cursor-plugins anthropic-skills llm-agents;
+          inherit (inputs)
+            ponytail
+            matt-pocock-skills
+            cursor-plugins
+            anthropic-skills
+            rea
+            llm-agents
+            ;
         };
         _module.args.tmuxTpm = tpm;
       };

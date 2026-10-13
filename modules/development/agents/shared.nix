@@ -12,6 +12,7 @@ let
     matt-pocock-skills
     cursor-plugins
     anthropic-skills
+    rea
     ;
   agentPackages = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   cursorEnabled = config.development.cursor.enable;
@@ -52,6 +53,7 @@ let
     // {
       unslop = "${cursor-plugins}/pstack/skills/unslop";
       frontend-design = "${anthropic-skills}/skills/frontend-design";
+      reverse-engineer-anything = "${rea}/.agents/skills/reverse-engineer-anything";
     };
 
   packageByName = {
@@ -74,9 +76,10 @@ in
         "matt-pocock/<category>/<skill>" = "<matt-pocock-skills>/skills/<category>/<skill>";
         unslop = "<cursor-plugins>/pstack/skills/unslop";
         frontend-design = "<anthropic-skills>/skills/frontend-design";
+        reverse-engineer-anything = "<rea>/.agents/skills/reverse-engineer-anything";
       }
     '';
-    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, unslop, and Anthropic's frontend-design. Skills set here are merged into the default set, so a single entry only adds one skill. Use `lib.mkForce` to replace the default set entirely.";
+    description = "Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, unslop, Anthropic's frontend-design, and REA's reverse-engineer-anything. Skills set here are merged into the default set, so a single entry only adds one skill. Use `lib.mkForce` to replace the default set entirely.";
     example = lib.literalExpression ''
       {
         project = ./skills/project;

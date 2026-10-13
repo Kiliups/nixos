@@ -121,11 +121,11 @@
     "cursor-plugins": {
       "flake": false,
       "locked": {
-        "lastModified": 1791792651,
-        "narHash": "sha256-vKxN8rHgDvTod+AYKf9skFT5YJUzrpItrmnjP/dnPPs=",
+        "lastModified": 1791826501,
+        "narHash": "sha256-t9xxc1ouGSG6Hdi7RKIpflY9HNjwVdatwMcWXG/II4c=",
         "owner": "cursor",
         "repo": "plugins",
-        "rev": "1b6d44ff26d4e242f4e8f68c391e6d2f7ca16def",
+        "rev": "600daea6fb7c2bec822aca7ba2d205f24baf0235",
         "type": "github"
       },
       "original": {
@@ -406,6 +406,22 @@
         "type": "github"
       }
     },
+    "rea": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791827111,
+        "narHash": "sha256-+zgIR4bVFj4xpseKddEWdqLQ6fFI+uTlXJiCa/c+VDI=",
+        "owner": "morluto",
+        "repo": "rea",
+        "rev": "2e45b4d7a5b3228fe8b283def6f047797561bee1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "morluto",
+        "repo": "rea",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "anthropic-skills": "anthropic-skills",
@@ -418,6 +434,7 @@
         "nixos-private": "nixos-private",
         "nixpkgs": "nixpkgs_2",
         "ponytail": "ponytail",
+        "rea": "rea",
         "stylix": "stylix",
         "tpm": "tpm",
         "zen-browser": "zen-browser"
@@ -598,11 +615,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791770821,
-        "narHash": "sha256-2UlAIie3kiZYSlqFlwniaJrMwKeFKOiM1radCrrKWfs=",
+        "lastModified": 1791822633,
+        "narHash": "sha256-92V8wFy1G9ajZcuJNHcckzj8UwF34RYXiZisUQyyWCA=",
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
-        "rev": "a6e68f44a3c4b326ebd9f007550f8a3350ad3cf5",
+        "rev": "ad6ed76ed9c63d9119afcf2cc0b69ac89f2677cd",
         "type": "github"
       },
       "original": {

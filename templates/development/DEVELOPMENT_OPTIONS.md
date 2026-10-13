@@ -62,7 +62,7 @@ Example:
 
 ## `development.agents.packages`
 
-Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output: when enabled, Claude Code runs commands through its Bash hook and OpenCode loads its plugin.
+Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output: when enabled, Claude Code runs commands through its Bash hook, Codex through its PreToolUse hook, Cursor through its preToolUse hook, and OpenCode loads its plugin.
 
 Type: `list of (one of "nodejs", "opencode-desktop", "rtk", "chatgpt", "t3code", "t3code-desktop")`
 
@@ -81,7 +81,7 @@ Default:
 
 ## `development.agents.skills`
 
-Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, unslop, and Anthropic's frontend-design. Skills set here are merged into the default set, so a single entry only adds one skill. Use `lib.mkForce` to replace the default set entirely.
+Complete skill set shared by Claude Code, Codex, Cursor, and OpenCode. The default contains Ponytail skills, every Matt Pocock skill, unslop, Anthropic's frontend-design, and REA's reverse-engineer-anything. Skills set here are merged into the default set, so a single entry only adds one skill. Use `lib.mkForce` to replace the default set entirely.
 
 Type: `attribute set of absolute path`
 
@@ -98,6 +98,7 @@ Default:
   "matt-pocock/<category>/<skill>" = "<matt-pocock-skills>/skills/<category>/<skill>";
   unslop = "<cursor-plugins>/pstack/skills/unslop";
   frontend-design = "<anthropic-skills>/skills/frontend-design";
+  reverse-engineer-anything = "<rea>/.agents/skills/reverse-engineer-anything";
 }
 
 ```

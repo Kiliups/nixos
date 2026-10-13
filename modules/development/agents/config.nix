@@ -30,7 +30,7 @@ in
       packages = lib.mkOption {
         type = lib.types.listOf (lib.types.enum packageNames);
         default = packageNames;
-        description = "Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output: when enabled, Claude Code runs commands through its Bash hook and OpenCode loads its plugin.";
+        description = "Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk token-compacts CLI output: when enabled, Claude Code runs commands through its Bash hook, Codex through its PreToolUse hook, Cursor through its preToolUse hook, and OpenCode loads its plugin.";
       };
 
       instructions = lib.mkOption {
@@ -93,8 +93,27 @@ in
         package = agentPackages.codex;
         enableMcpIntegration = true;
         mutableSettings = true;
-        context = cfg.instructions;
+        settings = {
+          approval_policy = "on-request";
+          approvals_reviewer = "auto_review";
+          sandbox_mode = "workspace-write";
+        };
+        context =
+          cfg.instructions + lib.optionalString rtkEnabled "\n@${config.home.homeDirectory}/.codex/RTK.md";
         inherit (cfg) skills;
+        hooks = lib.optionalAttrs rtkEnabled {
+          PreToolUse = [
+            {
+              matcher = "Bash";
+              hooks = [
+                {
+                  type = "command";
+                  command = "rtk hook codex";
+                }
+              ];
+            }
+          ];
+        };
       };
 
       opencode = lib.mkIf opencodeEnabled {
@@ -118,9 +137,24 @@ in
         };
     };
 
-    home.file = lib.optionalAttrs (claudeEnabled && rtkEnabled) {
-      ".claude/RTK.md".source = "${agentPackages.rtk.src}/hooks/rtk-awareness.md";
-    };
+    home.file =
+      lib.optionalAttrs (claudeEnabled && rtkEnabled) {
+        ".claude/RTK.md".source = "${agentPackages.rtk.src}/hooks/rtk-awareness.md";
+      }
+      // lib.optionalAttrs (codexEnabled && rtkEnabled) {
+        ".codex/RTK.md".source = "${agentPackages.rtk.src}/hooks/rtk-awareness.md";
+      }
+      // lib.optionalAttrs (cursorEnabled && rtkEnabled) {
+        ".cursor/hooks.json".text = builtins.toJSON {
+          version = 1;
+          hooks.preToolUse = [
+            {
+              command = "rtk hook cursor";
+              matcher = "Shell";
+            }
+          ];
+        };
+      };
 
     xdg.configFile = lib.optionalAttrs (opencodeEnabled && rtkEnabled) {
       # TODO: temporary, drop once rtk installs a v2-compatible OpenCode plugin itself
