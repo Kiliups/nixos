@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   imports = [
     ./config.nix
@@ -7,6 +12,8 @@
   ];
 
   home.packages = with pkgs; [
+    kdePackages.kirigami.unwrapped
+    kdePackages.qqc2-desktop-style
     kooha
     satty
   ];
@@ -28,11 +35,35 @@
     };
   };
 
-  gtk = {
-    enable = true;
-    iconTheme = {
-      name = "Papirus-Dark";
+  gtk.enable = true;
+
+  stylix = {
+    icons = {
+      enable = true;
       package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
+    targets = {
+      kde.enable = false;
+      qt.enable = false;
+      zed.enable = false;
+    };
+  };
+
+  qt = {
+    enable = true;
+    platformTheme = {
+      name = "kde";
+      package = [
+        pkgs.kdePackages.plasma-integration
+        pkgs.kdePackages.plasma-integration.qt5
+      ];
+    };
+    style.name = "breeze";
+    kde.settings.kdeglobals = {
+      General.ColorScheme = "BreezeDark";
+      Icons.Theme = config.gtk.iconTheme.name;
     };
   };
 

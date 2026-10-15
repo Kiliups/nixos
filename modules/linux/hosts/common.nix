@@ -102,6 +102,7 @@ in
       grub.enable = false;
       kmscon.enable = false;
       plymouth.logoAnimated = false;
+      qt.enable = false;
       regreet.enable = true;
     };
   };
@@ -129,6 +130,8 @@ in
     kdePackages.okular
     kdePackages.partitionmanager
   ];
+
+  qt.enable = true;
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
