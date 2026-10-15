@@ -202,8 +202,8 @@ drsu # macOS
 
 Home Manager and `packages.<system>.zed-editor` use the shared definition in
 `packages/zed-editor/`. **Cache patched Zed** checks the latest `nixos-unstable`
-hourly and on manual dispatch, builds for Linux and Apple Silicon macOS, and
-uploads to `kiliups.cachix.org`. It updates nixpkgs only in its temporary CI
+at 00:00 and 12:00 UTC and on manual dispatch, builds for Linux and Apple Silicon
+macOS, and uploads to `kiliups.cachix.org`. It updates nixpkgs only in its temporary CI
 checkout: no commits, pushes, or changes to the repository's lock file.
 Unchanged derivations reuse the cache; settings and keymaps do not recompile Zed.
 
