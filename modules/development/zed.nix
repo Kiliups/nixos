@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -14,73 +15,40 @@ let
   );
 
   defaultSettings = {
-    base_keymap = "VSCode";
     vim_mode = true;
-    relative_line_numbers = "enabled";
     autosave.after_delay.milliseconds = 1000;
+    relative_line_numbers = "enabled";
     format_on_save = "on";
-    auto_signature_help = true;
-    inlay_hints.enabled = true;
-
     theme = {
       mode = "dark";
       dark = "Catppuccin Macchiato";
       light = "Catppuccin Latte";
     };
     icon_theme = "Catppuccin Macchiato";
-    ui_font_size = 16;
-    agent_font_size = 16;
-    buffer_font_family = "JetBrainsMono Nerd Font";
-    buffer_font_size = 14;
-    terminal = {
-      font_family = "JetBrainsMono Nerd Font Mono";
-      font_size = 14;
-      font_features = {
-        calt = false;
-        liga = false;
-      };
-      minimum_contrast = 1;
-      dock = "bottom";
-      default_height = 220;
-    };
 
     agent = {
       dock = "right";
       flexible = false;
-      default_width = 300;
-      sidebar_side = "right";
+      default_width = 600;
+      threads_sidebar = {
+        position = "left";
+        default_width = 200;
+      };
     };
     project_panel.dock = "left";
+
     git_panel.dock = "left";
-    outline_panel.dock = "left";
+    terminal = {
+      dock = "bottom";
+      default_height = 150;
+    };
     bottom_dock_layout = "full";
-
-    git.inline_blame = {
-      enabled = true;
-      show_commit_summary = true;
-    };
-    file_types.Markdown = [ "svx" ];
-
-    languages = {
-      JSON = {
-        soft_wrap = "bounded";
-        preferred_line_length = 100;
-      };
-      JSONC = {
-        soft_wrap = "bounded";
-        preferred_line_length = 100;
-      };
-      Markdown = {
-        soft_wrap = "bounded";
-        preferred_line_length = 100;
-      };
-    };
   };
 
 in
 {
   options.development.zed = {
-    enable = lib.mkEnableOption "Zed with programs.mcp.servers integration; Catppuccin, Catppuccin Icons, Emmet, and TODO Highlight extensions; Vim mode, relative lines, autosave, format-on-save, inlay hints, Catppuccin themes, inline Git blame, JSON and Markdown wrapping, pane-navigation keybindings, and the extensions and settings contributed by the enabled languages";
+    enable = lib.mkEnableOption "Zed patched to hide terminal tab headers, with Vim mode, an hdl-style layout (threads left, agent right, terminal below), Herdr-style Ctrl+Space keybindings for the sidebar, Git panel, terminal splits, closing panes, and zoom, Alt+HJKL pane navigation, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings";
 
     extensions = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -92,7 +60,7 @@ in
     settings = lib.mkOption {
       type = lib.types.attrsOf lib.types.anything;
       default = { };
-      description = "Zed settings merged after the bundled and enabled-language settings.";
+      description = "Zed settings overriding the bundled and enabled-language defaults via native Nix option merging. Settings and keymaps are writable in Zed; Nix-declared values are reapplied on activation, while other edits are preserved.";
       example.vim_mode = false;
     };
   };
@@ -100,12 +68,22 @@ in
   config = lib.mkIf cfg.enable {
     programs.zed-editor = {
       enable = true;
+      package = pkgs.zed-editor.overrideAttrs (oldAttrs: {
+        postPatch = (oldAttrs.postPatch or "") + ''
+          # Hide the terminal panel tab bar.
+          substituteInPlace crates/terminal_view/src/terminal_panel.rs \
+            --replace-fail 'pane.set_should_display_tab_bar(|_, _| true);' \
+              'pane.set_should_display_tab_bar(|_, _| false);'
+
+          # Add breathing room above the terminal content (0.5 rem).
+          sed -i '/terminal-view-container/ { N; s/\.size_full()/.pt_2().size_full()/; }' \
+            crates/terminal_view/src/terminal_view.rs
+        '';
+      });
       enableMcpIntegration = true;
       extensions = [
         "catppuccin"
         "catppuccin-icons"
-        "emmet"
-        "todo-highlight-language-server"
       ]
       ++ collectLanguage [
         "zed"
@@ -116,17 +94,29 @@ in
         "zed"
         "packages"
       ];
-      userSettings = lib.recursiveUpdate (lib.recursiveUpdate defaultSettings languageSettings) cfg.settings;
+      userSettings = lib.mkMerge [
+        (lib.mapAttrsRecursive (_: lib.mkDefault) (lib.recursiveUpdate defaultSettings languageSettings))
+        cfg.settings
+      ];
       userKeymaps = [
+        {
+          bindings = {
+            "ctrl-space b" = "multi_workspace::ToggleWorkspaceSidebar";
+            "ctrl-space e" = "workspace::ToggleLeftDock";
+            "ctrl-space g" = "git_panel::ToggleFocus";
+            "ctrl-space h" = "pane::SplitHorizontal";
+            "ctrl-space v" = "pane::SplitVertical";
+            "ctrl-space x" = "pane::CloseAllItems";
+            "ctrl-space z" = "workspace::ToggleZoom";
+          };
+        }
         {
           context = "Workspace";
           bindings = {
-            alt-n = "pane::ActivateNextItem";
-            alt-p = "pane::ActivatePreviousItem";
-            alt-h = "workspace::ActivatePaneLeft";
-            alt-l = "workspace::ActivatePaneRight";
-            alt-k = "workspace::ActivatePaneUp";
-            alt-j = "workspace::ActivatePaneDown";
+            "alt-h" = "workspace::ActivatePaneLeft";
+            "alt-l" = "workspace::ActivatePaneRight";
+            "alt-k" = "workspace::ActivatePaneUp";
+            "alt-j" = "workspace::ActivatePaneDown";
           };
         }
       ];

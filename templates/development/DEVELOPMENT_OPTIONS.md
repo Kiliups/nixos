@@ -477,7 +477,7 @@ Example:
 
 ## `development.zed.enable`
 
-Whether to enable Zed with programs.mcp.servers integration; Catppuccin, Catppuccin Icons, Emmet, and TODO Highlight extensions; Vim mode, relative lines, autosave, format-on-save, inlay hints, Catppuccin themes, inline Git blame, JSON and Markdown wrapping, pane-navigation keybindings, and the extensions and settings contributed by the enabled languages.
+Whether to enable Zed patched to hide terminal tab headers, with Vim mode, an hdl-style layout (threads left, agent right, terminal below), Herdr-style Ctrl+Space keybindings for the sidebar, Git panel, terminal splits, closing panes, and zoom, Alt+HJKL pane navigation, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings.
 
 Type: `boolean`
 
@@ -515,7 +515,7 @@ Example:
 
 ## `development.zed.settings`
 
-Zed settings merged after the bundled and enabled-language settings.
+Zed settings overriding the bundled and enabled-language defaults via native Nix option merging. Settings and keymaps are writable in Zed; Nix-declared values are reapplied on activation, while other edits are preserved.
 
 Type: `attribute set of anything`
 
