@@ -29,21 +29,33 @@ let
     agent = {
       dock = "right";
       flexible = false;
-      default_width = 600;
+      default_width = 400;
+      limit_content_width = false;
+      enable_feedback = false;
+      expand_edit_card = false;
+      expand_terminal_card = false;
+      thinking_display = "always_collapsed";
+      use_modifier_to_send = false;
+      message_editor_min_lines = 2;
+      show_turn_stats = true;
       threads_sidebar = {
         position = "left";
         default_width = 200;
       };
     };
-    project_panel.dock = "left";
+    project_panel = {
+      dock = "left";
+      default_width = 200;
+    };
 
     git_panel = {
       dock = "left";
-      default_width = 240;
+      default_width = 200;
     };
     terminal = {
       dock = "bottom";
-      default_height = 150;
+      default_height = 125;
+      starts_open = true;
     };
     bottom_dock_layout = "full";
   };
@@ -51,7 +63,7 @@ let
 in
 {
   options.development.zed = {
-    enable = lib.mkEnableOption "Zed patched to hide terminal tab headers, with Vim mode, an hdl-style layout (threads left, agent right, terminal below), Herdr-style Ctrl+Space keybindings for the sidebar, Git panel, terminal splits, closing panes, and zoom, Alt+HJKL pane navigation, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings";
+    enable = lib.mkEnableOption "Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, terminal splits, closing panes, and zoom, Ctrl+Alt+HJKL pane navigation, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings";
 
     extensions = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -93,22 +105,18 @@ in
       userKeymaps = [
         {
           bindings = {
+            "ctrl-space a" = "agent::ToggleFocus";
             "ctrl-space b" = "multi_workspace::ToggleWorkspaceSidebar";
-            "ctrl-space e" = "workspace::ToggleLeftDock";
-            "ctrl-space g" = "git_panel::ToggleFocus";
+            "ctrl-space e" = "project_panel::Toggle";
+            "ctrl-space g" = "git_panel::Toggle";
             "ctrl-space h" = "pane::SplitHorizontal";
             "ctrl-space v" = "pane::SplitVertical";
             "ctrl-space x" = "pane::CloseAllItems";
             "ctrl-space z" = "workspace::ToggleZoom";
-          };
-        }
-        {
-          context = "Workspace";
-          bindings = {
-            "alt-h" = "workspace::ActivatePaneLeft";
-            "alt-l" = "workspace::ActivatePaneRight";
-            "alt-k" = "workspace::ActivatePaneUp";
-            "alt-j" = "workspace::ActivatePaneDown";
+            "ctrl-alt-h" = "workspace::ActivatePaneLeft";
+            "ctrl-alt-l" = "workspace::ActivatePaneRight";
+            "ctrl-alt-k" = "workspace::ActivatePaneUp";
+            "ctrl-alt-j" = "workspace::ActivatePaneDown";
           };
         }
       ];

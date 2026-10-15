@@ -477,7 +477,7 @@ Example:
 
 ## `development.zed.enable`
 
-Whether to enable Zed patched to hide terminal tab headers, with Vim mode, an hdl-style layout (threads left, agent right, terminal below), Herdr-style Ctrl+Space keybindings for the sidebar, Git panel, terminal splits, closing panes, and zoom, Alt+HJKL pane navigation, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings.
+Whether to enable Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, terminal splits, closing panes, and zoom, Ctrl+Alt+HJKL pane navigation, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings.
 
 Type: `boolean`
 
