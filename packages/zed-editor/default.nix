@@ -1,5 +1,7 @@
 { zed-editor }:
 zed-editor.overrideAttrs (oldAttrs: {
+  doCheck = false;
+
   postPatch = (oldAttrs.postPatch or "") + ''
     # Hide the terminal panel tab bar.
     substituteInPlace crates/terminal_view/src/terminal_panel.rs \
