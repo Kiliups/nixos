@@ -1,0 +1,42 @@
+name: Cache patched Zed
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cache-zed
+  cancel-in-progress: false
+
+jobs:
+  cache:
+    name: Zed (${{ matrix.system }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - system: x86_64-linux
+            runner: ubuntu-24.04
+          - system: aarch64-darwin
+            runner: macos-15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            max-jobs = 1
+            cores = 2
+      - uses: cachix/cachix-action@v17
+        with:
+          name: kiliups
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - run: nix flake update nixpkgs
+      - run: nix build --no-update-lock-file -L .#zed-editor

@@ -212,9 +212,16 @@
       realNixosConfigurations = nixpkgs.lib.mapAttrs mkNixosHost nixosHosts;
     in
     {
-      packages = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
-        development-options = developmentOptions (import nixpkgs { inherit system; });
-      });
+      packages = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+        in
+        {
+          development-options = developmentOptions pkgs;
+          zed-editor = pkgs.callPackage ./packages/zed-editor { };
+        }
+      );
 
       homeModules = {
         development = developmentModule;
