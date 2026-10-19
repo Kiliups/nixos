@@ -198,42 +198,6 @@ nrsu # Linux
 drsu # macOS
 ```
 
-### Patched Zed binary cache
-
-Home Manager and `packages.<system>.zed-editor` use the shared definition in
-`packages/zed-editor/`. **Cache patched Zed** checks the latest `nixos-unstable`
-at 00:00 and 12:00 UTC and on manual dispatch, builds for Linux and Apple Silicon
-macOS, and uploads to `kiliups.cachix.org`. It updates nixpkgs only in its temporary CI
-checkout: no commits, pushes, or changes to the repository's lock file.
-Unchanged derivations reuse the cache; settings and keymaps do not recompile Zed.
-
-One-time setup:
-
-1. Create the public **kiliups** cache at [Cachix](https://app.cachix.org) with
-   Cachix-managed signing. Create a per-cache write token under its Settings.
-2. Save the token as the repository Actions secret `CACHIX_AUTH_TOKEN` (never
-   commit it). Set `cachixPublicKey` in `modules/development/cache.nix` to the
-   cache's real public signing key. Until then, the new cache is disabled.
-3. Update local nixpkgs with `nix flake update nixpkgs`. After CI has cached that
-   revision, prefetch Zed before the **first** system rebuild, when the new cache
-   configuration is not active yet. `--max-jobs 0` forbids local builds:
-
-   ```bash
-   sudo nix build --no-update-lock-file --no-link --max-jobs 0 '.#zed-editor^out' \
-     --option extra-substituters https://kiliups.cachix.org \
-     --option extra-trusted-public-keys '<public signing key from Cachix>'
-   ```
-
-Rebuild normally with `nrsu` / `drsu`, or update nixpkgs and then use `nrs` / `drs`.
-Daily NixOS upgrades also update nixpkgs as before. No lock-file commit is needed
-to trigger caching.
-
-This is best-effort cache warming, not a guarantee: nixpkgs can advance between
-CI and your rebuild, scheduled jobs can be delayed, and cache hits require
-identical packages and dependencies. An unavailable build falls back to local
-compilation. Hosted runner limits may require a larger builder, and Cachix
-storage limits can evict old unpinned builds.
-
 ## Theming
 
 System theming is handled by Stylix with
@@ -243,22 +207,22 @@ System theming is handled by Stylix with
 
 ## Repository Layout
 
-| Path                   | Description                                                |
-| ---------------------- | ---------------------------------------------------------- |
-| `flake.nix`            | Inputs, host builders, exported modules, and templates     |
-| `private.example/`     | Safe template for ignored local host data                  |
-| `modules/development/` | Shell, editors, tmux, Starship, Git, agents, and languages |
-| `modules/development/languages/builtin.nix` | Built-in language definitions, as plain data |
-| `modules/linux/hosts/`  | Linux host config (shared, laptop, workstation)            |
-| `modules/linux/`       | Shared Linux user and terminal modules                     |
-| `modules/linux/nixos/`  | System-level NixOS desktop modules                        |
-| `modules/linux/home/`  | Home Manager desktop modules                               |
-| `modules/darwin/`      | macOS-specific modules                                     |
-| `modules/darwin/host/`   | macOS host config                                         |
-| `modules/apps/`        | Desktop application modules                                |
-| `packages/`            | Custom package definitions shared by modules and CI         |
-| `config/`              | Static config files, themes, wallpapers, and Neovim config |
-| `templates/`           | Flake templates for consumers and development shells       |
+| Path                                        | Description                                                |
+| ------------------------------------------- | ---------------------------------------------------------- |
+| `flake.nix`                                 | Inputs, host builders, exported modules, and templates     |
+| `private.example/`                          | Safe template for ignored local host data                  |
+| `modules/development/`                      | Shell, editors, tmux, Starship, Git, agents, and languages |
+| `modules/development/languages/builtin.nix` | Built-in language definitions, as plain data               |
+| `modules/linux/hosts/`                      | Linux host config (shared, laptop, workstation)            |
+| `modules/linux/`                            | Shared Linux user and terminal modules                     |
+| `modules/linux/nixos/`                      | System-level NixOS desktop modules                         |
+| `modules/linux/home/`                       | Home Manager desktop modules                               |
+| `modules/darwin/`                           | macOS-specific modules                                     |
+| `modules/darwin/host/`                      | macOS host config                                          |
+| `modules/apps/`                             | Desktop application modules                                |
+| `packages/`                                 | Custom package definitions shared by modules and CI        |
+| `config/`                                   | Static config files, themes, wallpapers, and Neovim config |
+| `templates/`                                | Flake templates for consumers and development shells       |
 
 ## Manual Notes
 
