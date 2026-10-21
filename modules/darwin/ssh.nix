@@ -14,22 +14,27 @@
     '';
   };
 
-  home.file.".ssh/config".text = ''
-    Include ~/.orbstack/ssh/config
-
-    Include ${host.dirs.workScripts}/bash/.ssh/config
-    Include ${host.dirs.workScripts}/bash/.ssh/includes/*.conf
-    Include ${host.dirs.workScripts}/bash/.ssh/departments/*.conf
-
-    Host *
-      AddKeysToAgent yes
-      IdentitiesOnly yes
-      IdentityFile ~/.ssh/id_ed25519_sk
-      UseKeychain yes
-
-    Host bitbucket.org
-      User ${host.username} 
-      IdentityFile ~/.ssh/id_ed25519
-      AddKeysToAgent yes
-  '';
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    includes = [
+      "~/.orbstack/ssh/config"
+      "${host.dirs.workScripts}/bash/.ssh/config"
+      "${host.dirs.workScripts}/bash/.ssh/includes/*.conf"
+      "${host.dirs.workScripts}/bash/.ssh/departments/*.conf"
+    ];
+    settings = {
+      "*" = {
+        AddKeysToAgent = "yes";
+        IdentitiesOnly = true;
+        IdentityFile = "~/.ssh/id_ed25519_sk";
+        UseKeychain = true;
+      };
+      "bitbucket.org" = {
+        User = host.username;
+        IdentityFile = "~/.ssh/id_ed25519";
+        AddKeysToAgent = "yes";
+      };
+    };
+  };
 }
