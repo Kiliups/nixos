@@ -45,12 +45,12 @@ let
     };
     project_panel = {
       dock = "left";
-      default_width = 200;
+      default_width = 300;
     };
 
     git_panel = {
       dock = "left";
-      default_width = 200;
+      default_width = 300;
     };
     terminal = {
       dock = "bottom";
