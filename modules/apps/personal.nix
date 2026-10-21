@@ -24,7 +24,7 @@ in
     gimp
     zapzap
     nextcloud-client
-    audacity
+    # audacity
     localsend
     onlyoffice-desktopeditors
     zoom-us

@@ -43,10 +43,7 @@
       url = "github:morluto/rea";
       flake = false;
     };
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    llm-agents.url = "github:numtide/llm-agents.nix";
     nixos-private = {
       url = "path:./private.example";
       flake = true;

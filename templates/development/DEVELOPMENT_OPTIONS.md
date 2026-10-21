@@ -60,6 +60,18 @@ Example:
 ''
 ```
 
+## `development.agents.packageOverrides`
+
+Individual agent package overrides by upstream name, using complete derivations from pinned inputs.
+
+Type: `attribute set of package`
+
+Default:
+
+```nix
+{ }
+```
+
 ## `development.agents.packages`
 
 Packages installed for enabled AI agents. opencode-desktop installs Numtide's opencode2 desktop package and is installed only when development.opencode.enable is also enabled. rtk from Numtide token-compacts CLI output: when enabled, Claude Code runs commands through its Bash hook, Codex through its PreToolUse hook, and Cursor through its preToolUse hook.

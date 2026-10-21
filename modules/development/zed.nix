@@ -104,6 +104,10 @@ in
       ];
       userKeymaps = [
         {
+          context = "ProjectPanel && not_editing";
+          bindings.a = "project_panel::NewFile";
+        }
+        {
           bindings = {
             "ctrl-space a" = "agent::ToggleFocus";
             "ctrl-space b" = "multi_workspace::ToggleWorkspaceSidebar";

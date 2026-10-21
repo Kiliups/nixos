@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  agentPackages,
   agentSources,
   ...
 }:
@@ -14,7 +15,6 @@ let
     anthropic-skills
     rea
     ;
-  agentPackages = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   cursorEnabled = config.development.cursor.enable;
   opencodeEnabled = config.development.opencode.enable;
   anyAgentEnabled =

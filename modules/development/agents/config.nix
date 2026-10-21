@@ -2,13 +2,13 @@
   config,
   lib,
   pkgs,
+  agentPackages,
   agentSources,
   ...
 }:
 let
   cfg = config.development.agents;
   inherit (agentSources) ponytail;
-  agentPackages = agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   packageNames = [
     "nodejs"
     "opencode-desktop"
@@ -27,6 +27,12 @@ in
 {
   options.development = {
     agents = {
+      packageOverrides = lib.mkOption {
+        type = lib.types.attrsOf lib.types.package;
+        default = { };
+        description = "Individual agent package overrides by upstream name, using complete derivations from pinned inputs.";
+      };
+
       packages = lib.mkOption {
         type = lib.types.listOf (lib.types.enum packageNames);
         default = packageNames;
@@ -63,6 +69,9 @@ in
   };
 
   config = {
+    _module.args.agentPackages =
+      agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} // cfg.packageOverrides;
+
     programs = {
       mcp.enable = anyAgentEnabled;
 
