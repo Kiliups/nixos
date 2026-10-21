@@ -93,7 +93,7 @@ in
 
     config = lib.mkOption {
       type = lib.types.lines;
-      description = "Complete TOML configuration installed as ~/.config/herdr/config.toml. The default disables onboarding, uses Ctrl+Space as the prefix, configures pane and tab navigation, enables pane borders and terminal toasts, and hides the single-tab bar. Setting this option replaces all default Herdr settings.";
+      description = "Complete TOML configuration installed as ~/.config/herdr/config.toml. The default disables onboarding, uses Ctrl+Space as the prefix, configures Ctrl+Alt+H/J/K/L pane navigation and prefix-H/V splits, enables pane borders and terminal toasts, and hides the single-tab bar. Setting this option replaces all default Herdr settings.";
       default = ''
         onboarding = false
 
@@ -101,17 +101,17 @@ in
         prefix = "ctrl+space"
         detach = "prefix+d"
         rename_tab = "prefix+comma"
-        focus_pane_left = ["prefix+h"]
-        focus_pane_right = ["prefix+l"]
-        focus_pane_up = ["prefix+k"]
-        focus_pane_down = ["prefix+j"]
+        focus_pane_left = "ctrl+alt+h"
+        focus_pane_right = "ctrl+alt+l"
+        focus_pane_up = "ctrl+alt+k"
+        focus_pane_down = "ctrl+alt+j"
         previous_tab = ["prefix+p", "shift+left"]
         next_tab = ["prefix+n", "shift+right"]
         close_tab = "prefix+ampersand"
         last_pane = "prefix+semicolon"
         cycle_pane_next = "prefix+o"
-        split_vertical = "prefix+%"
-        split_horizontal = "prefix+\""
+        split_vertical = ["prefix+v", "prefix+%"]
+        split_horizontal = ["prefix+h", "prefix+\""]
 
         [ui]
         pane_borders = true

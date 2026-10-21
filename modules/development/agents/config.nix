@@ -73,8 +73,9 @@ in
         mutableSettings = true;
         context = cfg.instructions + lib.optionalString rtkEnabled "\n@RTK.md";
         inherit (cfg) skills;
-        settings = lib.optionalAttrs rtkEnabled {
-          hooks.PreToolUse = [
+        settings.env.CLAUDE_CODE_CERT_STORE = "bundled,system";
+        settings.hooks = lib.optionalAttrs rtkEnabled {
+          PreToolUse = [
             {
               matcher = "Bash";
               hooks = [
@@ -97,6 +98,8 @@ in
           approval_policy = "on-request";
           approvals_reviewer = "auto_review";
           sandbox_mode = "workspace-write";
+          features.browser_use = true;
+          features.computer_use = true;
         };
         context =
           cfg.instructions + lib.optionalString rtkEnabled "\n@${config.home.homeDirectory}/.codex/RTK.md";
@@ -124,7 +127,16 @@ in
         skills = lib.filterAttrs (
           _: source: !lib.hasPrefix "${ponytail}/skills/" (toString source)
         ) cfg.skills;
-        settings.plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
+        settings = {
+          plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
+          permissions = [
+            {
+              action = "browser";
+              resource = "*";
+              effect = "allow";
+            }
+          ];
+        };
       };
 
       zsh.shellAliases =

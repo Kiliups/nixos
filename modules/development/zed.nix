@@ -29,7 +29,7 @@ let
     agent = {
       dock = "right";
       flexible = false;
-      default_width = 400;
+      default_width = 600;
       limit_content_width = false;
       enable_feedback = false;
       expand_edit_card = false;
@@ -63,7 +63,7 @@ let
 in
 {
   options.development.zed = {
-    enable = lib.mkEnableOption "Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, terminal splits, closing panes, and zoom, Ctrl+Alt+HJKL pane navigation, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings";
+    enable = lib.mkEnableOption "Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, terminal splits, closing panes, and zoom, Ctrl+Alt+H/J/K/L pane navigation shared with Herdr, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings";
 
     extensions = lib.mkOption {
       type = lib.types.listOf lib.types.str;
