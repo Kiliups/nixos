@@ -109,7 +109,7 @@ in
         }
         {
           bindings = {
-            "ctrl-space a" = "agent::ToggleFocus";
+            "ctrl-space a" = "workspace::ToggleRightDock";
             "ctrl-space b" = "multi_workspace::ToggleWorkspaceSidebar";
             "ctrl-space e" = "project_panel::Toggle";
             "ctrl-space g" = "git_panel::Toggle";
