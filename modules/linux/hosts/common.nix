@@ -114,22 +114,6 @@ in
 
   networking.firewall.checkReversePath = "loose";
 
-  security.sudo.extraRules = [
-    {
-      users = [ host.username ];
-      runAs = "root";
-      commands = [
-        {
-          command = "${pkgs.openfortivpn}/bin/openfortivpn";
-          options = [
-            "NOPASSWD"
-            "NOSETENV"
-          ];
-        }
-      ];
-    }
-  ];
-
   environment.systemPackages = with pkgs; [
     iw
     mpv

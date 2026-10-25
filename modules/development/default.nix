@@ -19,7 +19,7 @@
   ];
 
   options.development = {
-    full.enable = lib.mkEnableOption "development.git, development.shell, development.herdr, development.tmux, development.starship, development.lazyvim, development.vscode, development.zed, and every built-in language; C and Nix are enabled by default, while Claude Code, Codex, Cursor, and OpenCode remain disabled";
+    full.enable = lib.mkEnableOption "development.shell, development.herdr, development.tmux, development.starship, development.lazyvim, development.vscode, development.zed, and every built-in language; Git, C, and Nix are enabled by default, while Claude Code, Codex, Cursor, and OpenCode remain disabled";
 
   };
 
@@ -28,7 +28,6 @@
     nix.package = lib.mkDefault pkgs.nix;
 
     development = lib.mkIf config.development.full.enable {
-      git.enable = lib.mkDefault true;
       shell.enable = lib.mkDefault true;
       herdr.enable = lib.mkDefault true;
       tmux.enable = lib.mkDefault true;

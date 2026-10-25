@@ -132,6 +132,10 @@ in
         enable = true;
         package = agentPackages.opencode2;
         enableMcpIntegration = true;
+        tui = lib.mkForce { };
+        cli = lib.mkIf (config.programs.opencode.themes ? stylix) {
+          theme.name = "stylix";
+        };
         context = cfg.instructions;
         skills = lib.filterAttrs (
           _: source: !lib.hasPrefix "${ponytail}/skills/" (toString source)
