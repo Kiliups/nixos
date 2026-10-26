@@ -31,7 +31,7 @@
 
   development = {
     full.enable = true;
-    claude.enable = false;
+    claude.enable = true;
     codex.enable = true;
     cursor.enable = false;
     opencode.enable = true;

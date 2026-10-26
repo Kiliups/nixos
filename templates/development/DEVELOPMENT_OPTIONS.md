@@ -180,7 +180,7 @@ true
 
 ## `development.full.enable`
 
-Whether to enable development.git, development.shell, development.herdr, development.tmux, development.starship, development.lazyvim, development.vscode, development.zed, and every built-in language; C and Nix are enabled by default, while Claude Code, Codex, Cursor, and OpenCode remain disabled.
+Whether to enable development.shell, development.herdr, development.tmux, development.starship, development.lazyvim, development.vscode, development.zed, and every built-in language; Git, C, and Nix are enabled by default, while Claude Code, Codex, Cursor, and OpenCode remain disabled.
 
 Type: `boolean`
 
@@ -198,14 +198,14 @@ true
 
 ## `development.git.enable`
 
-Whether to enable Git with automatic remote setup on push and the GitHub CLI, installed and configured as the credential helper for github.com and gist.github.com.
+Whether to enable Git and the GitHub CLI.
 
 Type: `boolean`
 
 Default:
 
 ```nix
-false
+true
 ```
 
 Example:
