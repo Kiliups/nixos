@@ -12,6 +12,12 @@ let
   };
   escapeKdlString = value: builtins.replaceStrings [ "\\" "\"" ] [ "\\\\" "\\\"" ] value;
   kdlQuote = lib.concatMapStringsSep " " (arg: ''"${arg}"'');
+  focusOrSpawnScript = pkgs.writeShellScript "focus-or-spawn" ''
+    id=$(niri msg -j windows | ${lib.getExe pkgs.jq} -r --arg app "$1" 'map(select(.app_id == $app)) | max_by(.focus_timestamp | [.secs, .nanos]) | .id // empty')
+    shift
+    if [ -n "$id" ]; then exec niri msg action focus-window --id "$id"; else exec "$@"; fi
+  '';
+  focusOrSpawn = appId: argv: "spawn ${kdlQuote ([ "${focusOrSpawnScript}" appId ] ++ argv)}";
   webappBinds = map (
     app:
     ''${webappShortcuts.${app.id}} hotkey-overlay-title="Open ${escapeKdlString app.name}" { spawn ${kdlQuote app.argv}; }''
@@ -138,7 +144,7 @@ in
           Mod+Return hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
           Mod+Space hotkey-overlay-title="Open App Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
           Mod+V hotkey-overlay-title="Clipboard History" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
-          Mod+B hotkey-overlay-title="Open Browser: Zen" { spawn "zen-beta"; }
+          Mod+B hotkey-overlay-title="Open Browser: Zen" { ${focusOrSpawn "zen-beta" [ "zen-beta" ]}; }
           ${lib.concatStringsSep "\n" webappBinds}
           Mod+E hotkey-overlay-title="Open File Manager: Dolphin" { spawn "dolphin"; }
           Mod+Alt+E hotkey-overlay-title="Open Editor: Kate" { spawn "kate"; }

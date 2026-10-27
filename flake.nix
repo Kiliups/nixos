@@ -119,11 +119,6 @@
         workstation = ./modules/linux/hosts/workstation/configuration.nix;
       };
 
-      homeRoleModules = {
-        laptop = ./modules/linux/hosts/laptop/home.nix;
-        workstation = ./modules/linux/hosts/workstation/home.nix;
-      };
-
       mkDarwinHost =
         hostName: host:
         nix-darwin.lib.darwinSystem {
@@ -165,8 +160,6 @@
         hostName: host:
         let
           roleModule = nixosRoleModules.${host.type} or (throw "Unknown NixOS host type: ${host.type}");
-          homeRoleModule =
-            homeRoleModules.${host.type} or (throw "Unknown NixOS home host type: ${host.type}");
         in
         nixpkgs.lib.nixosSystem {
           inherit (host) system;
@@ -196,7 +189,7 @@
                   ]
                   ++ [
                     developmentModule
-                    homeRoleModule
+                    ./modules/linux/hosts/home.nix
                   ]
                   ++ (host.homeModules or [ ]);
                 };

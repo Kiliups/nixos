@@ -63,7 +63,7 @@ let
 in
 {
   options.development.zed = {
-    enable = lib.mkEnableOption "Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, terminal splits, closing panes, and zoom, Ctrl+Alt+H/J/K/L pane navigation shared with Herdr, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings";
+    enable = lib.mkEnableOption "Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, bottom dock, terminal splits, closing panes, and zoom, Ctrl+Alt+H/J/K/L pane navigation shared with Herdr, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings";
 
     extensions = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -114,6 +114,7 @@ in
             "ctrl-space e" = "project_panel::Toggle";
             "ctrl-space g" = "git_panel::Toggle";
             "ctrl-space h" = "pane::SplitHorizontal";
+            "ctrl-space t" = "workspace::ToggleBottomDock";
             "ctrl-space v" = "pane::SplitVertical";
             "ctrl-space x" = "pane::CloseAllItems";
             "ctrl-space z" = "workspace::ToggleZoom";
