@@ -7,27 +7,28 @@
 let
   colors = config.lib.stylix.colors.withHashtag;
   cursor = config.stylix.cursor;
-  webappShortcuts = {
-    github = "Mod+Shift+G";
-  };
-  escapeKdlString = value: builtins.replaceStrings [ "\\" "\"" ] [ "\\\\" "\\\"" ] value;
-  kdlQuote = lib.concatMapStringsSep " " (arg: ''"${arg}"'');
   focusOrSpawnScript = pkgs.writeShellScript "focus-or-spawn" ''
     id=$(niri msg -j windows | ${lib.getExe pkgs.jq} -r --arg app "$1" 'map(select(.app_id == $app)) | max_by(.focus_timestamp | [.secs, .nanos]) | .id // empty')
     shift
     if [ -n "$id" ]; then exec niri msg action focus-window --id "$id"; else exec "$@"; fi
   '';
-  focusOrSpawn = appId: argv: "spawn ${kdlQuote ([ "${focusOrSpawnScript}" appId ] ++ argv)}";
-  webappBinds = map (
-    app:
-    ''${webappShortcuts.${app.id}} hotkey-overlay-title="Open ${escapeKdlString app.name}" { spawn ${kdlQuote app.argv}; }''
-  ) (lib.filter (app: webappShortcuts ? ${app.id}) (lib.catAttrs "webapp" config.home.packages));
+  kdlArgs = lib.concatMapStringsSep " " builtins.toJSON;
+  focusOrSpawn =
+    appId: argv:
+    "spawn ${
+      kdlArgs (
+        [
+          focusOrSpawnScript
+          appId
+        ]
+        ++ argv
+      )
+    }";
 in
 {
   xdg.configFile = {
     "niri/config.kdl".text = ''
       include "./cfg/animation.kdl"
-      include "./cfg/autostart.kdl"
       include "./cfg/keybinds.kdl"
       include "./cfg/input.kdl"
       include "./cfg/display.kdl"
@@ -145,7 +146,14 @@ in
           Mod+Space hotkey-overlay-title="Open App Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
           Mod+V hotkey-overlay-title="Clipboard History" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
           Mod+B hotkey-overlay-title="Open Browser: Zen" { ${focusOrSpawn "zen-beta" [ "zen-beta" ]}; }
-          ${lib.concatStringsSep "\n" webappBinds}
+          Mod+Shift+G hotkey-overlay-title="Open GitHub" { ${
+            focusOrSpawn "github" [
+              "chromium"
+              "--app=https://github.com"
+              "--class=github"
+              "--name=github"
+            ]
+          }; }
           Mod+E hotkey-overlay-title="Open File Manager: Dolphin" { spawn "dolphin"; }
           Mod+Alt+E hotkey-overlay-title="Open Editor: Kate" { spawn "kate"; }
           Mod+M hotkey-overlay-title="Open Mail: Thunderbird" { spawn "thunderbird"; }
@@ -163,8 +171,8 @@ in
           XF86AudioPrev allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "previous"; }
           XF86AudioPlay allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
           XF86AudioPause allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
-          XF86MonBrightnessUp allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5" "backlight:amdgpu_bl1"; }
-          XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5" "backlight:amdgpu_bl1"; }
+          XF86MonBrightnessUp allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5" ""; }
+          XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""; }
 
           Mod+Q repeat=false { close-window; }
 
@@ -335,7 +343,6 @@ in
       }
 
       environment {
-          ELECTRON_OZONE_PLATFORM_HINT "auto"
           XDG_CURRENT_DESKTOP "niri"
           XDG_MENU_PREFIX "plasma-"
       }

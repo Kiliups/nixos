@@ -25,6 +25,7 @@
         }
 
         ${pkgs.xdg-utils}/bin/xdg-mime default zen-beta.desktop text/html application/xhtml+xml x-scheme-handler/http x-scheme-handler/https
+        ${pkgs.xdg-utils}/bin/xdg-mime default thunderbird.desktop x-scheme-handler/mailto message/rfc822 x-scheme-handler/mid
         ${pkgs.xdg-utils}/bin/xdg-mime default okularApplication_pdf.desktop application/pdf
         set_default_file_handler org.kde.gwenview.desktop image ${pkgs.kdePackages.gwenview}/share/applications/org.kde.gwenview.desktop
         set_default_file_handler mpv.desktop video ${pkgs.mpv}/share/applications/mpv.desktop

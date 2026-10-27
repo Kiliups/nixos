@@ -47,7 +47,6 @@
     targets = {
       kde.enable = false;
       qt.enable = false;
-      zed.enable = false;
     };
   };
 
@@ -66,6 +65,4 @@
       Icons.Theme = config.gtk.iconTheme.name;
     };
   };
-
-  xdg.configFile."niri/cfg/autostart.kdl".text = "// Session services are managed by systemd.";
 }

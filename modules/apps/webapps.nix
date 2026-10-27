@@ -9,7 +9,6 @@ let
   id = lib.toLower (lib.replaceStrings [ " " ] [ "-" ] name);
   argv = [
     "chromium"
-    "--ozone-platform-hint=auto"
     "--app=${url}"
     "--class=${id}"
     "--name=${id}"
@@ -28,9 +27,4 @@ pkgs.makeDesktopItem {
   inherit categories;
   terminal = false;
   startupNotify = true;
-}
-// {
-  webapp = {
-    inherit id name argv;
-  };
 }
