@@ -5,15 +5,6 @@
   ...
 }:
 let
-  cfg = config.development.zed;
-  enabledLanguages = lib.attrValues (
-    lib.filterAttrs (_: language: language.enable) config.development.languages
-  );
-  collectLanguage = attrPath: lib.concatMap (lib.attrByPath attrPath [ ]) enabledLanguages;
-  languageSettings = lib.foldl' lib.recursiveUpdate { } (
-    map (language: language.zed.settings) enabledLanguages
-  );
-
   defaultSettings = {
     vim_mode = true;
     autosave.after_delay.milliseconds = 1000;
@@ -62,25 +53,9 @@ let
 
 in
 {
-  options.development.zed = {
-    enable = lib.mkEnableOption "Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, bottom dock, terminal splits, closing panes, and zoom, Ctrl+Alt+H/J/K/L pane navigation shared with Herdr, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings";
+  options.development.zed.enable = lib.mkEnableOption "Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, bottom dock, terminal splits, closing panes, and zoom, Ctrl+Alt+H/J/K/L pane navigation shared with Herdr, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings";
 
-    extensions = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = "Additional Zed extensions.";
-      example = [ "html" ];
-    };
-
-    settings = lib.mkOption {
-      type = lib.types.attrsOf lib.types.anything;
-      default = { };
-      description = "Zed settings overriding the bundled and enabled-language defaults via native Nix option merging. Settings and keymaps are writable in Zed; Nix-declared values are reapplied on activation, while other edits are preserved.";
-      example.vim_mode = false;
-    };
-  };
-
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf config.development.zed.enable {
     programs.zed-editor = {
       enable = true;
       package = pkgs.callPackage ../../packages/zed-editor { };
@@ -88,20 +63,8 @@ in
       extensions = [
         "catppuccin"
         "catppuccin-icons"
-      ]
-      ++ collectLanguage [
-        "zed"
-        "extensions"
-      ]
-      ++ cfg.extensions;
-      extraPackages = collectLanguage [
-        "zed"
-        "packages"
       ];
-      userSettings = lib.mkMerge [
-        (lib.mapAttrsRecursive (_: lib.mkDefault) (lib.recursiveUpdate defaultSettings languageSettings))
-        cfg.settings
-      ];
+      userSettings = lib.mapAttrsRecursive (_: lib.mkDefault) defaultSettings;
       userKeymaps = [
         {
           context = "ProjectPanel && not_editing";

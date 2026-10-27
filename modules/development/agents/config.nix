@@ -69,8 +69,11 @@ in
   };
 
   config = {
-    _module.args.agentPackages =
-      agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} // cfg.packageOverrides;
+    _module.args = {
+      inherit anyAgentEnabled;
+      agentPackages =
+        agentSources.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} // cfg.packageOverrides;
+    };
 
     programs = {
       mcp.enable = anyAgentEnabled;

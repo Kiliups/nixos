@@ -1,16 +1,13 @@
 let
-  # Set this to the public signing key from the kiliups Cachix cache.
-  cachixPublicKey = "kiliups.cachix.org-1:ahL9owLDPsK/33UehqToeESFYNRLjmOofpAc4iAPNU0=";
-  cachixEnabled = cachixPublicKey != null;
   settings = {
     extra-substituters = [
       "https://cache.numtide.com"
-    ]
-    ++ (if cachixEnabled then [ "https://kiliups.cachix.org" ] else [ ]);
+      "https://kiliups.cachix.org"
+    ];
     extra-trusted-public-keys = [
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-    ]
-    ++ (if cachixEnabled then [ cachixPublicKey ] else [ ]);
+      "kiliups.cachix.org-1:ahL9owLDPsK/33UehqToeESFYNRLjmOofpAc4iAPNU0="
+    ];
   };
 in
 {

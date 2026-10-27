@@ -2,7 +2,6 @@
   pkgs,
   lib,
   config,
-  tmuxTpm ? null,
   ...
 }:
 let
@@ -167,47 +166,40 @@ let
 in
 {
   options.development.tmux = {
-    enable = lib.mkEnableOption "tmux with mouse and extended keys, Ctrl+Space prefix, prefix-arrow pane navigation, Shift-arrow window navigation, vi copy mode, current-directory splits, TPM, tmux-sensible, tmux-yank, Catppuccin Macchiato, and four layout helpers: tdl opens an editor and up to two agents for one project, tdlm applies that layout to every subdirectory, tsl runs one command in multiple panes, and tml runs multiple commands in tiled panes";
+    enable = lib.mkEnableOption "tmux with mouse and extended keys, Ctrl+Space prefix, prefix-arrow pane navigation, Shift-arrow window navigation, vi copy mode, current-directory splits, tmux-sensible, tmux-yank, Catppuccin Macchiato, and four layout helpers: tdl opens an editor and up to two agents for one project, tdlm applies that layout to every subdirectory, tsl runs one command in multiple panes, and tml runs multiple commands in tiled panes";
 
     config = lib.mkOption {
       type = lib.types.lines;
       default = builtins.readFile ../../config/tmux/tmux.conf;
       defaultText = lib.literalExpression "builtins.readFile <default tmux.conf>";
-      description = "Complete configuration written to ~/.tmux.conf. Setting this option replaces all default tmux keybindings, plugins, and appearance settings; tmux, TPM, tdl, tdlm, tsl, and tml remain installed.";
+      description = "Configuration appended to ~/.config/tmux/tmux.conf after the plugins. Setting this option replaces all default tmux keybindings and settings; tmux, tmux-sensible, tmux-yank, Catppuccin Macchiato, tdl, tdlm, tsl, and tml remain installed.";
       example = lib.literalExpression "builtins.readFile ./tmux.conf";
     };
 
   };
 
   config = lib.mkIf config.development.tmux.enable {
-    assertions = [
-      {
-        assertion = tmuxTpm != null;
-        message = "development.tmux requires a pinned TPM source.";
-      }
-    ];
-
-    home = {
-      packages = with pkgs; [
-        tmux
-
-        tdl
-        tdlm
-        tsl
-        tml
+    programs.tmux = {
+      enable = true;
+      terminal = "tmux-256color";
+      keyMode = "vi";
+      clock24 = true;
+      plugins = with pkgs.tmuxPlugins; [
+        sensible
+        yank
+        {
+          plugin = catppuccin;
+          extraConfig = "set -g @catppuccin_flavor 'macchiato'";
+        }
       ];
-
-      file = {
-        ".tmux.conf" = {
-          text = config.development.tmux.config;
-        };
-
-        ".tmux/plugins/tpm" = {
-          source = tmuxTpm;
-          recursive = true;
-        };
-      };
+      extraConfig = config.development.tmux.config;
     };
 
+    home.packages = [
+      tdl
+      tdlm
+      tsl
+      tml
+    ];
   };
 }

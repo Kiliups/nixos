@@ -198,7 +198,7 @@ true
 
 ## `development.git.enable`
 
-Whether to enable Git and the GitHub CLI.
+Whether to enable Git with main as the default branch, rebasing pulls, and the GitHub CLI.
 
 Type: `boolean`
 
@@ -361,7 +361,7 @@ true
 
 ## `development.shell.enable`
 
-Whether to enable Zsh with completion, autosuggestions, syntax highlighting, fzf, direnv with nix-direnv, zoxide replacing cd, aliases for eza, fastfetch, and nix develop, plus bat, btop, fastfetch, ripgrep, eza, and fd.
+Whether to enable Zsh with completion, autosuggestions, syntax highlighting, desktop-style word movement and deletion (Ctrl/Option+Arrow, Ctrl+Backspace/Delete stopping at punctuation), direnv with nix-direnv, zoxide replacing cd, aliases for eza, fastfetch, and nix develop, plus bat, btop, fastfetch, ripgrep, eza, and fd.
 
 Type: `boolean`
 
@@ -397,7 +397,7 @@ true
 
 ## `development.tmux.config`
 
-Complete configuration written to ~/.tmux.conf. Setting this option replaces all default tmux keybindings, plugins, and appearance settings; tmux, TPM, tdl, tdlm, tsl, and tml remain installed.
+Configuration appended to ~/.config/tmux/tmux.conf after the plugins. Setting this option replaces all default tmux keybindings and settings; tmux, tmux-sensible, tmux-yank, Catppuccin Macchiato, tdl, tdlm, tsl, and tml remain installed.
 
 Type: `strings concatenated with "\n"`
 
@@ -415,7 +415,7 @@ builtins.readFile ./tmux.conf
 
 ## `development.tmux.enable`
 
-Whether to enable tmux with mouse and extended keys, Ctrl+Space prefix, prefix-arrow pane navigation, Shift-arrow window navigation, vi copy mode, current-directory splits, TPM, tmux-sensible, tmux-yank, Catppuccin Macchiato, and four layout helpers: tdl opens an editor and up to two agents for one project, tdlm applies that layout to every subdirectory, tsl runs one command in multiple panes, and tml runs multiple commands in tiled panes.
+Whether to enable tmux with mouse and extended keys, Ctrl+Space prefix, prefix-arrow pane navigation, Shift-arrow window navigation, vi copy mode, current-directory splits, tmux-sensible, tmux-yank, Catppuccin Macchiato, and four layout helpers: tdl opens an editor and up to two agents for one project, tdlm applies that layout to every subdirectory, tsl runs one command in multiple panes, and tml runs multiple commands in tiled panes.
 
 Type: `boolean`
 
@@ -449,47 +449,9 @@ Example:
 true
 ```
 
-## `development.vscode.extensions`
-
-Additional VS Code extensions.
-
-Type: `list of package`
-
-Default:
-
-```nix
-[ ]
-```
-
-Example:
-
-```nix
-[ pkgs.vscode-extensions.github.copilot ]
-```
-
-## `development.vscode.settings`
-
-VS Code settings merged after the bundled and enabled-language settings.
-
-Type: `attribute set of anything`
-
-Default:
-
-```nix
-{ }
-```
-
-Example:
-
-```nix
-{
-  "editor.formatOnSave" = false;
-}
-```
-
 ## `development.zed.enable`
 
-Whether to enable Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, terminal splits, closing panes, and zoom, Ctrl+Alt+H/J/K/L pane navigation shared with Herdr, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings.
+Whether to enable Zed patched to hide terminal tab headers and disable resizing, with Vim mode, a fixed hdl-style layout (editor/agent 60/40, full-width terminal below at 15% height), Herdr-style Ctrl+Space keybindings for the agent panel, sidebar, Git panel, bottom dock, terminal splits, closing panes, and zoom, Ctrl+Alt+H/J/K/L pane navigation shared with Herdr, mutable settings and keymaps, programs.mcp.servers integration, and enabled-language extensions and settings.
 
 Type: `boolean`
 
@@ -503,46 +465,6 @@ Example:
 
 ```nix
 true
-```
-
-## `development.zed.extensions`
-
-Additional Zed extensions.
-
-Type: `list of string`
-
-Default:
-
-```nix
-[ ]
-```
-
-Example:
-
-```nix
-[
-  "html"
-]
-```
-
-## `development.zed.settings`
-
-Zed settings overriding the bundled and enabled-language defaults via native Nix option merging. Settings and keymaps are writable in Zed; Nix-declared values are reapplied on activation, while other edits are preserved.
-
-Type: `attribute set of anything`
-
-Default:
-
-```nix
-{ }
-```
-
-Example:
-
-```nix
-{
-  vim_mode = false;
-}
 ```
 
 ## `programs.mcp.enable`

@@ -118,6 +118,13 @@ let
   enabledLanguageConfigs = lib.attrValues enabledLanguages;
   collectFromEnabledLanguages =
     attrPath: lib.concatMap (lib.attrByPath attrPath [ ]) enabledLanguageConfigs;
+  languageSettings =
+    editor:
+    lib.mapAttrsRecursive (_: lib.mkDefault) (
+      lib.foldl' lib.recursiveUpdate { } (
+        map (language: language.${editor}.settings) enabledLanguageConfigs
+      )
+    );
 
   builtinDependencyWiring = lib.genAttrs builtinNames (
     name:
@@ -183,6 +190,30 @@ in
         sessionVariables = lib.mkMerge (map (language: language.sessionVariables) enabledLanguageConfigs);
       };
     }
+
+    (lib.mkIf config.development.zed.enable {
+      programs.zed-editor = {
+        extensions = collectFromEnabledLanguages [
+          "zed"
+          "extensions"
+        ];
+        extraPackages = collectFromEnabledLanguages [
+          "zed"
+          "packages"
+        ];
+        userSettings = languageSettings "zed";
+      };
+    })
+
+    (lib.mkIf config.development.vscode.enable {
+      programs.vscode.profiles.default = {
+        extensions = collectFromEnabledLanguages [
+          "vscode"
+          "extensions"
+        ];
+        userSettings = languageSettings "vscode";
+      };
+    })
 
     (lib.mkIf config.development.lazyvim.enable {
       home.file = lib.mapAttrs' lazyvimFile (

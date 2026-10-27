@@ -5,14 +5,18 @@
   ...
 }:
 {
-  options.development.git.enable = lib.mkEnableOption "Git and the GitHub CLI" // {
-    default = true;
-  };
+  options.development.git.enable =
+    lib.mkEnableOption "Git with main as the default branch, rebasing pulls, and the GitHub CLI"
+    // {
+      default = true;
+    };
 
   config = lib.mkIf config.development.git.enable {
     programs.git = {
       enable = true;
       settings = {
+        init.defaultBranch = "main";
+        pull.rebase = true;
         push.autoSetupRemote = true;
         url."git@github.com:".insteadOf = "https://github.com/";
         credential."https://github.com".helper = "!gh auth git-credential";

@@ -4,6 +4,7 @@
   pkgs,
   agentPackages,
   agentSources,
+  anyAgentEnabled,
   ...
 }:
 let
@@ -17,11 +18,6 @@ let
     ;
   cursorEnabled = config.development.cursor.enable;
   opencodeEnabled = config.development.opencode.enable;
-  anyAgentEnabled =
-    config.development.claude.enable
-    || cursorEnabled
-    || config.development.codex.enable
-    || opencodeEnabled;
 
   ponytailSkills = [
     "ponytail"
@@ -32,22 +28,15 @@ let
     "ponytail-help"
   ];
   collectSkills =
-    prefix: root:
-    let
-      entries = builtins.readDir root;
-      directories = builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
-      skillName = directory: if prefix == "" then directory else "${prefix}/${directory}";
-      here = builtins.filter (directory: builtins.pathExists "${root}/${directory}/SKILL.md") directories;
-      nested = builtins.concatMap (
-        directory: collectSkills (skillName directory) "${root}/${directory}"
-      ) directories;
-    in
-    map skillName here ++ nested;
+    root:
+    map (file: builtins.unsafeDiscardStringContext (lib.removePrefix "${root}/" (dirOf file))) (
+      lib.filter (file: baseNameOf file == "SKILL.md") (lib.filesystem.listFilesRecursive root)
+    );
   defaultSkills =
     lib.genAttrs ponytailSkills (name: "${ponytail}/skills/${name}")
     // lib.listToAttrs (
       map (name: lib.nameValuePair "matt-pocock/${name}" "${matt-pocock-skills}/skills/${name}") (
-        collectSkills "" "${matt-pocock-skills}/skills"
+        collectSkills "${matt-pocock-skills}/skills"
       )
     )
     // {

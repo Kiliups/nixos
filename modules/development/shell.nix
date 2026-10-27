@@ -6,7 +6,7 @@
 }:
 {
   options.development.shell = {
-    enable = lib.mkEnableOption "Zsh with completion, autosuggestions, syntax highlighting, fzf, direnv with nix-direnv, zoxide replacing cd, aliases for eza, fastfetch, and nix develop, plus bat, btop, fastfetch, ripgrep, eza, and fd";
+    enable = lib.mkEnableOption "Zsh with completion, autosuggestions, syntax highlighting, desktop-style word movement and deletion (Ctrl/Option+Arrow, Ctrl+Backspace/Delete stopping at punctuation), direnv with nix-direnv, zoxide replacing cd, aliases for eza, fastfetch, and nix develop, plus bat, btop, fastfetch, ripgrep, eza, and fd";
   };
 
   config = lib.mkIf config.development.shell.enable {
@@ -24,6 +24,12 @@
         };
         initContent = ''
           bindkey -e
+          WORDCHARS='_'
+          bindkey '^[[1;5D' backward-word
+          bindkey '^[[1;5C' emacs-forward-word
+          bindkey '^[f' emacs-forward-word
+          bindkey '^H' backward-kill-word
+          bindkey '^[[3;5~' kill-word
         '';
       };
 
