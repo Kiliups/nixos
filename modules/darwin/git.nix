@@ -1,4 +1,4 @@
-{ pkgs, host, ... }:
+{ host, ... }:
 {
   programs.git = {
     enable = true;
@@ -13,8 +13,6 @@
       }
     ];
     settings = {
-      init.defaultBranch = "main";
-      pull.rebase = true;
       core = {
         fsmonitor = true;
         untrackedcache = true;
@@ -23,10 +21,6 @@
   };
 
   home = {
-    packages = with pkgs; [
-      gh
-    ];
-
     file = {
       ".config/git/work.inc".text = ''
         [user]

@@ -3,11 +3,7 @@
 
   programs.zsh = {
     initContent = ''
-      if [[ -S "$SSH_AUTH_SOCK" ]]; then
-        :
-      else
-        export SSH_AUTH_SOCK="$HOME/.ssh/agent"
-      fi
+      [[ -S "$SSH_AUTH_SOCK" ]] || export SSH_AUTH_SOCK="$HOME/.ssh/agent"
     '';
     profileExtra = ''
       export SSH_SK_PROVIDER=/usr/local/lib/libsk-libfido2.dylib
@@ -33,7 +29,6 @@
       "bitbucket.org" = {
         User = host.username;
         IdentityFile = "~/.ssh/id_ed25519";
-        AddKeysToAgent = "yes";
       };
     };
   };

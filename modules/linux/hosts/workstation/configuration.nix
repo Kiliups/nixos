@@ -1,5 +1,4 @@
 {
-  hostName,
   config,
   pkgs,
   ...
@@ -8,8 +7,6 @@
   imports = [
     ../common.nix
   ];
-
-  networking.hostName = hostName;
 
   services.xserver.videoDrivers = [ "nvidia" ];
 

@@ -4,10 +4,6 @@
   ...
 }:
 {
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
   system = {
     stateVersion = 6;
     primaryUser = host.username;
@@ -43,18 +39,9 @@
     ];
   };
 
-  # install homebrew
   system.activationScripts.preActivation.text = ''
-    if [ ! -x /opt/homebrew/bin/brew ]; then
-      echo "Installing Homebrew..." >&2
-      mkdir -p /opt/homebrew
-      curl -fsSL https://github.com/Homebrew/brew/tarball/master | tar xz --strip-components 1 -C /opt/homebrew
-      chown -R ${host.username}:admin /opt/homebrew
-    fi
+    [ -x /opt/homebrew/bin/brew ] || echo "Homebrew is not installed. Install it manually from https://brew.sh, then rerun darwin-rebuild." >&2
   '';
 
-  users.users.${host.username} = {
-    name = host.username;
-    home = "/Users/${host.username}";
-  };
+  users.users.${host.username}.home = "/Users/${host.username}";
 }

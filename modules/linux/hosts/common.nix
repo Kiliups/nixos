@@ -1,13 +1,8 @@
 {
-  config,
   host,
   pkgs,
   ...
 }:
-let
-  flakeDir = "${config.users.users.${host.username}.home}/.config/nixos";
-  stateVersion = "26.11";
-in
 {
   imports = [
     ../nixos/displaymanager.nix
@@ -26,13 +21,10 @@ in
     ];
 
     loader = {
-      systemd-boot.enable = false;
-
       grub = {
         enable = true;
         device = "nodev";
         efiSupport = true;
-        useOSProber = false;
         theme = ../../../config/catppuccin-macchiato-grub-theme;
         splashImage = ../../../config/catppuccin-macchiato-grub-theme/background.png;
       };
@@ -51,25 +43,7 @@ in
     enable32Bit = true;
   };
 
-  system = {
-    autoUpgrade = {
-      enable = true;
-      dates = "daily";
-      flake = flakeDir;
-      flags = [
-        "--update-input"
-        "nixpkgs"
-        "--override-input"
-        "nixos-private"
-        "path:${flakeDir}/private"
-      ];
-      allowReboot = false;
-    };
-
-    inherit stateVersion;
-  };
-
-  home-manager.users.${host.username}.home.stateVersion = stateVersion;
+  system.stateVersion = "26.11";
 
   nix = {
     settings = {
@@ -125,6 +99,7 @@ in
     kdePackages.ffmpegthumbs
     kdePackages.filelight
     kdePackages.gwenview
+    kdePackages.kate
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kio-extras
     kdePackages.okular
@@ -137,9 +112,6 @@ in
     NIXOS_OZONE_WL = "1";
     QT_QPA_PLATFORM = "wayland;xcb";
     SDL_VIDEODRIVER = "wayland,x11";
-    MOZ_ENABLE_WAYLAND = "1";
-    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
-    OZONE_PLATFORM = "wayland";
   };
 
   security.rtkit.enable = true;
@@ -158,10 +130,7 @@ in
 
     printing.enable = true;
 
-    xserver.xkb = {
-      layout = "de";
-      variant = "";
-    };
+    xserver.xkb.layout = "de";
   };
 
   security.pam.services.login.fprintAuth = false;
@@ -172,20 +141,7 @@ in
   };
 
   time.timeZone = "Europe/Berlin";
-  i18n = {
-    defaultLocale = "de_DE.UTF-8";
-    extraLocaleSettings = {
-      LC_ADDRESS = "de_DE.UTF-8";
-      LC_IDENTIFICATION = "de_DE.UTF-8";
-      LC_MEASUREMENT = "de_DE.UTF-8";
-      LC_MONETARY = "de_DE.UTF-8";
-      LC_NAME = "de_DE.UTF-8";
-      LC_NUMERIC = "de_DE.UTF-8";
-      LC_PAPER = "de_DE.UTF-8";
-      LC_TELEPHONE = "de_DE.UTF-8";
-      LC_TIME = "de_DE.UTF-8";
-    };
-  };
+  i18n.defaultLocale = "de_DE.UTF-8";
 
   console.keyMap = "de";
 

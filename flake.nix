@@ -19,10 +19,6 @@
         home-manager.follows = "home-manager";
       };
     };
-    tpm = {
-      url = "github:tmux-plugins/tpm";
-      flake = false;
-    };
     ponytail = {
       url = "github:DietrichGebert/ponytail";
       flake = false;
@@ -59,7 +55,6 @@
       stylix,
       zen-browser,
       nixos-private,
-      tpm,
       cursor-plugins,
       anthropic-skills,
       ...
@@ -88,114 +83,72 @@
             llm-agents
             ;
         };
-        _module.args.tmuxTpm = tpm;
       };
       developmentCache = import ./modules/development/cache.nix;
 
-      developmentOptions =
-        pkgs:
-        pkgs.writeText "DEVELOPMENT_OPTIONS.md" (
-          import ./templates/development/modules/options.nix {
-            inherit nixpkgs home-manager;
-            development = developmentModule;
-          }
-        );
+      developmentOptionsText = import ./templates/development/modules/options.nix {
+        inherit nixpkgs home-manager;
+        development = developmentModule;
+      };
 
-      developmentOptionsPackage =
-        pkgs:
-        pkgs.runCommand "development-options" { } ''
-          mkdir -p "$out/share/doc/development"
-          cp ${developmentOptions pkgs} "$out/share/doc/development/DEVELOPMENT_OPTIONS.md"
-        '';
+      developmentOptions = pkgs: pkgs.writeText "DEVELOPMENT_OPTIONS.md" developmentOptionsText;
 
       developmentOptionsModule =
         { pkgs, ... }:
         {
-          environment.systemPackages = [ (developmentOptionsPackage pkgs) ];
+          environment.systemPackages = [
+            (pkgs.writeTextDir "share/doc/development/DEVELOPMENT_OPTIONS.md" developmentOptionsText)
+          ];
         };
 
-      nixosRoleModules = {
-        laptop = ./modules/linux/hosts/laptop/configuration.nix;
-        workstation = ./modules/linux/hosts/workstation/configuration.nix;
+      mkHome = host: imports: {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          backupFileExtension = "backup";
+          extraSpecialArgs = { inherit host; };
+          users.${host.username}.imports = [ developmentModule ] ++ imports ++ (host.homeModules or [ ]);
+        };
       };
+
+      nixosHomeModules = [
+        zen-browser.homeModules.default
+        ./modules/linux/hosts/home.nix
+      ];
 
       mkDarwinHost =
         hostName: host:
         nix-darwin.lib.darwinSystem {
           inherit (host) system;
-          specialArgs = {
-            inherit inputs host hostName;
-          };
+          specialArgs = { inherit host hostName; };
           modules = [
-            stylix.darwinModules.stylix
             developmentCache.darwin
             ./modules/darwin/host/configuration.nix
             developmentOptionsModule
-          ]
-          ++ (host.modules or [ ])
-          ++ [
             home-manager.darwinModules.home-manager
-            {
-              home-manager = {
-                useUserPackages = true;
-                backupFileExtension = "backup";
-                extraSpecialArgs = {
-                  inherit inputs host;
-                };
-
-                users.${host.username} = {
-                  imports = [
-                    stylix.homeModules.stylix
-                    developmentModule
-                    ./modules/darwin/host/home.nix
-                  ]
-                  ++ (host.homeModules or [ ]);
-                };
-              };
-            }
-          ];
+            (mkHome host [
+              stylix.homeModules.stylix
+              ./modules/darwin/host/home.nix
+            ])
+          ]
+          ++ (host.modules or [ ]);
         };
 
       mkNixosHost =
         hostName: host:
-        let
-          roleModule = nixosRoleModules.${host.type} or (throw "Unknown NixOS host type: ${host.type}");
-        in
         nixpkgs.lib.nixosSystem {
           inherit (host) system;
-          specialArgs = {
-            inherit inputs host hostName;
-          };
+          specialArgs = { inherit host; };
           modules = [
             stylix.nixosModules.stylix
             developmentCache.nixos
-          ]
-          ++ [ roleModule ]
-          ++ [ developmentOptionsModule ]
-          ++ (host.modules or [ ])
-          ++ [
+            ./modules/linux/hosts/${host.type}/configuration.nix
+            developmentOptionsModule
+            { networking.hostName = hostName; }
             home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useUserPackages = true;
-                backupFileExtension = "backup";
-                extraSpecialArgs = {
-                  inherit inputs host;
-                };
-
-                users.${host.username} = {
-                  imports = [
-                    zen-browser.homeModules.default
-                  ]
-                  ++ [
-                    developmentModule
-                    ./modules/linux/hosts/home.nix
-                  ]
-                  ++ (host.homeModules or [ ]);
-                };
-              };
-            }
+            (mkHome host nixosHomeModules)
           ]
+          ++ (host.modules or [ ])
           ++ lib.optional (host.type == "laptop") nixos-hardware.nixosModules.framework-13-7040-amd;
         };
 
@@ -226,11 +179,7 @@
       nixosConfigurations = realNixosConfigurations // {
         iso = nixpkgs.lib.nixosSystem {
           inherit (isoHost) system;
-          specialArgs = {
-            inherit inputs;
-            host = isoHost;
-            hostName = "nixos-iso";
-          };
+          specialArgs.host = isoHost;
           modules = [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             stylix.nixosModules.stylix
@@ -238,26 +187,8 @@
             ./modules/linux/hosts/common.nix
             developmentOptionsModule
             { boot.loader.timeout = lib.mkForce 10; }
-
             home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useUserPackages = true;
-                backupFileExtension = "backup";
-                extraSpecialArgs = {
-                  inherit inputs;
-                  host = isoHost;
-                };
-
-                users.${isoHost.username} = {
-                  imports = [
-                    zen-browser.homeModules.default
-                    developmentModule
-                    ./modules/linux/hosts/home.nix
-                  ];
-                };
-              };
-            }
+            (mkHome isoHost nixosHomeModules)
           ];
         };
       };

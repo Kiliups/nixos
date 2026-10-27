@@ -1,6 +1,5 @@
 {
   pkgs,
-  inputs,
   host,
   ...
 }:
@@ -21,11 +20,10 @@
   programs.home-manager.enable = true;
   home.packages = [ pkgs.llama-cpp ];
 
-  nixpkgs.config.allowUnfree = true;
-
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
+    overlays.enable = false;
     targets = {
       neovim.enable = false;
       rofi.enable = false;

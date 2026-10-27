@@ -1,16 +1,10 @@
 {
-  hostName,
-  ...
-}:
-{
   imports = [
     ../common.nix
   ];
 
-  networking.hostName = hostName;
-  services.logind.settings.Login.HandleLidSwitchDocked = "ignore";
-
   services = {
+    logind.settings.Login.HandleLidSwitchDocked = "ignore";
     fprintd.enable = true;
     fwupd.enable = true;
 
@@ -51,6 +45,5 @@
         "wireplumber.profiles".main."custom.switch-headset-input" = "required";
       };
     };
-
   };
 }

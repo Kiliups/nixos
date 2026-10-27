@@ -1,7 +1,6 @@
 {
   pkgs,
   host,
-  inputs,
   ...
 }:
 {
@@ -14,14 +13,14 @@
   home = {
     inherit (host) username;
     homeDirectory = "/home/${host.username}";
+    stateVersion = "26.11";
   };
-
-  nixpkgs.config.allowUnfree = true;
 
   stylix = {
     targets = {
       rofi.enable = false;
       zen-browser.profileNames = [ "Default Profile" ];
+      tmux.enable = false;
       vscode.enable = false;
       zed.enable = false;
     };
