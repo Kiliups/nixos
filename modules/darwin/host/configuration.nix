@@ -11,7 +11,7 @@
       /nix/var/nix/profiles/default/bin/nix-env \
         --profile /nix/var/nix/profiles/system \
         --delete-generations +5
-      /nix/var/nix/profiles/default/bin/nix-collect-garbage
+      /nix/var/nix/profiles/default/bin/nix-collect-garbage || echo "warning: garbage collection failed; continuing activation" >&2
     '';
   };
   nixpkgs.hostPlatform = host.system;

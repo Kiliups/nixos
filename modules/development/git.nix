@@ -15,6 +15,7 @@
     programs.git = {
       enable = true;
       settings = {
+        core.sshCommand = "ssh -i ~/.ssh/github";
         init.defaultBranch = "main";
         pull.rebase = true;
         push.autoSetupRemote = true;

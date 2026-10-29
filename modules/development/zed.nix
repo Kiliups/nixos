@@ -72,12 +72,12 @@ in
         }
         {
           bindings = {
-            "ctrl-space a" = "workspace::ToggleRightDock";
+            "ctrl-space a" = "agent::Toggle";
             "ctrl-space b" = "multi_workspace::ToggleWorkspaceSidebar";
             "ctrl-space e" = "project_panel::Toggle";
             "ctrl-space g" = "git_panel::Toggle";
             "ctrl-space h" = "pane::SplitHorizontal";
-            "ctrl-space t" = "workspace::ToggleBottomDock";
+            "ctrl-space t" = "terminal_panel::Toggle";
             "ctrl-space v" = "pane::SplitVertical";
             "ctrl-space x" = "pane::CloseAllItems";
             "ctrl-space z" = "workspace::ToggleZoom";
@@ -86,6 +86,30 @@ in
             "ctrl-alt-k" = "workspace::ActivatePaneUp";
             "ctrl-alt-j" = "workspace::ActivatePaneDown";
           };
+        }
+        {
+          context = "Workspace";
+          bindings."ctrl-space f" = [
+            "action::Sequence"
+            [
+              "multi_workspace::CloseWorkspaceSidebar"
+              "workspace::CloseAllDocks"
+              "workspace::ToggleLeftDock"
+              "workspace::FocusCenterPane"
+            ]
+          ];
+        }
+        {
+          context = "Workspace && left_dock && !right_dock && !bottom_dock";
+          bindings."ctrl-space f" = [
+            "action::Sequence"
+            [
+              "agent::Toggle"
+              "terminal_panel::Toggle"
+              "multi_workspace::FocusWorkspaceSidebar"
+              "workspace::FocusCenterPane"
+            ]
+          ];
         }
       ];
     };

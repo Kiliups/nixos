@@ -1,4 +1,9 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   home.sessionVariables = {
     TERMINAL = "ghostty";
@@ -8,7 +13,10 @@
   programs.zsh.initContent = ''
     nfu() {
       local flake="''${1:-$NIXOS_FLAKE}"
-      nix flake update --flake "$flake"
+      nix flake update --flake "$flake" || return
+      ${lib.optionalString pkgs.stdenv.isDarwin ''
+        brew update && brew upgrade
+      ''}
     }
   '';
 
