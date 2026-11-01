@@ -34,7 +34,10 @@
     };
   };
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [ "firefox-esr-140-bin-unwrapped-140.17.0esr" ];
+  };
 
   zramSwap.enable = true;
 
@@ -152,6 +155,10 @@
   programs.zsh.enable = true;
 
   programs.nix-ld.enable = true;
+
+  system.activationScripts.restartHomeManager.text = ''
+    echo home-manager-${host.username}.service >> /run/nixos/activation-restart-list
+  '';
 
   virtualisation.docker.enable = true;
 

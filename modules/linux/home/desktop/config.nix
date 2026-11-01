@@ -146,7 +146,7 @@ in
           Mod+Space hotkey-overlay-title="Open App Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
           Mod+V hotkey-overlay-title="Clipboard History" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
           Mod+B hotkey-overlay-title="Open Browser: Zen" { ${focusOrSpawn "zen-beta" [ "zen-beta" ]}; }
-          Mod+Shift+G hotkey-overlay-title="Open GitHub" { ${
+          Mod+G hotkey-overlay-title="Open GitHub" { ${
             focusOrSpawn "github" [
               "chromium"
               "--app=https://github.com"

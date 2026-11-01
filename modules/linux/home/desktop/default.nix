@@ -50,7 +50,7 @@
     };
   };
 
-  qt = {
+  qt = with config.stylix.fonts; {
     enable = true;
     platformTheme = {
       name = "kde";
@@ -61,7 +61,13 @@
     };
     style.name = "breeze";
     kde.settings.kdeglobals = {
-      General.ColorScheme = "BreezeDark";
+      General = rec {
+        ColorScheme = "BreezeDark";
+        font = "${sansSerif.name},${toString sizes.applications}";
+        fixed = "${monospace.name},${toString sizes.terminal}";
+        menuFont = font;
+        toolBarFont = font;
+      };
       Icons.Theme = config.gtk.iconTheme.name;
     };
   };
