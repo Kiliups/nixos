@@ -27,6 +27,7 @@
   xdg.configFile."ghostty/config.ghostty".text = ''
     font-family = "JetBrains Mono"
     theme = "Catppuccin Macchiato"
+    shell-integration-features = ssh-env,ssh-terminfo
   '';
 
   xdg.configFile."worktrunk/config.toml".text = ''
