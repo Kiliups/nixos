@@ -52,6 +52,7 @@ in
           - Avoid unnecessary complexity, over-engineering, and premature optimization.
           - Remove code made obsolete by your changes.
           - If a task requires an unavailable package, use `nix shell` to run it.
+          - if there are no tests in the repo do not implement tests.
         '';
         description = "Base instructions shared by Claude Code, Codex, Cursor, and OpenCode. Setting this option replaces the default base instructions.";
         example = ''
